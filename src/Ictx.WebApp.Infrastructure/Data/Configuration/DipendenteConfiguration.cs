@@ -1,0 +1,37 @@
+﻿using Ictx.WebApp.Core.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+
+namespace Ictx.WebApp.Infrastructure.Data.Configuration
+{
+    public class DipendenteConfiguration : IEntityTypeConfiguration<Dipendente>
+    {
+        public void Configure(EntityTypeBuilder<Dipendente> builder)
+        {
+            builder.ToTable("Dipendente");
+
+            builder.HasKey(ci => ci.Id);
+
+            builder.Property(ci => ci.CodiceFiscale)
+                .IsRequired(true)
+                .HasColumnType("char(16)");
+
+            builder.Property(ci => ci.Nome)
+                .IsRequired(true)
+                .HasMaxLength(64);
+
+            builder.Property(ci => ci.Cognome)
+                .IsRequired(true)
+                .HasMaxLength(64);
+
+            builder.Property(ci => ci.Sesso)
+                .IsRequired(true)
+                .HasColumnType("char(1)");
+
+            // Relazione FoglioPresenza.
+            builder.HasMany(p => p.LstFoglioPresenza)
+                .WithOne(b => b.Dipendente)
+                .HasForeignKey(p => p.DipendenteId);
+        }
+    }
+}
