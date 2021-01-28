@@ -1,0 +1,35 @@
+﻿@using Ictx.WebApp.WebClient.Shared.FoglioPresenza 
+
+@page "/foglioPresenza"
+
+@inject FoglioPresenzaService _foglioPresenzaService
+
+<h3>FoglioPresenza</h3>
+
+@if (foglioPresenzaDto == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <FdpCalendar Anno="this.anno" Mese="this.mese" LstGiorni="this.foglioPresenzaDto.Giorni">
+
+    </FdpCalendar>
+
+}
+
+
+@code {
+
+    private FoglioPresenzaDto foglioPresenzaDto;
+
+    private int dipendenteId = 1;
+    private int anno = 2020;
+    private int mese = 1;
+
+    protected override async Task OnInitializedAsync()
+    {
+        this.foglioPresenzaDto = await this._foglioPresenzaService.Get(dipendenteId, anno, mese);
+    }
+
+}

@@ -1,0 +1,44 @@
+﻿@page "/listaDipendenti"
+@inject DipendenteService _dipendenteService
+
+<h1>Dipendenti</h1>
+
+@if (dipendenti == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Cognome</th>
+                <th>Nome</th>
+                <th>Sesso</th>
+                <th>CodiceFiscale</th>
+                <th>DataNascita</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dipendente in dipendenti)
+            {
+                <tr>
+                    <td>@dipendente.Cognome</td>
+                    <td>@dipendente.Nome</td>
+                    <td>@dipendente.Sesso</td>
+                    <td>@dipendente.CodiceFiscale</td>
+                    <td>@dipendente.DataNascita.ToShortDateString()</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<DipendenteDto> dipendenti;
+
+    protected override async Task OnInitializedAsync()
+    {
+        dipendenti = await this._dipendenteService.Get();
+    }
+}

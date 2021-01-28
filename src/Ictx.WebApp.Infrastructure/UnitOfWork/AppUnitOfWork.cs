@@ -7,9 +7,11 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
     public class AppUnitOfWork : IDisposable
     {
-        private readonly AppDbContext _context;
-        private DipendenteRepository _dipendenteRepository;
-        private FoglioPresenzaRepository _foglioPresenzaRepository;
+        private readonly AppDbContext       _context;
+
+        // Repository.
+        private DipendenteRepository        _dipendenteRepository;
+        private FoglioPresenzaRepository    _foglioPresenzaRepository;
         private FoglioPresenzaVpaRepository _foglioPresenzaVpaRepository;
 
         public AppUnitOfWork(AppDbContext context)

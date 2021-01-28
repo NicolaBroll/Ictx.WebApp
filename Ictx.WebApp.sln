@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ictx.WebApp.Core", "src\Ict
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ictx.WebApp.Infrastructure", "src\Ictx.WebApp.Infrastructure\Ictx.WebApp.Infrastructure.csproj", "{954705B9-C4E3-4845-A7FE-61FBF1638F47}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ictx.WebApp.WebClient", "src\Ictx.WebApp.WebClient\Ictx.WebApp.WebClient.csproj", "{596260FA-6051-40FB-8C1A-7A2A842B6FFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ictx.WebApp.WebClient", "src\Ictx.WebApp.WebClient\Ictx.WebApp.WebClient.csproj", "{596260FA-6051-40FB-8C1A-7A2A842B6FFC}"
 	ProjectSection(ProjectDependencies) = postProject
 		{4B575EA7-F4C6-4B6D-AE75-C617E962D017} = {4B575EA7-F4C6-4B6D-AE75-C617E962D017}
 	EndProjectSection
