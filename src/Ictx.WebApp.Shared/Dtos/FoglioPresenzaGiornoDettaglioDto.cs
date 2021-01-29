@@ -2,6 +2,7 @@
 {
     public class FoglioPresenzaGiornoDettaglioDto
     {
+        public int Id { get; set; }
         public int Ore { get; set; }
         public int Minuti { get; set; }
         public int Tipo { get; set; }

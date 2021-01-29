@@ -1,4 +1,5 @@
-﻿
+﻿@inject FoglioPresenzaDettaglioGiornoService _foglioPresenzaDettaglioGiornoService
+
 @if (this.LstDettagli.Any())
 {
     @foreach (var dettaglio in LstDettagli)
@@ -9,9 +10,9 @@
                 @dettaglio.Vpa.Sigla @($"{dettaglio.Ore.ToString("00")}:{dettaglio.Minuti.ToString("00")}")
             </span>
 
-            <span type="button" class="close" aria-label="Close" style="font-size: 1.2rem;">
+            <button type="button" class="close" aria-label="Close" style="font-size: 1.2rem;" @onclick="() => DeleteDettaglioGiorno(dettaglio)">
                 <span aria-hidden="true">&times;</span>
-            </span>
+            </button>
         </span>
     }
 
@@ -36,6 +37,11 @@
         }
 
         return $"calendar-grid-day-vpa-{color}";
+    }
+
+    protected async Task DeleteDettaglioGiorno(FoglioPresenzaGiornoDettaglioDto dettaglio)
+    {
+        await this._foglioPresenzaDettaglioGiornoService.Delete(dettaglio.Id);
     }
 
 }

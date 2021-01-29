@@ -10,9 +10,10 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
         private readonly AppDbContext       _context;
 
         // Repository.
-        private DipendenteRepository        _dipendenteRepository;
-        private FoglioPresenzaRepository    _foglioPresenzaRepository;
-        private FoglioPresenzaVpaRepository _foglioPresenzaVpaRepository;
+        private DipendenteRepository                    _dipendenteRepository;
+        private FoglioPresenzaRepository                _foglioPresenzaRepository;
+        private FoglioPresenzaVpaRepository             _foglioPresenzaVpaRepository;
+        private FoglioPresenzaDettaglioGiornoRepository _foglioPresenzaDettaglioGiornoRepository;
 
         public AppUnitOfWork(AppDbContext context)
         {
@@ -49,6 +50,17 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
                     this._foglioPresenzaVpaRepository = new FoglioPresenzaVpaRepository(_context);
 
                 return _foglioPresenzaVpaRepository;
+            }
+        }
+
+        public FoglioPresenzaDettaglioGiornoRepository FoglioPresenzaDettaglioGiornoRepository
+        {
+            get
+            {
+                if (this._foglioPresenzaDettaglioGiornoRepository == null)
+                    this._foglioPresenzaDettaglioGiornoRepository = new FoglioPresenzaDettaglioGiornoRepository(_context);
+
+                return _foglioPresenzaDettaglioGiornoRepository;
             }
         }
 

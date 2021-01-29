@@ -13,15 +13,22 @@ namespace Ictx.WebApp.WebClient
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+            var uri = new Uri("http://localhost:5002");
+
             builder.Services.AddHttpClient<DipendenteService>(client =>
             {
-                client.BaseAddress = new Uri("http://localhost:5002");
+                client.BaseAddress = uri;
             });
 
             builder.Services.AddHttpClient<FoglioPresenzaService>(client =>
             {
-                client.BaseAddress = new Uri("http://localhost:5002");
+                client.BaseAddress = uri;
             });
+
+            builder.Services.AddHttpClient<FoglioPresenzaDettaglioGiornoService>(client =>
+            {
+                client.BaseAddress = uri;
+            });            
 
             await builder.Build().RunAsync();
         }
