@@ -4,7 +4,7 @@
 
 @inject FoglioPresenzaService _foglioPresenzaService
 
-<h3>FoglioPresenza</h3>
+<h3>FoglioPresenza | <span class="text-muted">@mese / @anno </span></h3>
 
 @if (foglioPresenzaDto == null)
 {
@@ -12,10 +12,7 @@
 }
 else
 {
-    <FdpCalendar Anno="this.anno" Mese="this.mese" LstGiorni="this.foglioPresenzaDto.Giorni">
-
-    </FdpCalendar>
-
+    <FdpCalendar Anno="this.anno" Mese="this.mese" LstGiorni="this.foglioPresenzaDto.Giorni"> </FdpCalendar>
 }
 
 

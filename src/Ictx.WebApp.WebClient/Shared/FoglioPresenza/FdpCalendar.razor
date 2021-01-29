@@ -1,45 +1,37 @@
 ﻿
 <div class="calendar-grid-container" style="margin-top: 30px;">
 
-    @if (numberOfWeeks > 0)
+    @if (this.LstGiorni.Any())
     {
-        @for (var week = 1; week <= numberOfWeeks; week++)
+
+        // Scorro le settimane.
+        @foreach(var week in Enumerable.Range(1, GetWeekNumberOfMonth(new DateTime(Anno, Mese, LstGiorni.Max(x => x.Giorno)))))
         {
-            @for (var giorno = 1; giorno <= 7; giorno++)
+
+            // Scorro i giorni della settimana.
+            @foreach(var giorno in Enumerable.Range(1, 7))
             {
                 var giornofdp = this.LstGiorni.FirstOrDefault(x => giorno == GetDayOfWeek(new DateTime(Anno, Mese, x.Giorno)) && week == GetWeekNumberOfMonth(new DateTime(Anno, Mese, x.Giorno)));
 
                 if (giornofdp is not null)
                 {
-                    <div class="calendar-grid-day">
-
+                    // Stampo il giorno.
+                    <div class="calendar-grid-day">  
+                        
                         <!-- Day name -->
-                        <div class="d-flex">
-                            <div class="pull-left">
-                                @GetDayName(new DateTime(Anno, Mese, giornofdp.Giorno))
-                            </div>
-                            <div class="pull-right">
-                                @giornofdp.Giorno
-                            </div>
-                        </div>
+                        <h6 class="d-block text-right">
+                            @GetDayName(new DateTime(Anno, Mese, giornofdp.Giorno)) <b>@giornofdp.Giorno</b>  
+                        </h6>
 
                         <!-- Vpa -->
-                        @foreach (var dettaglio in giornofdp.Dettagli)
-                        {
-                            <div>
-                                <div>
-                                    @dettaglio.Vpa.Sigla
-                                </div>
-                                <div>
-                                    @($"{dettaglio.Ore}:{dettaglio.Minuti}")
-                                </div>
-                            </div>
-                        }
+                        <FdpCalendarVpa LstDettagli="giornofdp.Dettagli"></FdpCalendarVpa>
+
                     </div>
                 }
                 else
                 {
-                    <div class="calendar-grid-day disabled"></div>
+                    // Stampo il giorno disabilitato.
+                    <div></div>
                 }
             }
 
@@ -60,29 +52,17 @@
     [Parameter]
     public List<FoglioPresenzaGiornoDto> LstGiorni { get; set; }
 
-
-    private int numberOfWeeks = 0;
     private CultureInfo cul = CultureInfo.CurrentCulture;
-
 
     protected string GetDayName(DateTime date)
     {
         return cul.DateTimeFormat.GetDayName(date.DayOfWeek).Substring(0, 3);
     }
 
-    protected override void OnParametersSet()
-    {
-        this.numberOfWeeks = GetWeekNumberOfMonth(new DateTime(Anno, Mese, LstGiorni.Max(x => x.Giorno)));
-
-        StateHasChanged();
-        //base.OnParametersSet();
-    }
-
     protected int GetWeekNumberOfMonth(DateTime date)
     {
         return cul.Calendar.GetWeekOfYear(date, CalendarWeekRule.FirstDay, DayOfWeek.Monday);
     }
-
 
     protected int GetDayOfWeek(DateTime date)
     {
