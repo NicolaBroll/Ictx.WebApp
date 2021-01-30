@@ -2,8 +2,6 @@
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Components;
 using Ictx.WebApp.Shared.Dtos;
-using System.Globalization;
-using System;
 
 namespace Ictx.WebApp.WebClient.Services
 {

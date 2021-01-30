@@ -1,32 +1,43 @@
-﻿@using Ictx.WebApp.WebClient.Shared.FoglioPresenza 
+﻿@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@using Ictx.WebApp.WebClient.Shared.FoglioPresenza 
+@using Ictx.WebApp.WebClient.Store.State
+
+@inject IState<FoglioPresenzaState> FoglioPresenzaState
+@inject StateFacade Facade
 
 @page "/foglioPresenza"
 
-@inject FoglioPresenzaService _foglioPresenzaService
-
 <h3>FoglioPresenza | <span class="text-muted">@mese / @anno </span></h3>
 
-@if (foglioPresenzaDto == null)
+@if (FoglioPresenzaState.Value.IsLoading)
 {
     <p><em>Loading...</em></p>
 }
-else
+else if (FoglioPresenzaState.Value.HasCurrentErrors)
 {
-    <FdpCalendar Anno="this.anno" Mese="this.mese" LstGiorni="this.foglioPresenzaDto.Giorni"> </FdpCalendar>
+    <span>Whoops! Looks like an issue occurred loading todos :(</span>
+}
+else if (FoglioPresenzaState.Value.FoglioPresenza.Giorni.Any())
+{
+    <p>Loaded!</p>
+    
+    
+    <FdpCalendar Anno="this.anno" Mese="this.mese" LstGiorni="FoglioPresenzaState.Value.FoglioPresenza.Giorni"> </FdpCalendar>
 }
 
 
 @code {
 
-    private FoglioPresenzaDto foglioPresenzaDto;
-
     private int dipendenteId = 1;
     private int anno = 2020;
     private int mese = 1;
 
-    protected override async Task OnInitializedAsync()
+
+    protected override void OnInitialized()
     {
-        this.foglioPresenzaDto = await this._foglioPresenzaService.Get(dipendenteId, anno, mese);
+        Facade.LoadFoglioPresenza(this.dipendenteId, this.anno, this.mese);
+        base.OnInitialized();
     }
 
 }

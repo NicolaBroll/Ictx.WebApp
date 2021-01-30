@@ -2,7 +2,7 @@
 
 @if (this.LstDettagli.Any())
 {
-    @foreach (var dettaglio in LstDettagli)
+    @foreach (var dettaglio in this.LstDettagli)
     {
         <span class="w-100 calendar-grid-day-vpa @GetVpaColor(dettaglio) text-left m2t">
 
@@ -16,7 +16,7 @@
         </span>
     }
 
-    <button type="button" class="w-100 addBtn btn d-block m2t"><i class="fas fa-plus"></i></button>
+    <button type="button" class="w-100 addBtn btn d-block m10t"><i class="fas fa-plus"></i></button>
 }
 
 

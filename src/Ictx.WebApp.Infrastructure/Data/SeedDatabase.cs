@@ -100,7 +100,11 @@ namespace Ictx.WebApp.Infrastructure.Data
         {
             return new List<FoglioPresenzaVpa>()
             {
-                new FoglioPresenzaVpa("OR", 1, "Orario ordinario")
+                new FoglioPresenzaVpa("OR", 1, "Orario ordinario"),
+                new FoglioPresenzaVpa("FE", 2, "Ferie"),
+                new FoglioPresenzaVpa("PR", 3, "Permesso"),
+                new FoglioPresenzaVpa("ML", 4, "Malattia")
+
             };
         }
 
