@@ -1,10 +1,10 @@
 using Fluxor;
-using Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Actions;
+using Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Actions.Load;
 using Ictx.WebApp.WebClient.Store.State;
 
 namespace Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Reducers
 {
-    public static class LoadFoglioPresenzaActionsReducer
+    public static class FoglioPresenzaActionsReducer
     {
         [ReducerMethod]
         public static FoglioPresenzaState ReduceLoadFoglioPresenzaAction(FoglioPresenzaState state, LoadFoglioPresenzaAction _) =>

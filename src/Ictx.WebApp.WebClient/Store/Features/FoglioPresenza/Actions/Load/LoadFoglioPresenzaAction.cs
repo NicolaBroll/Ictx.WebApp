@@ -1,4 +1,4 @@
-namespace Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Actions
+namespace Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Actions.Load
 {
     public class LoadFoglioPresenzaAction
     {

@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Shared.Dtos;
+using static Ictx.WebApp.Core.Models.PaginationModel;
 
 namespace Ictx.WebApp.Api.Mappings
 {
@@ -8,6 +9,7 @@ namespace Ictx.WebApp.Api.Mappings
 	{
 		public DipendenteProfile()
 		{
+			CreateMap<PageResult<Dipendente>, PageResult<DipendenteDto>>();
 			CreateMap<Dipendente, DipendenteDto>();
 			CreateMap<DipendenteDto, Dipendente>();
 		}

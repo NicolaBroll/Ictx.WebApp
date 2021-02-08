@@ -18,13 +18,15 @@ namespace Ictx.WebApp.Infrastructure.Repositories
                 includeProperties: "Giorni,Giorni.Dettagli,Giorni.Dettagli.Vpa"
                 ).SingleOrDefaultAsync();
 
-
-            foreach (var giorno in fdp.Giorni)
+            if(fdp != null)
             {
-                giorno.Dettagli = giorno.Dettagli.OrderBy(x => x.Inserted).ToList();
-            }
+                foreach (var giorno in fdp.Giorni)
+                {
+                    giorno.Dettagli = giorno.Dettagli.OrderBy(x => x.Inserted).ToList();
+                }
 
-            fdp.Giorni = fdp.Giorni.OrderBy(x => x.Giorno).ToList();
+                fdp.Giorni = fdp.Giorni.OrderBy(x => x.Giorno).ToList();
+            }            
 
             return fdp;
         }

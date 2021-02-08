@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Services.Interface;
 using Ictx.WebApp.Shared.Dtos;
+using Ictx.WebApp.Shared.QueryParameters;
+using static Ictx.WebApp.Core.Models.PaginationModel;
 
 namespace Ictx.WebApp.Server.Controllers
 {
@@ -23,10 +25,10 @@ namespace Ictx.WebApp.Server.Controllers
 
         // GET: api/Dipendente
         [HttpGet]
-        public async Task<IEnumerable<DipendenteDto>> Get()
+        public async Task<PageResult<DipendenteDto>> Get([FromQuery] PaginationFilterModel paginationFilterModel)
         {
-            var list = await _dipendenteService.GetListAsync();
-            var res = _mapper.Map<IEnumerable<DipendenteDto>>(list);
+            var list = await _dipendenteService.GetListAsync(paginationFilterModel);
+            var res = _mapper.Map<PageResult<DipendenteDto>>(list);
 
             return res;
         }

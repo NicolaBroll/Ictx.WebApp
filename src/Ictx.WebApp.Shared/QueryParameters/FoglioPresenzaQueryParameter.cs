@@ -1,4 +1,6 @@
-﻿namespace Ictx.WebApp.Shared.QueryParameters
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Ictx.WebApp.Shared.QueryParameters
 {
     public class FoglioPresenzaQueryParameter
     {

@@ -1,12 +1,12 @@
 ﻿using Ictx.WebApp.Core.Entities;
-using System.Collections.Generic;
 using System.Threading.Tasks;
+using static Ictx.WebApp.Core.Models.PaginationModel;
 
 namespace Ictx.WebApp.Infrastructure.Services.Interface
 {
     public interface IDipendenteService
     {
-        Task<IEnumerable<Dipendente>> GetListAsync();
+        Task<PageResult<Dipendente>> GetListAsync(PaginationFilterModel paginationFilterModel);
 
         Task<Dipendente> GetByIdAsync(int id);
 

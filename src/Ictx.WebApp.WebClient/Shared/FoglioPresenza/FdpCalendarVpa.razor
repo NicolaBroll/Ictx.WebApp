@@ -1,4 +1,4 @@
-﻿@inject FoglioPresenzaDettaglioGiornoService _foglioPresenzaDettaglioGiornoService
+﻿@inject StateFacade Facade
 
 @if (this.LstDettagli.Any())
 {
@@ -39,9 +39,9 @@
         return $"calendar-grid-day-vpa-{color}";
     }
 
-    protected async Task DeleteDettaglioGiorno(FoglioPresenzaGiornoDettaglioDto dettaglio)
+    protected void DeleteDettaglioGiorno(FoglioPresenzaGiornoDettaglioDto dettaglio)
     {
-        await this._foglioPresenzaDettaglioGiornoService.Delete(dettaglio.Id);
+        this.Facade.DeleteDettaglioGiorno(dettaglio.Id);
     }
 
 }

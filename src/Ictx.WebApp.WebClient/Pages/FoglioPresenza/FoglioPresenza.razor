@@ -17,6 +17,8 @@
 else if (FoglioPresenzaState.Value.HasCurrentErrors)
 {
     <span>Whoops! Looks like an issue occurred loading todos :(</span>
+    <br />
+    <span>@FoglioPresenzaState.Value.CurrentErrorMessage</span>
 }
 else if (FoglioPresenzaState.Value.FoglioPresenza.Giorni.Any())
 {

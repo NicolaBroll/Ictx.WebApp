@@ -14,10 +14,12 @@ namespace Ictx.WebApp.WebClient.Services
             _controllerPath = "api/foglioPresenzaDettaglioGiorno";
         }
 
-        public async Task Delete(int id)
+        public async Task<bool> Delete(int id)
         {
             var url = $"{_controllerPath}/{id}";
-            await _httpClient.DeleteAsync(url);
+            var response = await _httpClient.DeleteAsync(url);
+
+            return response.IsSuccessStatusCode;
         }        
     }
 }

@@ -3,9 +3,9 @@ using System.Threading.Tasks;
 using Fluxor;
 using Ictx.WebApp.WebClient.Services;
 using Microsoft.Extensions.Logging;
-using Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Actions;
+using Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Actions.Load;
 
-namespace Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Effects
+namespace Ictx.WebApp.WebClient.Store.Features.FoglioPresenza.Effects.Load
 {
     public class LoadFoglioPresenzaEffect : Effect<LoadFoglioPresenzaAction>
     {

@@ -22,12 +22,15 @@ namespace Ictx.WebApp.Server.Controllers
 
         // GET: api/FoglioPresenza
         [HttpGet]
-        public async Task<FoglioPresenzaDto> Get([FromQuery] FoglioPresenzaQueryParameter parameters)
+        public async Task<ActionResult<FoglioPresenzaDto>> Get([FromQuery] FoglioPresenzaQueryParameter parameters)
         {
+            if (parameters.DipendenteId == 0 || parameters.Anno == 0 || parameters.Mese == 0)
+                return BadRequest();
+
             var fdp = await _foglioPresenzaService.Get(parameters.DipendenteId, parameters.Anno, parameters.Mese);
             var res = _mapper.Map<FoglioPresenzaDto>(fdp);
 
-            return res;
+            return Ok(res);
         }
     }
 }
