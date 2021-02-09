@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Services.Interface;
@@ -35,13 +36,12 @@ namespace Ictx.WebApp.Infrastructure.Services.Implementation
         private async Task<FoglioPresenza> CreaFoglioPresenza(int dipendenteId, int anno, int mese)
         {
             var fdp = new FoglioPresenza(dipendenteId, anno, mese);
-
-            var daysInMonth = DateTime.DaysInMonth(anno, mese);
             var vpaOR = await this._appUnitOfWork.FoglioPresenzaVpaRepository.GetBySigla("OR");
 
-            for(var i = 1; i<= daysInMonth; i++)
+            // Scorro i giorni nel mese.
+            foreach(var day in Enumerable.Range(1, DateTime.DaysInMonth(anno, mese)))
             {
-                var giorno = new FoglioPresenzaGiorno(i, (int)FoglioPresenzaGiornoTipo.Tipo0, true);
+                var giorno = new FoglioPresenzaGiorno(day, (int)FoglioPresenzaGiornoTipo.Tipo0, true);
                 var dettaglioGiorno = new FoglioPresenzaGiornoDettaglio(8, 0, (int) FoglioPresenzaGiornoDettaglioTipo.Tipo0, vpaOR);
 
                 giorno.Dettagli.Add(dettaglioGiorno);
