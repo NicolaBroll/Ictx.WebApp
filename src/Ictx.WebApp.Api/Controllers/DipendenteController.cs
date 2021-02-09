@@ -1,11 +1,9 @@
 ﻿using AutoMapper;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Services.Interface;
 using Ictx.WebApp.Shared.Dtos;
-using Ictx.WebApp.Shared.QueryParameters;
 using static Ictx.WebApp.Core.Models.PaginationModel;
 
 namespace Ictx.WebApp.Server.Controllers
