@@ -1,8 +1,8 @@
-﻿using Ictx.WebApp.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Ictx.WebApp.Core.Entities;
 using static Ictx.WebApp.Core.Models.DipendenteModel;
 
 namespace Ictx.WebApp.Infrastructure.Data
