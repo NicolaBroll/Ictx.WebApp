@@ -24,14 +24,8 @@ namespace Ictx.WebApp.Infrastructure.Data
             if (!_context.Dipendente.Any())
                 await PopolaDipendenti();
 
-            // FoglioPresenzaVpa.
-            if (!_context.FoglioPresenzaVpa.Any())
-                await PopolaFoglioPresenzaVpa();
-
             _context.Dispose();
         }
-
-        #region Dipendente
 
         public async Task PopolaDipendenti()
         {
@@ -385,28 +379,5 @@ namespace Ictx.WebApp.Infrastructure.Data
                 new Dipendente("FRGCLD60L05L378A", "FERIGOLLI", "CLAUDIO", Sesso.M, new DateTime(1960,7,5)),
             };
         }
-
-        #endregion
-
-        #region FoglioPresenzaVpa
-
-        public async Task PopolaFoglioPresenzaVpa()
-        {
-            await _context.FoglioPresenzaVpa.AddRangeAsync(GetFoglioPresenzaVpa());
-            await _context.SaveChangesAsync();
-        }
-
-        private List<FoglioPresenzaVpa> GetFoglioPresenzaVpa()
-        {
-            return new List<FoglioPresenzaVpa>()
-            {
-                new FoglioPresenzaVpa("OR", 1, "Orario ordinario"),
-                new FoglioPresenzaVpa("FE", 2, "Ferie"),
-                new FoglioPresenzaVpa("PR", 3, "Permesso"),
-                new FoglioPresenzaVpa("ML", 4, "Malattia")
-            };
-        }
-
-        #endregion
     }
 }

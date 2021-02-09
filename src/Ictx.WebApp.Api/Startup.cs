@@ -66,8 +66,6 @@ namespace Ictx.WebApp.Server
         {
             // Services.
             services.TryAddScoped<IDipendenteService, DipendenteService>();
-            services.TryAddScoped<IFoglioPresenzaService, FoglioPresenzaService>();
-            services.TryAddScoped<IFoglioPresenzaDettaglioGiornoService, FoglioPresenzaDettaglioGiornoService>();
 
             // Unit of work.
             services.TryAddScoped<AppUnitOfWork>();

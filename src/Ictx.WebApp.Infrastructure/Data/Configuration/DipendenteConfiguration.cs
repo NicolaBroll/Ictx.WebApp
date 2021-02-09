@@ -27,11 +27,6 @@ namespace Ictx.WebApp.Infrastructure.Data.Configuration
             builder.Property(ci => ci.Sesso)
                 .IsRequired(true)
                 .HasColumnType("char(1)");
-
-            // Relazione FoglioPresenza.
-            builder.HasMany(p => p.LstFoglioPresenza)
-                .WithOne(b => b.Dipendente)
-                .HasForeignKey(p => p.DipendenteId);
         }
     }
 }

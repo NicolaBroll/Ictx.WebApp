@@ -15,10 +15,6 @@ namespace Ictx.WebApp.Core.Entities
         public DateTime Inserted { get; set; }
         public DateTime Updated { get; set; }
 
-        // Relazioni
-        public List<FoglioPresenza> LstFoglioPresenza { get; set; }
-
-
         public Dipendente() 
         {
         }

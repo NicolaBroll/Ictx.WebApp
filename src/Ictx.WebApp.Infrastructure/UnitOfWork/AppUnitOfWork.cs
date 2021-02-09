@@ -7,14 +7,11 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
     public class AppUnitOfWork : IDisposable
     {
-        private readonly AppDbContext       _context;
+        private readonly AppDbContext _context;
 
         // Repository.
-        private DipendenteRepository                    _dipendenteRepository;
-        private FoglioPresenzaRepository                _foglioPresenzaRepository;
-        private FoglioPresenzaVpaRepository             _foglioPresenzaVpaRepository;
-        private FoglioPresenzaDettaglioGiornoRepository _foglioPresenzaDettaglioGiornoRepository;
-
+        private DipendenteRepository _dipendenteRepository;
+       
         public AppUnitOfWork(AppDbContext context)
         {
             this._context = context;
@@ -29,40 +26,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
 
                 return _dipendenteRepository;
             }
-        }
-
-        public FoglioPresenzaRepository FoglioPresenzaRepository
-        {
-            get
-            {
-                if (this._foglioPresenzaRepository == null)
-                    this._foglioPresenzaRepository = new FoglioPresenzaRepository(_context);
-
-                return _foglioPresenzaRepository;
-            }
-        }
-
-        public FoglioPresenzaVpaRepository FoglioPresenzaVpaRepository
-        {
-            get
-            {
-                if (this._foglioPresenzaVpaRepository == null)
-                    this._foglioPresenzaVpaRepository = new FoglioPresenzaVpaRepository(_context);
-
-                return _foglioPresenzaVpaRepository;
-            }
-        }
-
-        public FoglioPresenzaDettaglioGiornoRepository FoglioPresenzaDettaglioGiornoRepository
-        {
-            get
-            {
-                if (this._foglioPresenzaDettaglioGiornoRepository == null)
-                    this._foglioPresenzaDettaglioGiornoRepository = new FoglioPresenzaDettaglioGiornoRepository(_context);
-
-                return _foglioPresenzaDettaglioGiornoRepository;
-            }
-        }
+        }       
 
         public async Task Save()
         {
