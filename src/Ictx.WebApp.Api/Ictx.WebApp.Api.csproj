@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ictx.WebApp.Infrastructure\Ictx.WebApp.Infrastructure.csproj" />
-    <ProjectReference Include="..\Ictx.WebApp.Shared\Ictx.WebApp.Shared.csproj" />
   </ItemGroup>
 
 </Project>

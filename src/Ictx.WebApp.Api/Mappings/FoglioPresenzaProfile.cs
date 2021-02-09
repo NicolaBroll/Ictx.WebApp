@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Shared.Dtos;
+using static Ictx.WebApp.Api.Dtos.FoglioPresenzaDtos;
 
 namespace Ictx.WebApp.Api.Mappings
 {

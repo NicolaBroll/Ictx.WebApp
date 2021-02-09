@@ -3,10 +3,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Services.Interface;
-using Ictx.WebApp.Shared.Dtos;
 using static Ictx.WebApp.Core.Models.PaginationModel;
+using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
 
-namespace Ictx.WebApp.Server.Controllers
+namespace Ictx.WebApp.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]

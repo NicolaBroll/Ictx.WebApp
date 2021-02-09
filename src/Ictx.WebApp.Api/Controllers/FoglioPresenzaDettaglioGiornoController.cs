@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Infrastructure.Services.Interface;
 
-namespace Ictx.WebApp.Server.Controllers
+namespace Ictx.WebApp.Api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
