@@ -6,6 +6,7 @@ namespace Ictx.WebApp.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
+        public DbSet<Comune> Comune { get; set; }
         public DbSet<UfficioBase> UfficioBase { get; set; }
         public DbSet<Ufficio> Ufficio { get; set; }
         public DbSet<Impresa> Impresa { get; set; }

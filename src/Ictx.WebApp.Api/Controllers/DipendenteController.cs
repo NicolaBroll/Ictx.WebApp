@@ -5,6 +5,7 @@ using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Services.Interface;
 using static Ictx.WebApp.Core.Models.PaginationModel;
 using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
+using static Ictx.WebApp.Api.Models.DipendenteModel;
 
 namespace Ictx.WebApp.Api.Controllers
 {
@@ -23,9 +24,9 @@ namespace Ictx.WebApp.Api.Controllers
 
         // GET: api/Dipendente
         [HttpGet]
-        public async Task<PageResult<DipendenteDto>> Get([FromQuery] PaginationFilterModel paginationFilterModel)
+        public async Task<PageResult<DipendenteDto>> Get([FromQuery] DipendenteQueryParameters dipendenteQueryParameters)
         {
-            var list = await _dipendenteService.GetListAsync(paginationFilterModel);
+            var list = await _dipendenteService.GetListAsync(dipendenteQueryParameters, dipendenteQueryParameters.DittaId);
             var res = _mapper.Map<PageResult<DipendenteDto>>(list);
 
             return res;

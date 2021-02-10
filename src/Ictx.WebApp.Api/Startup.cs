@@ -1,6 +1,6 @@
 using Ictx.WebApp.Api.AppStartUp;
+using Ictx.WebApp.Api.SeedDatabase;
 using Ictx.WebApp.Infrastructure.Data;
-using Ictx.WebApp.Infrastructure.Repositories;
 using Ictx.WebApp.Infrastructure.Services.Implementation;
 using Ictx.WebApp.Infrastructure.Services.Interface;
 using Ictx.WebApp.Infrastructure.UnitOfWork;

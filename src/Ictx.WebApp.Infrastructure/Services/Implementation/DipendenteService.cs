@@ -18,9 +18,12 @@ namespace Ictx.WebApp.Infrastructure.Services.Implementation
             this._appUnitOfWork = appUnitOfWork;
         }
 
-        public async Task<PageResult<Dipendente>> GetListAsync(PaginationFilterModel paginationFilterModel)
+        public async Task<PageResult<Dipendente>> GetListAsync(PaginationFilterModel paginationFilterModel, int dittaId)
         {
-            var qy = this._appUnitOfWork.DipendenteRepository.QueryMany();
+            var qy = this._appUnitOfWork.DipendenteRepository.QueryMany(
+                filter: x => x.DittaId == dittaId,
+                orderBy: x => x.OrderBy(o => o.Cognome).ThenBy(x => x.Nome)
+                );
 
             var count = qy.Count();
             var list = await qy.Skip((paginationFilterModel.Page - 1) * paginationFilterModel.PageSize).Take(paginationFilterModel.PageSize).ToListAsync();
@@ -42,7 +45,7 @@ namespace Ictx.WebApp.Infrastructure.Services.Implementation
             dipendente.Cognome = dipendente.Cognome.ToUpper();
 
             await this._appUnitOfWork.DipendenteRepository.InsertAsync(dipendente);
-            await this._appUnitOfWork.Save();
+            await this._appUnitOfWork.SaveAsync();
 
             return dipendente;
         }
@@ -54,7 +57,7 @@ namespace Ictx.WebApp.Infrastructure.Services.Implementation
             dipendente.Nome = dipendente.Nome.ToUpper();
             dipendente.Cognome = dipendente.Cognome.ToUpper();
 
-            await this._appUnitOfWork.Save();
+            await this._appUnitOfWork.SaveAsync();
             return dipendente;
         }
 
@@ -63,7 +66,7 @@ namespace Ictx.WebApp.Infrastructure.Services.Implementation
             try
             {
                 this._appUnitOfWork.DipendenteRepository.Delete(id);
-                await this._appUnitOfWork.Save();
+                await this._appUnitOfWork.SaveAsync();
 
                 return true;
             }
