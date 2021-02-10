@@ -36,44 +36,39 @@ namespace Ictx.WebApp.Infrastructure.Services.Implementation
             return await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
         }
 
-        public async Task<Dipendente> InsertAsync(Dipendente dipendente)
+        public async Task<Dipendente> InsertAsync(Dipendente model)
         {
-            dipendente.Inserted = DateTime.UtcNow;
-            dipendente.Updated = DateTime.UtcNow;
-            dipendente.CodiceFiscale = dipendente.CodiceFiscale.ToUpper();
-            dipendente.Nome = dipendente.Nome.ToUpper();
-            dipendente.Cognome = dipendente.Cognome.ToUpper();
+            var ditta = await this._appUnitOfWork.DittaRepository.ReadAsync(model.DittaId);
+            var objToInsert = new Dipendente(model.CodiceFiscale, model.Cognome, model.Nome, model.Sesso, model.DataNascita, ditta);
 
-            await this._appUnitOfWork.DipendenteRepository.InsertAsync(dipendente);
+            await this._appUnitOfWork.DipendenteRepository.InsertAsync(objToInsert);
             await this._appUnitOfWork.SaveAsync();
 
-            return dipendente;
+            return model;
         }
 
-        public async Task<Dipendente> SaveAsync(int id, Dipendente dipendente)
+        public async Task<Dipendente> SaveAsync(int id, Dipendente model)
         {
-            dipendente.Updated = DateTime.UtcNow;
-            dipendente.CodiceFiscale = dipendente.CodiceFiscale.ToUpper();
-            dipendente.Nome = dipendente.Nome.ToUpper();
-            dipendente.Cognome = dipendente.Cognome.ToUpper();
+            var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
+            objToUpdate.Updated = DateTime.UtcNow;
+            objToUpdate.CodiceFiscale = model.CodiceFiscale.ToUpper();
+            objToUpdate.Nome = Char.ToUpperInvariant(model.Nome[0]) + model.Nome.ToLower().Substring(1);
+            objToUpdate.Cognome = Char.ToUpperInvariant(model.Cognome[0]) + model.Cognome.ToLower().Substring(1);
+            objToUpdate.DataNascita = model.DataNascita;
+
+            this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
             await this._appUnitOfWork.SaveAsync();
-            return dipendente;
+
+            return model;
         }
 
         public async Task<bool> DeleteAsync(int id)
         {
-            try
-            {
-                this._appUnitOfWork.DipendenteRepository.Delete(id);
-                await this._appUnitOfWork.SaveAsync();
+            this._appUnitOfWork.DipendenteRepository.Delete(id);
+            await this._appUnitOfWork.SaveAsync();
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return true; 
         }
     }
 }
