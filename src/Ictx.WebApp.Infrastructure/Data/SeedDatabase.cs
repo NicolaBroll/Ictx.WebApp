@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Ictx.WebApp.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using static Ictx.WebApp.Core.Models.DipendenteModel;
 
 namespace Ictx.WebApp.Infrastructure.Data
@@ -10,374 +12,144 @@ namespace Ictx.WebApp.Infrastructure.Data
     public class SeedDatabase
     {
         private readonly AppDbContext _context;
+        private readonly string _seedDataDirectory;
+        private readonly Random _random;
 
         public SeedDatabase(AppDbContext context)
         {
-            _context = context;
+            this._context = context;
+            this._seedDataDirectory = Path.Combine(Directory.GetCurrentDirectory(), "SeedData");
+            this._random = new Random();
         }
 
         public async void Initialize()
         {
             _context.Database.EnsureCreated();
 
-            // Dipendente.
-            if (!_context.Dipendente.Any())
+            // Uffici base.
+            if(!_context.UfficioBase.Any())
+            {
+                await PopolaUfficiBase();
+                await PopolaUffici();
+                await PopolaImprese();
+                await PopolaDitte();
                 await PopolaDipendenti();
+            }
 
             _context.Dispose();
         }
 
-        public async Task PopolaDipendenti()
+        private async Task PopolaDitte()
         {
-            await _context.Dipendente.AddRangeAsync(GetDipendenti());
+            await _context.Ditta.AddRangeAsync(await GetDitte());
+            await _context.SaveChangesAsync(); 
+        }
+
+        private async Task<List<Ditta>> GetDitte()
+        {
+            var result = new List<Ditta>();
+            var lstImprese = await this._context.Impresa.ToListAsync();
+
+            foreach(var impresa in lstImprese)
+            {
+                foreach(var nRandom in Enumerable.Range(1, this._random.Next(1, 5)))
+                {
+                    result.Add(new Ditta(nRandom, $"Ditta {nRandom}", impresa));
+                }
+            }
+
+            return result;    
+        }
+
+        private async Task PopolaImprese()
+        {
+            await _context.Impresa.AddRangeAsync(await GetImprese());
+            await _context.SaveChangesAsync(); 
+        }
+
+        private async Task<List<Impresa>> GetImprese()
+        {
+            var result = new List<Impresa>();
+            var lstUffici = await this._context.Ufficio.ToListAsync();
+
+            foreach(var ufficio in lstUffici)
+            {
+                foreach(var nRandom in Enumerable.Range(1, this._random.Next(1, 100)))
+                {
+                    result.Add(new Impresa(nRandom, $"Impresa {nRandom}", ufficio));
+                }
+            }
+
+            return result;
+        }
+
+        private async Task PopolaUffici()
+        {
+            await _context.Ufficio.AddRangeAsync(await GetUffici());
+            await _context.SaveChangesAsync();   
+         }
+
+        private async Task<List<Ufficio>> GetUffici()
+        {
+            var result = new List<Ufficio>();
+            var lstUfficiBase = await this._context.UfficioBase.ToListAsync();
+
+            foreach(var ufficioBase in lstUfficiBase)
+            {
+                foreach(var nRandom in Enumerable.Range(1, this._random.Next(1, 15)))
+                {
+                    result.Add(new Ufficio(nRandom, $"Sottoufficio {nRandom} - {ufficioBase.Denominazione}", ufficioBase));
+                }
+            }
+
+            return result;
+        }
+
+        private async Task PopolaUfficiBase()
+        {
+            await _context.UfficioBase.AddRangeAsync(GetUfficiBase());
             await _context.SaveChangesAsync();
         }
 
-        private List<Dipendente> GetDipendenti()
+        private List<UfficioBase> GetUfficiBase()
         {
-            return new List<Dipendente>()
+            return new List<UfficioBase>()
             {
-                new Dipendente("RSSMRA80M01H501L", "Rossi", "Mario", Sesso.M, new DateTime(1980, 8, 1)),
-                new Dipendente("BNCLCU95C12F205K", "Bianchi", "Luca", Sesso.M, new DateTime(1995, 3, 12)),
-                new Dipendente("BRLNCL94E25L378N", "Nicola", "Broll", Sesso.M, new DateTime(1994, 5, 25)),
-                new Dipendente("SNTLCU00T53G273X", "Santa", "Lucia",  Sesso.F, new DateTime(2000, 12, 13)),
-                new Dipendente("FLLNGL55H63H254L", "FELLIN", "ANGELA", Sesso.F, new DateTime(1955,6,23)),
-                new Dipendente("CKOMVN88P54Z100B", "COKU", "MALVINA", Sesso.F, new DateTime(1988,9,14)),
-                new Dipendente("NNZNLB77L57Z505T", "NUNEZ", "ANADELBA", Sesso.F, new DateTime(1977,7,17)),
-                new Dipendente("GLMFBL60R54H612V", "GELMI", "FABIOLA", Sesso.F, new DateTime(1960,10,14)),
-                new Dipendente("MRNBTH73P57Z604P", "MORENO MURILLO", "BERTHA EMILIA", Sesso.F, new DateTime(1973,9,17)),
-                new Dipendente("PCHSRA77A49L378M", "PICHLER", "SARA", Sesso.F, new DateTime(1977,1,9)),
-                new Dipendente("VNDMHL68R70H823O", "VENDRAMINI", "MICHELA", Sesso.F, new DateTime(1968,10,30)),
-                new Dipendente("ZGALLL65R56H823J", "ZAGO", "LUISELLA", Sesso.F, new DateTime(1965,10,16)),
-                new Dipendente("RSSMNL60R60F999L", "ROSSETTO", "EMANUELA", Sesso.F, new DateTime(1960,10,20)),
-                new Dipendente("SMSRMR65L62H823C", "SAMASSA", "ERNA MARIA", Sesso.F, new DateTime(1965,7,22)),
-                new Dipendente("MRCVNI62C57Z133M", "MARCON", "IVANA", Sesso.F, new DateTime(1962,3,17)),
-                new Dipendente("MCJRBJ83E65Z100N", "MECAJ", "RUBIJE", Sesso.F, new DateTime(1983,5,25)),
-                new Dipendente("GSTTZN75C43F770O", "GIUST", "TIZIANA", Sesso.F, new DateTime(1975,3,3)),
-                new Dipendente("SPPFNC63S52C422L", "ISEPPI", "FRANCA", Sesso.F, new DateTime(1963,11,12)),
-                new Dipendente("DBSSRN68C61L407A", "DEBIASI", "SABRINA", Sesso.F, new DateTime(1968,3,21)),
-                new Dipendente("BNFDNC67H47G273G", "BONFARDECI", "DOMENICA", Sesso.F, new DateTime(1967,6,7)),
-                new Dipendente("CNCRTI61E64E893L", "CANCIAN", "RITA", Sesso.F, new DateTime(1961,5,24)),
-                new Dipendente("MSLBRJ76M58Z148P", "MUSLIOVSKA", "BUKURIJE", Sesso.F, new DateTime(1976,8,18)),
-                new Dipendente("DRGMNL68P58L378U", "DORIGATTI", "MANUELA", Sesso.F, new DateTime(1968,9,18)),
-                new Dipendente("PVNLRA69E56H823V", "PAVAN", "LAURA", Sesso.F, new DateTime(1969,5,16)),
-                new Dipendente("ZNDLNE71E41H612H", "ZANDARCO", "ELENA", Sesso.F, new DateTime(1971,5,1)),
-                new Dipendente("TNSMRZ56T62F238E", "TONUS", "MARZIA", Sesso.F, new DateTime(1956,12,22)),
-                new Dipendente("LVRMRK84L20E512M", "OLIVIERI", "MIRKO", Sesso.M, new DateTime(1984,7,20)),
-                new Dipendente("LVRMLL73M46E897K", "OLIVERIO", "MARIELLA", Sesso.F, new DateTime(1973,8,6)),
-                new Dipendente("MSLMTN91E60F839J", "MUSELLA", "MARTINA", Sesso.F, new DateTime(1991,5,20)),
-                new Dipendente("DPTMGV60T68M088W", "DI PIETRO", "MARIA GIOVANNA", Sesso.F, new DateTime(1960,12,28)),
-                new Dipendente("LFRDNT82M02B963I", "ALFIERI", "DONATO", Sesso.M, new DateTime(1982,8,2)),
-                new Dipendente("ZNNCDD65S50L083D", "ZANNI", "CANDIDA", Sesso.F, new DateTime(1965,11,10)),
-                new Dipendente("BLDNNT58B61H612V", "BALDO", "ANTONIETTA", Sesso.F, new DateTime(1958,2,21)),
-                new Dipendente("SSLBLL57D22Z330Q", "ESSELMI", "ABDELLAH", Sesso.M, new DateTime(1957,4,22)),
-                new Dipendente("BNCLCU59M47H612N", "BIANCHINI", "LUCIA", Sesso.F, new DateTime(1959,8,7)),
-                new Dipendente("RSSGLE47L64L551M", "ROSSATO", "EGLE", Sesso.F, new DateTime(2047,7,24)),
-                new Dipendente("MDNNDA56E56H612H", "MODENA", "NADIA", Sesso.F, new DateTime(1956,5,16)),
-                new Dipendente("MDNMRN67E53H612P", "MODENA", "MORENA", Sesso.F, new DateTime(1967,5,13)),
-                new Dipendente("MRNMCR65A69L020W", "MARANZANI", "MARIA CRISTINA", Sesso.F, new DateTime(1965,1,29)),
-                new Dipendente("BRTFNC55T43G167A", "BERTO", "FRANCA", Sesso.F, new DateTime(1955,12,3)),
-                new Dipendente("BLBLTF65P01Z352C", "BALBALI", "LOTFI", Sesso.M, new DateTime(1965,9,1)),
-                new Dipendente("LHRYSN80H07Z330B", "EL HARRAK", "YASSIN", Sesso.M, new DateTime(1980,6,7)),
-                new Dipendente("NDRSFN63P13B153N", "ANDREOLLI", "STEFANO", Sesso.M, new DateTime(1963,9,13)),
-                new Dipendente("FRLLSS83C65F770V", "FURLAN", "ALESSIA", Sesso.F, new DateTime(1983,3,25)),
-                new Dipendente("RMOTMS64A64F205O", "ROMEO", "TOMASA", Sesso.F, new DateTime(1964,1,24)),
-                new Dipendente("BLSTZN66E55L502Z", "BOLIS", "TIZIANA", Sesso.F, new DateTime(1966,5,15)),
-                new Dipendente("DFRJNY92P47C372L", "DEFRANCESCO", "JENNY", Sesso.F, new DateTime(1992,9,7)),
-                new Dipendente("BDLMMM84T10Z336I", "ABDEL MAKSOUD", "MOHAMMED", Sesso.M, new DateTime(1984,12,10)),
-                new Dipendente("CRVGPP59E65C188F", "CERVONE", "GIUSEPPINA", Sesso.F, new DateTime(1959,5,25)),
-                new Dipendente("DMTBBR69C47F100D", "DIMATTEO", "BARBARA", Sesso.F, new DateTime(1969,3,7)),
-                new Dipendente("LHYWLD77L27Z336F", "EL HAYES", "WALEED", Sesso.M, new DateTime(1977,7,27)),
-                new Dipendente("LSDSHB73A28Z336B", "ELSAIDI", "SOUBHI ABDELRAHMAN", Sesso.M, new DateTime(1973,1,28)),
-                new Dipendente("LSHSLM65R26Z336M", "EL SHAL", "SALAMA", Sesso.M, new DateTime(1965,10,26)),
-                new Dipendente("GHRMRB71A21Z336S", "GHOURAB", "MAHER ABDELMONEIM", Sesso.M, new DateTime(1971,1,21)),
-                new Dipendente("GNZSSB69P65Z611N", "GONZALES QUINTANILLA", "SONIA EUSEBIA", Sesso.F, new DateTime(1969,9,25)),
-                new Dipendente("NFNRSO58B65E366E", "INFANTI", "ROSA", Sesso.F, new DateTime(1958,2,25)),
-                new Dipendente("LTRPLA56H67F537R", "LOTRECCHIANO", "PAOLA", Sesso.F, new DateTime(1956,6,27)),
-                new Dipendente("LCHSDR73B48H841I", "LUCHETTA", "SANDRA", Sesso.F, new DateTime(1973,2,8)),
-                new Dipendente("MLLTNL82S05Z216T", "MALLARI", "TONILOU", Sesso.M, new DateTime(1982,11,5)),
-                new Dipendente("MNTMDM70T57F205W", "MONTAGNESE", "MARIA DOMENICA", Sesso.F, new DateTime(1970,12,17)),
-                new Dipendente("BLLSNT66M43A568E", "BELLAN", "SIMONETA", Sesso.F, new DateTime(1966,8,3)),
-                new Dipendente("FRLSNO67A59G224B", "FURLAN", "SONIA", Sesso.F, new DateTime(1967,1,19)),
-                new Dipendente("GQNVLR81B62F839Q", "GIAQUINTO", "VALERIA", Sesso.F, new DateTime(1981,2,22)),
-                new Dipendente("MZZNNL58A57C964K", "MUZZOLON", "ANTONELLA", Sesso.F, new DateTime(1958,1,17)),
-                new Dipendente("MSOMMD89B06Z336R", "MOUSA", "MAHMOUD MOAWAD AB", Sesso.M, new DateTime(1989,2,6)),
-                new Dipendente("RDYLCU62E43Z611T", "ORDAYA GOMEZ", "LUCIA", Sesso.F, new DateTime(1962,5,3)),
-                new Dipendente("PNTMNL66S61Z601W", "PINTO ALCOCER", "MARIANELA JACKELIN", Sesso.F, new DateTime(1966,11,21)),
-                new Dipendente("RNLDNC58M62E155S", "RINALDI", "DOMENICA", Sesso.F, new DateTime(1958,8,22)),
-                new Dipendente("SHHHDY87L29Z336V", "SHAHATA", "AHMED YEHIA AHMED", Sesso.M, new DateTime(1987,7,29)),
-                new Dipendente("YSSMMD79P27Z336D", "YOUSSEF", "MOHAMED ABDEL", Sesso.M, new DateTime(1979,9,27)),
-                new Dipendente("RDJLDN86M69Z148Z", "REDJEPI", "ELMEDINA", Sesso.F, new DateTime(1986,8,29)),
-                new Dipendente("BRCJLO77B19Z216L", "BARCELONA", "JOEL", Sesso.M, new DateTime(1977,2,19)),
-                new Dipendente("BSSFRC72A59H330F", "BASSI", "FEDERICA", Sesso.F, new DateTime(1972,1,19)),
-                new Dipendente("HXHBRJ56E43Z100K", "HOXHA", "BUKURIJE", Sesso.F, new DateTime(1956,5,3)),
-                new Dipendente("LUIGDN64P45E089M", "LUI", "GIORDANA", Sesso.F, new DateTime(1964,9,5)),
-                new Dipendente("MTTTZN64D47L378P", "MATTANA", "TIZIANA", Sesso.F, new DateTime(1964,4,7)),
-                new Dipendente("BFNDMR82P47Z129A", "BOFAN", "DAIANA MARIANA", Sesso.F, new DateTime(1982,9,7)),
-                new Dipendente("CHHKDJ73E62Z330B", "CHAHID", "KHADIJA", Sesso.F, new DateTime(1973,5,22)),
-                new Dipendente("CSSLSE83E62H194Z", "CASSARO", "ELISA", Sesso.F, new DateTime(1983,5,22)),
-                new Dipendente("DNDNIO67A59Z140W", "DANDARA", "IOANA", Sesso.F, new DateTime(1967,1,19)),
-                new Dipendente("GMZDMR73D55Z605E", "GOMEZ", "DIANA MARIA", Sesso.F, new DateTime(1973,4,15)),
-                new Dipendente("HRSPLN78E49Z104P", "HRISTOVA", "PAVLINKA IVANOVA", Sesso.F, new DateTime(1978,5,9)),
-                new Dipendente("KMRFRJ79L58Z100U", "KUMRIJA", "FLORIJE", Sesso.F, new DateTime(1979,7,18)),
-                new Dipendente("DMIMMW75C51Z343J", "DIEME", "MAME AWE", Sesso.F, new DateTime(1975,3,11)),
-                new Dipendente("RHUNJT59M53Z330Q", "RUIHA", "NAJATE", Sesso.F, new DateTime(1959,8,13)),
-                new Dipendente("MLNDJL83A41Z118A", "MILENKOVIC", "DANIJELA", Sesso.F, new DateTime(1983,1,1)),
-                new Dipendente("VRGRHB80A65Z611B", "VERA AGUIRRE", "RUTH BETSABETH", Sesso.F, new DateTime(1980,1,25)),
-                new Dipendente("SNTLCL81C24Z216S", "SANTOS HILAJAN", "LINCOLN", Sesso.M, new DateTime(1981,3,24)),
-                new Dipendente("SNSMCR71L55Z112M", "SANSEVERINO", "MARIA CARMELA", Sesso.F, new DateTime(1971,7,15)),
-                new Dipendente("DGRCNZ69A64I480E", "DI GREGORIO", "CINZIA", Sesso.F, new DateTime(1969,1,24)),
-                new Dipendente("TNZJVO73T42Z216Q", "ATIENZA", "JOVIE", Sesso.F, new DateTime(1973,12,2)),
-                new Dipendente("PPPBTN52P64I040S", "PUPPO", "BERTINA", Sesso.F, new DateTime(1952,9,24)),
-                new Dipendente("LMSVNT67D66Z154V", "LEMESHEVA", "VALENTYNA", Sesso.F, new DateTime(1967,4,26)),
-                new Dipendente("MNTGLI73E43B006Q", "MENATO", "GIULIA", Sesso.F, new DateTime(1973,5,3)),
-                new Dipendente("DLABLH69L19Z330N", "ADIL", "ABDELHALIM", Sesso.M, new DateTime(1969,7,19)),
-                new Dipendente("RFASMR69H54Z330C", "ARFI", "SAMIRA", Sesso.F, new DateTime(1969,6,14)),
-                new Dipendente("BSCVNT83M70C743F", "BISCUOLA", "VALENTINA", Sesso.F, new DateTime(1983,8,30)),
-                new Dipendente("BRGPLA58H62L934O", "BRUGNOLARO", "PAOLA", Sesso.F, new DateTime(1958,6,22)),
-                new Dipendente("LZZSRN71B55I938W", "LAZZARIN", "SABRINA", Sesso.F, new DateTime(1971,2,15)),
-                new Dipendente("MNRTZN74E51B563A", "MUNARETTI", "TIZIANA", Sesso.F, new DateTime(1974,5,11)),
-                new Dipendente("PVNCHR81S69B563K", "PAVAN", "CHIARA", Sesso.F, new DateTime(1981,11,29)),
-                new Dipendente("PRVSRN71E59L378K", "PREVITALI", "SABRINA", Sesso.F, new DateTime(1971,5,19)),
-                new Dipendente("MHMBLL95T25Z236G", "/MAHMOOD", "BALIL", Sesso.M, new DateTime(1995,12,25)),
-                new Dipendente("MCHLCU67M52L378L", "MICHELI", "LUCIA", Sesso.F, new DateTime(1967,8,12)),
-                new Dipendente("MTLLNA75E46Z140W", "MUTILICA", "ALIONA", Sesso.F, new DateTime(1975,5,6)),
-                new Dipendente("NMSSZN72E67Z118M", "NAUMOSKI", "SUZANA", Sesso.F, new DateTime(1972,5,27)),
-                new Dipendente("LSSDNA89P41E970V", "ALESSI", "DANIA", Sesso.F, new DateTime(1989,9,1)),
-                new Dipendente("PTRMDL76M45Z127G", "PIETRASZEK", "MAGDALENA KAMILA", Sesso.F, new DateTime(1976,8,5)),
-                new Dipendente("SCCSFN68C66D977E", "SACCO", "SERAFINA", Sesso.F, new DateTime(1968,3,26)),
-                new Dipendente("SDSVBN72C66Z100C", "SADUSHI", "VALBONA", Sesso.F, new DateTime(1972,3,26)),
-                new Dipendente("BLLMCC60H65A703F", "BELLUZZO", "MARIUCCIA", Sesso.F, new DateTime(1960,6,25)),
-                new Dipendente("TRRGZL61A64D530B", "TURRA", "GRAZIELLA", Sesso.F, new DateTime(1961,1,24)),
-                new Dipendente("VNZGPP53C59C372I", "VANZO", "GIUSEPPINA", Sesso.F, new DateTime(1953,3,19)),
-                new Dipendente("VRNDNI81S55Z140C", "VARANITA", "DINA", Sesso.F, new DateTime(1981,11,15)),
-                new Dipendente("VDISDR60L42C372T", "VIDA", "SANDRA", Sesso.F, new DateTime(1960,7,2)),
-                new Dipendente("NTYKVD61H59Z140T", "NITYAHOVSKA", "KLAVDIYA", Sesso.F, new DateTime(1961,6,19)),
-                new Dipendente("FRNMRN68M51E512W", "FRANCO", "MORENA", Sesso.F, new DateTime(1968,8,11)),
-                new Dipendente("FRNLSE77C65E522T", "FRANCATO", "ELISA", Sesso.F, new DateTime(1977,3,25)),
-                new Dipendente("DCMNTL62T64C057G", "DACOME", "NATALIA", Sesso.F, new DateTime(1962,12,24)),
-                new Dipendente("CHRCLM56R43A539J", "CHIEREGATO", "CARLA MARISA", Sesso.F, new DateTime(1956,10,3)),
-                new Dipendente("CSTMNC63E56L359G", "CASTALDELLI", "MONICA", Sesso.F, new DateTime(1963,5,16)),
-                new Dipendente("BRGDBR79B57E522U", "BERGO", "DEBORA", Sesso.F, new DateTime(1979,2,17)),
-                new Dipendente("ZKHKSN73E47Z138A", "ZAKHARCHUK", "OKSANA", Sesso.F, new DateTime(1973,5,7)),
-                new Dipendente("ZRAMHL77B42Z216E", "ZARA", "MARIA HILDA", Sesso.F, new DateTime(1977,2,2)),
-                new Dipendente("ZRATSS53T50Z216Q", "ZARA", "TESSIE", Sesso.F, new DateTime(1953,12,10)),
-                new Dipendente("DMISVT84D24G273V", "DI MAIO", "SALVATORE", Sesso.M, new DateTime(1984,4,24)),
-                new Dipendente("DMINNN90C25G273U", "DI MAIO", "ANTONINO", Sesso.M, new DateTime(1990,3,25)),
-                new Dipendente("FLRFNC77E60F770Z", "FLORIDUZ", "FRANCESCA", Sesso.F, new DateTime(1977,5,20)),
-                new Dipendente("RDJFRJ91C67Z148W", "REDJEPI", "FARIJE", Sesso.F, new DateTime(1991,3,27)),
-                new Dipendente("KZHNLY69M69Z138T", "KUZHDA", "NATALIYA", Sesso.F, new DateTime(1969,8,29)),
-                new Dipendente("BNDLEI65S29Z133I", "BENEDETTI", "ELIO", Sesso.M, new DateTime(1965,11,29)),
-                new Dipendente("ZNFCNZ66C62E240R", "ZANFORLIN", "CINZIA", Sesso.F, new DateTime(1966,3,22)),
-                new Dipendente("MRGRNI86C66B006H", "MARIGHETTI", "IRENE", Sesso.F, new DateTime(1986,3,26)),
-                new Dipendente("PRGBBR75A63H612N", "PREGHENELLA", "BARBARA", Sesso.F, new DateTime(1975,1,23)),
-                new Dipendente("BNFVNC64C42H598U", "BONFADINI", "VERONICA", Sesso.F, new DateTime(1964,3,2)),
-                new Dipendente("BNFGRL74D53H598J", "BONFADINI", "GABRIELLA", Sesso.F, new DateTime(1974,4,13)),
-                new Dipendente("CRAMHL69R59Z129N", "CARA", "MIHAELA", Sesso.F, new DateTime(1969,10,19)),
-                new Dipendente("ZNLLSU65B49B393W", "ZANOLI", "LUISA", Sesso.F, new DateTime(1965,2,9)),
-                new Dipendente("LMBSTN66D49A958D", "LOMBARDO", "SANTINA", Sesso.F, new DateTime(1966,4,9)),
-                new Dipendente("ZNTLCA83A56A539Q", "ZANETTI", "ALICE", Sesso.F, new DateTime(1983,1,16)),
-                new Dipendente("VNZMGH63C69D243T", "VANZO", "MARGHERITA", Sesso.F, new DateTime(1963,3,29)),
-                new Dipendente("CGLMLL65M52I602O", "CAGLIOTI", "MIRELLA", Sesso.F, new DateTime(1965,8,12)),
-                new Dipendente("SVACLD70D49C372J", "SAVOI", "CLAUDIA", Sesso.F, new DateTime(1970,4,9)),
-                new Dipendente("DLLKTJ76S55A952J", "DELLAMARIA", "KATJA", Sesso.F, new DateTime(1976,11,15)),
-                new Dipendente("MZZGRL67A56E522C", "MAZZEGO", "GABRIELLA", Sesso.F, new DateTime(1967,1,16)),
-                new Dipendente("SGHFSL77E12Z236U", "ASGHAR", "FAISAL", Sesso.M, new DateTime(1977,5,12)),
-                new Dipendente("GCHLZO60S50Z148H", "GICHOVA", "LOZA", Sesso.F, new DateTime(1960,11,10)),
-                new Dipendente("RZURGB78B41Z611W", "RUIZ", "IRIS GABRIELA", Sesso.F, new DateTime(1978,2,1)),
-                new Dipendente("SLJSRJ63B62Z100E", "SULEJMANI", "SABRIJE", Sesso.F, new DateTime(1963,2,22)),
-                new Dipendente("RZZCHR74B44F262R", "RIZZI", "CHIARA", Sesso.F, new DateTime(1974,2,4)),
-                new Dipendente("MRRDRT85H62Z100V", "MURRANI", "DHURATA", Sesso.F, new DateTime(1985,6,22)),
-                new Dipendente("LNZSRN69T69L378G", "LONZI", "SERENA", Sesso.F, new DateTime(1969,12,29)),
-                new Dipendente("HDOBRJ62C47Z100O", "HODO", "BAHRIJE", Sesso.F, new DateTime(1962,3,7)),
-                new Dipendente("GGNLZM58M60Z100D", "GAGANI", "LULEZIME", Sesso.F, new DateTime(1958,8,20)),
-                new Dipendente("DLGRSO58M49B963T", "DEL GIUDICE", "ROSA", Sesso.F, new DateTime(1958,8,9)),
-                new Dipendente("DNRFLV66L44A083I", "DE NARDIN", "FULVIA", Sesso.F, new DateTime(1966,7,4)),
-                new Dipendente("BCENTL82L49Z100V", "BECI", "ENTELA", Sesso.F, new DateTime(1982,7,9)),
-                new Dipendente("KRSBRM77B05Z160R", "KRASNIQI", "BAJRAM", Sesso.M, new DateTime(1977,2,5)),
-                new Dipendente("BNNLAI77M20Z352K", "BEN NJIMA", "ALI", Sesso.M, new DateTime(1977,8,20)),
-                new Dipendente("RNARFL75E64F839B", "AURINO", "RAFFAELLA", Sesso.F, new DateTime(1975,5,24)),
-                new Dipendente("PSSVLM64H51H612J", "PASSERINI", "VILMA", Sesso.F, new DateTime(1964,6,11)),
-                new Dipendente("MRYLYS62S46Z138Z", "MORYAK", "LARYSA", Sesso.F, new DateTime(1962,11,6)),
-                new Dipendente("PRNDLI62D67Z100Y", "PRENDI", "DILE", Sesso.F, new DateTime(1962,4,27)),
-                new Dipendente("MTTMLS61R47H612C", "MATTEI", "MARIA LUISA", Sesso.F, new DateTime(1961,10,7)),
-                new Dipendente("MRCMRT71E43L174O", "MARCHIORI", "MARTA", Sesso.F, new DateTime(1971,5,3)),
-                new Dipendente("HNTYLU66H50Z138B", "HONTARYK", "YULIIA", Sesso.F, new DateTime(1966,6,10)),
-                new Dipendente("SNTMNC67A70F704F", "SANTUARI", "MONICA", Sesso.F, new DateTime(1967,1,30)),
-                new Dipendente("LHCMRO72M26Z330K", "EL HACHMI", "OMAR", Sesso.M, new DateTime(1972,8,26)),
-                new Dipendente("KRNTYN59R52Z138A", "KORENYUK", "TETYANA", Sesso.F, new DateTime(1959,10,12)),
-                new Dipendente("MTRMRA78C64Z140K", "MOTROI", "MARIA", Sesso.F, new DateTime(1978,3,24)),
-                new Dipendente("RDJSDT88B56Z148P", "REDJEPI", "SADETE", Sesso.F, new DateTime(1988,2,16)),
-                new Dipendente("RSZLDZ84T69Z134L", "ROSZKOPAL", "LINDA ZSUZSANNA", Sesso.F, new DateTime(1984,12,29)),
-                new Dipendente("KMRMMZ73B41Z100X", "KUMRIJA", "MIMOZA", Sesso.F, new DateTime(1973,2,1)),
-                new Dipendente("BLSSRH72C60Z318J", "BILSON", "SARAH", Sesso.F, new DateTime(1972,3,20)),
-                new Dipendente("CNRLSN73T11L219F", "CINARDO", "ALESSANDRO", Sesso.M, new DateTime(1973,12,11)),
-                new Dipendente("CLMMCL63A59I919C", "COLOMBI", "MARCELLINA", Sesso.F, new DateTime(1963,1,19)),
-                new Dipendente("CTZBBR75L44L727V", "COTZA", "BARBARA", Sesso.F, new DateTime(1975,7,4)),
-                new Dipendente("DTTMLT65B66L753A", "DOTTI", "MARIA LETIZIA", Sesso.F, new DateTime(1965,2,26)),
-                new Dipendente("DSURRT68T57E562Q", "DUSIO", "ROBERTA", Sesso.F, new DateTime(1968,12,17)),
-                new Dipendente("MCANNA59E44B506X", "MACI", "ANNA", Sesso.F, new DateTime(1959,5,4)),
-                new Dipendente("SPNRGC68C63B393Q", "SPINELLI", "ROSA GIACOMA", Sesso.F, new DateTime(1968,3,23)),
-                new Dipendente("TRMCLD58R10L727G", "TROMBETTA", "CLAUDIO", Sesso.M, new DateTime(1958,10,10)),
-                new Dipendente("PCCGLN58M44L378Z", "PICCOLI", "GIULIANA", Sesso.F, new DateTime(1958,8,4)),
-                new Dipendente("TMBDDN81P58Z605T", "TIMBILA PILATASIG", "AIDA DIANA", Sesso.F, new DateTime(1981,9,18)),
-                new Dipendente("SLZCDD75E68Z605L", "SALAZAR VERA", "CANDIDA PAQUITA", Sesso.F, new DateTime(1975,5,28)),
-                new Dipendente("BRTMNL58E53G656B", "BORTOLON", "MANUELA", Sesso.F, new DateTime(1958,5,13)),
-                new Dipendente("MRRMRA54L19C390V", "MARRA", "MAURO", Sesso.M, new DateTime(1954,7,19)),
-                new Dipendente("FRGCLD60L05L378A", "FERIGOLLI", "CLAUDIO", Sesso.M, new DateTime(1960,7,5)),
-                new Dipendente("CHLPLA63H64C372C", "CHELODI", "PAOLA", Sesso.F, new DateTime(1963,6,24)),
-                new Dipendente("LNGCNZ66R46G110F", "LONGO", "CINZIA", Sesso.F, new DateTime(1966,10,6)),
-                new Dipendente("GSPSFN69H61B006O", "GASPERAZZO", "STEFANIA", Sesso.F, new DateTime(1969,6,21)),
-                new Dipendente("BRHKDJ79H52Z100J", "BRAHJA", "KLODJANA", Sesso.F, new DateTime(1979,6,12)),
-                new Dipendente("MCUSZN67C59Z100N", "MUCO", "SUZANA", Sesso.F, new DateTime(1967,3,19)),
-                new Dipendente("LVDRLL62C52L781C", "LAVEDINI", "ORNELLA", Sesso.F, new DateTime(1962,3,12)),
-                new Dipendente("NDLLSN68P52H612X", "NADALET", "ALESSANDRA", Sesso.F, new DateTime(1968,9,12)),
-                new Dipendente("DRZCLD63T71C794C", "ODORIZZI", "CLAUDIA", Sesso.F, new DateTime(1963,12,31)),
-                new Dipendente("GRTNMR73R58L219C", "GRUTTAROTI", "ANNAMARIA", Sesso.F, new DateTime(1973,10,18)),
-                new Dipendente("BRGFNC53D52F837G", "BERGAMO", "FRANCA", Sesso.F, new DateTime(1953,4,12)),
-                new Dipendente("BRBLSU69P44L736Q", "BURBELLO", "LUISA", Sesso.F, new DateTime(1969,9,4)),
-                new Dipendente("CKEDVT81B51Z100D", "CEKA", "DAVITA", Sesso.F, new DateTime(1981,2,11)),
-                new Dipendente("CMPMRN75H68H612P", "COMPER", "MARINA", Sesso.F, new DateTime(1975,6,28)),
-                new Dipendente("DMNLNE52E60G273A", "DAMIANO", "ELENA", Sesso.F, new DateTime(1952,5,20)),
-                new Dipendente("FRNDDR62T70H612O", "FRANCESCONI", "DESIDERATA", Sesso.F, new DateTime(1962,12,30)),
-                new Dipendente("KNSVBN82E71Z100U", "KANUSHAJ", "VALBONA", Sesso.F, new DateTime(1982,5,31)),
-                new Dipendente("LSSLBT83L53H612A", "LOSS", "ELISABETH", Sesso.F, new DateTime(1983,7,13)),
-                new Dipendente("MRTFPP59H65B429H", "MARTORANA", "FILIPPA", Sesso.F, new DateTime(1959,6,25)),
-                new Dipendente("TVZBMN63C47H612G", "TOVAZZI", "BENIAMINA", Sesso.F, new DateTime(1963,3,7)),
-                new Dipendente("CNARDC54C41Z129P", "CAIAN", "RODICA", Sesso.F, new DateTime(1954,3,1)),
-                new Dipendente("SHHMMH60D04Z236W", "SHAHID", "MIAN MUHAMMAD", Sesso.M, new DateTime(1960,4,4)),
-                new Dipendente("MZFHSN64D20Z236J", "MUZAFFAR", "HUSSAIN", Sesso.M, new DateTime(1964,4,20)),
-                new Dipendente("MHMTRQ61E05Z236Q", "MAHMOOD", "TARIQ", Sesso.M, new DateTime(1961,5,5)),
-                new Dipendente("PSSNNT58D67D789D", "PASSERI", "ANTONIETTA", Sesso.F, new DateTime(1958,4,27)),
-                new Dipendente("DRNRNI74E51L219G", "DE RONZI", "IRENE", Sesso.F, new DateTime(1974,5,11)),
-                new Dipendente("TMBLBI70H54Z140T", "TIMBAL", "LIUBA", Sesso.F, new DateTime(1970,6,14)),
-                new Dipendente("VLLLCU67R22F351L", "VALLERO", "LUCA", Sesso.M, new DateTime(1967,10,22)),
-                new Dipendente("LLLLJT58S59Z100Z", "LLALLA", "LULJETA", Sesso.F, new DateTime(1958,11,19)),
-                new Dipendente("TRNSTL71D45Z140K", "TARNA", "SVETLANA", Sesso.F, new DateTime(1971,4,5)),
-                new Dipendente("BRNMTT93A08F205T", "BRUNO", "MATTIA", Sesso.M, new DateTime(1993,1,8)),
-                new Dipendente("DRSCML65L58H931Q", "DE ROSA", "CARMELA", Sesso.F, new DateTime(1965,7,18)),
-                new Dipendente("GVNTNA91A44L378T", "GIOVANNINI", "TANIA", Sesso.F, new DateTime(1991,1,4)),
-                new Dipendente("XHLMJN87C44Z100W", "XHILAJ", "MIRJANA", Sesso.F, new DateTime(1987,3,4)),
-                new Dipendente("TTLCDY95M51Z605Q", "TUTILLO ORTEGA", "CINDY JOCELYN", Sesso.F, new DateTime(1995,8,11)),
-                new Dipendente("TTLJRF78M30Z605D", "TUTILLO TAIPE", "JAVIER FERNANDO", Sesso.M, new DateTime(1978,8,30)),
-                new Dipendente("HDRDAI85A62Z100Y", "HIDRI", "AIDA", Sesso.F, new DateTime(1985,1,22)),
-                new Dipendente("SSSRNI83B46A539J", "SASSO", "IRENE", Sesso.F, new DateTime(1983,2,6)),
-                new Dipendente("SHHMRG83R41Z336Q", "SHEHATA", "AMIRA RAGAB AHMED", Sesso.F, new DateTime(1983,10,1)),
-                new Dipendente("BZRMMD68M01Z330N", "BOUZRIBA", "MOHAMED", Sesso.M, new DateTime(1968,8,1)),
-                new Dipendente("MDNWDY79H50Z505M", "MEDINA SANTANA", "WENDY", Sesso.F, new DateTime(1979,6,10)),
-                new Dipendente("BTSJNN77T10Z505I", "BAUTISTA RODRIGUEZ", "JAIRON ANTONIO", Sesso.M, new DateTime(1977,12,10)),
-                new Dipendente("CCLLCU66R03L378X", "ECCLI", "LUCA", Sesso.M, new DateTime(1966,10,3)),
-                new Dipendente("NDRGUO65P22B153G", "ANDREOLLI", "UGO", Sesso.M, new DateTime(1965,9,22)),
-                new Dipendente("BNTRRT66S24L378D", "BONATTI", "ROBERTO", Sesso.M, new DateTime(1966,11,24)),
-                new Dipendente("LRNNGL72D67E897W", "LORENZINI", "ANGELA", Sesso.F, new DateTime(1972,4,27)),
-                new Dipendente("FSKFMR74P13Z160H", "FESKA", "FATMIR", Sesso.M, new DateTime(1974,9,13)),
-                new Dipendente("CRRLNI54P70H612V", "CORRADI", "LINA", Sesso.F, new DateTime(1954,9,30)),
-                new Dipendente("TTRMLN85C53Z129D", "TATARANU", "MIRELA NICOLETA", Sesso.F, new DateTime(1985,3,13)),
-                new Dipendente("GZZLCN56R14B157W", "GOZZER", "LUCIANO", Sesso.M, new DateTime(1956,10,14)),
-                new Dipendente("KRSHLT94S12Z160G", "KRASNIQI", "HALIT", Sesso.M, new DateTime(1994,11,12)),
-                new Dipendente("MNCKST97D60Z158M", "MANCIC", "KRISTINA", Sesso.F, new DateTime(1997,4,20)),
-                new Dipendente("CRVMRC62T04F925F", "/CERVA", "MARCO", Sesso.M, new DateTime(1962,12,4)),
-                new Dipendente("CBNLLI78A44Z140O", "CEBAN", "LILIA", Sesso.F, new DateTime(1978,1,4)),
-                new Dipendente("STSLMN90C16Z505W", "SOTO SOSA", "LUIS MANUEL", Sesso.M, new DateTime(1990,3,16)),
-                new Dipendente("PRNRSO65B48Z103C", "PIRONATO", "ROSA", Sesso.F, new DateTime(1965,2,8)),
-                new Dipendente("FRSSRA81A61B006I", "FRISANCO", "SARA", Sesso.F, new DateTime(1981,1,21)),
-                new Dipendente("FSKGZN98B12Z158D", "FESKA", "EGZON", Sesso.M, new DateTime(1998,2,12)),
-                new Dipendente("MNZMTR83T44L245X", "MANZO GAITO", "MARIA TERESA", Sesso.F, new DateTime(1983,12,4)),
-                new Dipendente("KRYRML99S26Z160Y", "KRYEZIU", "ERMAL", Sesso.M, new DateTime(1999,11,26)),
-                new Dipendente("ZRJMSH80B46Z100A", "ZERAJ", "MANUSHAQE", Sesso.F, new DateTime(1980,2,6)),
-                new Dipendente("SNCSBL87T43Z505F", "SANCHEZ SANCHEZ", "SORIBEL", Sesso.F, new DateTime(1987,12,3)),
-                new Dipendente("SLMNGJ84D50Z148G", "SELMANI", "NARGIJAN", Sesso.F, new DateTime(1984,4,10)),
-                new Dipendente("DNIDMA79R52Z343R", "DIANE", "ADAMA", Sesso.F, new DateTime(1979,10,12)),
-                new Dipendente("GSPMMD54H61G866Z", "GASPARINI", "MARIA MADDALENA", Sesso.F, new DateTime(1954,6,21)),
-                new Dipendente("PNNRLL59R57B369Z", "PENNINO", "ORNELLA", Sesso.F, new DateTime(1959,10,17)),
-                new Dipendente("TSKLVS85C08Z100R", "TOSKAJ", "ELVIS", Sesso.M, new DateTime(1985,3,8)),
-                new Dipendente("DDJZMR75A63Z100X", "DODAJ", "ZAMIRA", Sesso.F, new DateTime(1975,1,23)),
-                new Dipendente("CHLLSN85E24H612U", "CHILOVI", "ALESSANDRO", Sesso.M, new DateTime(1985,5,24)),
-                new Dipendente("SNTNLT70B43L378R", "SANTUARI", "NICOLETTA", Sesso.F, new DateTime(1970,2,3)),
-                new Dipendente("SNCSDA85S70Z505U", "SANCHEZ", "SAIDA", Sesso.F, new DateTime(1985,11,30)),
-                new Dipendente("RVLNDA59P68B369I", "/ROVELLI", "NADIA", Sesso.F, new DateTime(1959,9,28)),
-                new Dipendente("CRLVCN75M31C421R", "CAROLLO", "VINCENZO", Sesso.M, new DateTime(1975,8,31)),
-                new Dipendente("CDRRNT60M53I829L", "CEDERNA", "RENATA", Sesso.F, new DateTime(1960,8,13)),
-                new Dipendente("FLNRRT72T65B157H", "FOLINI", "ROBERTA", Sesso.F, new DateTime(1972,12,25)),
-                new Dipendente("RCCSBN65R67D969S", "ROCCA", "SABINA", Sesso.F, new DateTime(1965,10,27)),
-                new Dipendente("RDRYYN75D47Z504V", "RODRIGUEZ RODRIGUEZ", "YORYANI", Sesso.F, new DateTime(1975,4,7)),
-                new Dipendente("SPTCRN63R55A592F", "SAPUTO", "CATERINA", Sesso.F, new DateTime(1963,10,15)),
-                new Dipendente("TRNMHL74P53I829V", "TRANINI", "MICHELA", Sesso.F, new DateTime(1974,9,13)),
-                new Dipendente("TRVYLK73D45Z504O", "TRAVIESO CAUSE", "YAMILKA", Sesso.F, new DateTime(1973,4,5)),
-                new Dipendente("FRNRTA80E49Z100E", "FRANJA", "ARTA", Sesso.F, new DateTime(1980,5,9)),
-                new Dipendente("HDRBLL54L24Z100Y", "HIDRI", "ABDULLA", Sesso.M, new DateTime(1954,7,24)),
-                new Dipendente("CRNRKE73M70Z133Q", "CORN", "ERIKA", Sesso.F, new DateTime(1973,8,30)),
-                new Dipendente("PNMRLL69T52C794V", "PINAMONTI", "ROSELLA", Sesso.F, new DateTime(1969,12,12)),
-                new Dipendente("TZZSNT82B44G964N", "TIZZANO", "ASSUNTA", Sesso.F, new DateTime(1982,2,4)),
-                new Dipendente("CRINAA74D43Z129M", "CIORA", "ANA", Sesso.F, new DateTime(1974,4,3)),
-                new Dipendente("LBRFNC95R50B006T", "LIBARDI", "FRANCESCA", Sesso.F, new DateTime(1995,10,10)),
-                new Dipendente("SLAMGR63B63F187Z", "SALA", "MARIA GRAZIA", Sesso.F, new DateTime(1963,2,23)),
-                new Dipendente("MBRRNN74A67A952X", "AMBROSI", "ARIANNA", Sesso.F, new DateTime(1974,1,27)),
-                new Dipendente("BRGMLN69M49L219K", "BORGOGNO", "MELANIA", Sesso.F, new DateTime(1969,8,9)),
-                new Dipendente("BDLMMM84T10Z336I", "ABDEL MAKSOUD", "MOHAMMED", Sesso.M, new DateTime(1984,12,10)),
-                new Dipendente("THYNND69L27Z209X", "THUIYA HANDI", "ANANDA", Sesso.M, new DateTime(1969,7,27)),
-                new Dipendente("LSDSHB73A28Z336B", "ELSAIDI", "SOUBHI ABDELRAHMAN", Sesso.M, new DateTime(1973,1,28)),
-                new Dipendente("GRICHR89L57F257R", "GIURA", "CHIARA", Sesso.F, new DateTime(1989,7,17)),
-                new Dipendente("NLSJGL85M18Z605L", "NOLES CORAL", "JORGE LUIS", Sesso.M, new DateTime(1985,8,18)),
-                new Dipendente("BYNSDR77R12Z209T", "ABEYNAYAKE", "SAMUDRA THARANGA", Sesso.M, new DateTime(1977,10,12)),
-                new Dipendente("SNCJLT74M03Z216Y", "SANCHEZ", "JOSELITO", Sesso.M, new DateTime(1974,8,3)),
-                new Dipendente("ZMEGRI81S15Z140M", "ZMEU", "IGOR", Sesso.M, new DateTime(1981,11,15)),
-                new Dipendente("BDNMNC70R49H501X", "BADONI", "MONICA", Sesso.F, new DateTime(1970,10,9)),
-                new Dipendente("KCKDRT83E69Z100Q", "KACOKAJ", "DHURATA", Sesso.F, new DateTime(1983,5,29)),
-                new Dipendente("MRSVSL55E09Z140N", "MOROSEAC", "VASILE", Sesso.M, new DateTime(1955,5,9)),
-                new Dipendente("SLJMFR67S51Z148R", "SULEJMANOVSKA", "MAKFIRA", Sesso.F, new DateTime(1967,11,11)),
-                new Dipendente("BRKNTT64C50Z301X", "BERKAT", "NAJETTE", Sesso.F, new DateTime(1964,3,10)),
-                new Dipendente("CPRKYN79C52B006D", "CIPRIANI", "KARYN", Sesso.F, new DateTime(1979,3,12)),
-                new Dipendente("GRSMTN94L47L378V", "GRASSI", "MARTINA", Sesso.F, new DateTime(1994,7,7)),
-                new Dipendente("NRDSFN90M51L378U", "NARDELLI", "STEFANIA", Sesso.F, new DateTime(1990,8,11)),
-                new Dipendente("RHMRSD96L13L378S", "RAHMANI ISENI", "ERSAD", Sesso.M, new DateTime(1996,7,13)),
-                new Dipendente("TRVLNE82B48L378I", "TRAVAGLIA", "ELENA", Sesso.F, new DateTime(1982,2,8)),
-                new Dipendente("BRNVNI88L18Z140L", "BURIAN", "IVAN", Sesso.M, new DateTime(1988,7,18)),
-                new Dipendente("BLLNNL60P66D946L", "BELLOTTO", "ANTONELLA MARIA", Sesso.F, new DateTime(1960,9,26)),
-                new Dipendente("PNTCLN95B49L378O", "PONTALTI", "CAROLINA", Sesso.F, new DateTime(1995,2,9)),
-                new Dipendente("SHHHDR84P27Z336G", "SHEHATA", "AHMED RAGAB AHMED", Sesso.M, new DateTime(1984,9,27)),
-                new Dipendente("BLDSDR53D56L378R", "BALDO", "SANDRA", Sesso.F, new DateTime(1953,4,16)),
-                new Dipendente("HBRDEI61R57D651L", "HUEBER", "EDI", Sesso.F, new DateTime(1961,10,17)),
-                new Dipendente("STDGRL63B59H612F", "STEDILE", "GABRIELLA", Sesso.F, new DateTime(1963,2,19)),
-                new Dipendente("SCRPRZ73L41I829S", "SCIARESA", "PATRIZIA", Sesso.F, new DateTime(1973,7,1)),
-                new Dipendente("DRJSDR87A71Z602K", "DE ARAUJO SILVA", "SANDRA", Sesso.F, new DateTime(1987,1,31)),
-                new Dipendente("VRGTRN97C18Z216Z", "VERGARA", "TYRONE JOHN", Sesso.M, new DateTime(1997,3,18)),
-                new Dipendente("GZANDA80T50Z330G", "AGZIOU", "NADIA", Sesso.F, new DateTime(1980,12,10)),
-                new Dipendente("CLEMRT62D43Z100V", "CELA", "MERITA", Sesso.F, new DateTime(1962,4,3)),
-                new Dipendente("DPRMME52S47C794T", "DAPRA'", "EMMA", Sesso.F, new DateTime(1952,11,7)),
-                new Dipendente("MRKNLN68D64Z100I", "MARKU", "NATALINA", Sesso.F, new DateTime(1968,4,24)),
-                new Dipendente("RSNLCU84L61B006C", "ORSINGHER", "LUCIA", Sesso.F, new DateTime(1984,7,21)),
-                new Dipendente("MNIDLR68L66F839O", "MIANI", "ADDOLORATA", Sesso.F, new DateTime(1968,7,26)),
-                new Dipendente("CMTLNZ85C13H199F", "CIMATTI", "LORENZO", Sesso.M, new DateTime(1985,3,13)),
-                new Dipendente("BNLDRA64S23H612S", "BONELLI", "DARIO", Sesso.M, new DateTime(1964,11,23)),
-                new Dipendente("RVGRSO58C62Z110V", "ERVIGI", "ROSA", Sesso.F, new DateTime(1958,3,22)),
-                new Dipendente("MNPSFN80E16L378K", "MENAPACE", "STEFANO", Sesso.M, new DateTime(1980,5,16)),
-                new Dipendente("LCRTRS69S67L219A", "ALCARO", "TERESA", Sesso.F, new DateTime(1969,11,27)),
-                new Dipendente("LLLTRS75D63G273B", "LALLICATA", "TERESA", Sesso.F, new DateTime(1975,4,23)),
-                new Dipendente("BRDNDA68H52C393P", "BRIDAROLLI", "NADIA", Sesso.F, new DateTime(1968,6,12)),
-                new Dipendente("DLLMND75D59Z100I", "DELIALLISI", "MIRANDA", Sesso.F, new DateTime(1975,4,19)),
-                new Dipendente("MRJFTH66S57Z330R", "MARJAL", "FATIHA", Sesso.F, new DateTime(1966,11,17)),
-                new Dipendente("STVLRA68D41F132D", "STIEVANO", "LAURA", Sesso.F, new DateTime(1968,4,1)),
-                new Dipendente("KHLNBL63L20Z336I", "KHALEFA", "NABIL", Sesso.M, new DateTime(1963,7,20)),
-                new Dipendente("STCMLD97D54H620Z", "STOCCO", "MATILDE", Sesso.F, new DateTime(1997,4,14)),
-                new Dipendente("LHRBLH79A15Z330E", "EL HARRADI", "ABDEL HAKIM", Sesso.M, new DateTime(1979,1,15)),
-                new Dipendente("XHFNJL78C63Z100D", "XHAFA", "ENGJELLUSHA", Sesso.F, new DateTime(1978,3,23)),
-                new Dipendente("NSEDNL69E47I829D", "NESA", "DANIELA", Sesso.F, new DateTime(1969,5,7)),
-                new Dipendente("DROCLD65S29F132I", "DORO", "CLAUDIO", Sesso.M, new DateTime(1965,11,29)),
-                new Dipendente("MTRCST91C64Z140U", "MOTROI", "CRISTINA", Sesso.F, new DateTime(1991,3,24)),
-                new Dipendente("KMRFDL69P10Z100W", "KUMRIJA", "FADIL", Sesso.M, new DateTime(1969,9,10)),
-                new Dipendente("MHMTRQ69A01ZN3SP", "MAHMOOD", "TARIQ 2", Sesso.M, new DateTime(1969,1,1)),
-                new Dipendente("RZNJMR98D62Z160U", "RIZANI", "JETMIRA", Sesso.F, new DateTime(1998,4,22)),
-                new Dipendente("NSSFTA79A52Z343T", "NIASSE", "FATOU", Sesso.F, new DateTime(1979,1,12)),
-                new Dipendente("LFRLDI74M59Z103K", "ALFIERI", "LIDIA", Sesso.F, new DateTime(1974,8,19)),
-                new Dipendente("NDRLDM60R59Z138B", "ANDRIANOVA", "LYUDMYLA", Sesso.F, new DateTime(1960,10,19)),
-                new Dipendente("PDRDRD68R07E507G", "PEDROLINI", "EDOARDO", Sesso.M, new DateTime(1968,10,7)),
-                new Dipendente("TRNMNG70L55A662Y", "TRIONFO FINEO", "MARIANGELA", Sesso.F, new DateTime(1970,7,15)),
-                new Dipendente("KLMKSN73D45Z138B", "KOLOMIYETS", "OKSANA", Sesso.F, new DateTime(1973,4,5)),
-                new Dipendente("BNGFBR67E62Z100O", "BENGU", "FATBARDHA", Sesso.F, new DateTime(1967,5,22)),
-                new Dipendente("CLTGNN59D21L033S", "COLETTI", "GIOVANNI", Sesso.M, new DateTime(1959,4,21)),
-                new Dipendente("FRGCLD60L05L378A", "FERIGOLLI", "CLAUDIO", Sesso.M, new DateTime(1960,7,5)),
+                new UfficioBase(1, "Ufficio base Trento"),
+                new UfficioBase(2, "Ufficio base Bolzano"),
+                new UfficioBase(3, "Ufficio base Verona")
             };
+        }
+
+        public async Task PopolaDipendenti()
+        {
+            await _context.Dipendente.AddRangeAsync(await GetDipendenti());
+            await _context.SaveChangesAsync();
+        }
+
+        private async Task<List<Dipendente>> GetDipendenti()
+        {
+            var result = new List<Dipendente>();
+            var lstDitte = await this._context.Ditta.ToListAsync();
+            var lstNomi = File.ReadAllLines(Path.Combine(this._seedDataDirectory, "Nomi.txt"));
+            var lstCogomi = File.ReadAllLines(Path.Combine(this._seedDataDirectory, "Cognomi.txt"));
+            var countlstCogomi = lstCogomi.Count();
+
+            foreach(var ditta in lstDitte)
+            {
+                foreach(var nome in lstNomi)
+                {
+                    var cognome = lstCogomi[this._random.Next(1, countlstCogomi)];
+                    var dataDinascita = new DateTime(); // TODO
+                    var comuneNascita = ""; // TODO
+                    var sesso = (Sesso)this._random.Next(0, 1);
+                    var codiceFiscale = Core.Utils.CodiceFiscale.Calcola(nome, cognome, dataDinascita, sesso.ToString(), comuneNascita);
+
+                    result.Add(new Dipendente(codiceFiscale, cognome, nome, sesso, dataDinascita, ditta));
+                }
+            }
+
+            return result;
         }
     }
 }

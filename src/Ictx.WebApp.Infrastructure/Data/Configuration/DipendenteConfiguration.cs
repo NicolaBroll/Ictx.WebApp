@@ -27,6 +27,11 @@ namespace Ictx.WebApp.Infrastructure.Data.Configuration
             builder.Property(ci => ci.Sesso)
                 .IsRequired(true)
                 .HasColumnType("char(1)");
+
+            // Relazione Ditta.
+            builder.HasOne(p => p.Ditta)
+                .WithMany(b => b.LstDipendenti)
+                .HasForeignKey(p => p.DittaId);
         }
     }
 }
