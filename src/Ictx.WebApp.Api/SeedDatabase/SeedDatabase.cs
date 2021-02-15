@@ -1,11 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using Ictx.WebApp.Api.SeedDatabase.SeedData;
+using Ictx.WebApp.Api.Database.SeedData;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 
-namespace Ictx.WebApp.Api.SeedDatabase
+namespace Ictx.WebApp.Api.Database
 {
     public class SeedDatabase
     {

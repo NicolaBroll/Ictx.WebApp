@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace Ictx.WebApp.Server
+namespace Ictx.WebApp.Api
 {
     public class Program
     {

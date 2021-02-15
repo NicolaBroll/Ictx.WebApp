@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Ictx.WebApp.Api.AppStartUp
+namespace Ictx.WebApp.Api.AppStartUp.Installers
 {
     public class AppServicesInstaller: IInstaller
     {

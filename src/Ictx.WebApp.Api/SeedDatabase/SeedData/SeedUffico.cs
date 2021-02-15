@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Ictx.WebApp.Api.SeedDatabase.SeedData
+namespace Ictx.WebApp.Api.Database.SeedData
 {
     public class SeedUfficio: SeedDataCore
     {

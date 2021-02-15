@@ -3,7 +3,7 @@ using System;
 using System.IO;
 using System.Threading.Tasks;
 
-namespace Ictx.WebApp.Api.SeedDatabase.SeedData
+namespace Ictx.WebApp.Api.Database.SeedData
 {
     public partial class SeedDataCore
     {

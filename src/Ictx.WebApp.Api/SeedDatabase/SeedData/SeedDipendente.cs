@@ -8,7 +8,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using static Ictx.WebApp.Core.Models.DipendenteModel;
 
-namespace Ictx.WebApp.Api.SeedDatabase.SeedData
+namespace Ictx.WebApp.Api.Database.SeedData
 {
     public class SeedDipendente : SeedDataCore
     {

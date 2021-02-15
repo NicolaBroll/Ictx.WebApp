@@ -1,8 +1,6 @@
-using System;
-using System.Linq;
 using Ictx.WebApp.Api.AppStartUp;
+using Ictx.WebApp.Api.Database;
 using Ictx.WebApp.Api.Helper;
-using Ictx.WebApp.Api.SeedDatabase;
 using Ictx.WebApp.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
 
-namespace Ictx.WebApp.Server
+namespace Ictx.WebApp.Api
 {
     public class Startup
     {
@@ -25,11 +23,7 @@ namespace Ictx.WebApp.Server
 
         public void ConfigureServices(IServiceCollection services)
         {
-            var installs = typeof(Startup).Assembly.ExportedTypes
-                .Where(x => typeof(IInstaller).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-                .Select(Activator.CreateInstance).Cast<IInstaller>().ToList();
-
-            installs.ForEach(x => x.InstallServices(services, this._configuration));
+            services.InstallServiceAssembly(_configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

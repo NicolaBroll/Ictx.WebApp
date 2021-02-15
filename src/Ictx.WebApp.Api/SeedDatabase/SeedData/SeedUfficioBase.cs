@@ -3,7 +3,7 @@ using Ictx.WebApp.Infrastructure.UnitOfWork;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Ictx.WebApp.Api.SeedDatabase.SeedData
+namespace Ictx.WebApp.Api.Database.SeedData
 {
     public class SeedUfficioBase : SeedDataCore
     {

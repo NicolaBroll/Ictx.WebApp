@@ -7,7 +7,7 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Ictx.WebApp.Api.AppStartUp
+namespace Ictx.WebApp.Api.AppStartUp.Installers
 {
     public class MvcInstaller : IInstaller
     {

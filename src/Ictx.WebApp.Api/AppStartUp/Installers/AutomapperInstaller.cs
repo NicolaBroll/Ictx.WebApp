@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 using System.Reflection;
 
-namespace Ictx.WebApp.Api.AppStartUp
+namespace Ictx.WebApp.Api.AppStartUp.Installers
 {
     /// <summary>Configura la Dependency Injection relativamente alle classi di mappatura di AutoMapper.</summary>
     public class AutomapperInstaller : IInstaller
