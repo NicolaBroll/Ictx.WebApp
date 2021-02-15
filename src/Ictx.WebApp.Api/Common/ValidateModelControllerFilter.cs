@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Ictx.WebApp.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

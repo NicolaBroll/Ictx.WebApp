@@ -2,7 +2,7 @@
 using AutoMapper;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Ictx.WebApp.Api.Common;
+using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Services;
 using static Ictx.WebApp.Core.Models.PaginationModel;

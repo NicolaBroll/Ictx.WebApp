@@ -39,7 +39,7 @@ namespace Ictx.WebApp.Api.Common
         {
             var info = new OpenApiInfo()
             {
-                Title = "Web Api Gateway",
+                Title = "Web Api",
                 Version = description.ApiVersion.ToString()
             };
 
