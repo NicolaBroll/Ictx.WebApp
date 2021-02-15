@@ -5,32 +5,29 @@ namespace Ictx.WebApp.Core.Utils
     public static class CodiceFiscale
     {
 
-        public static string Calcola( string Nome, string Cognome, DateTime DataDiNascita, string Sesso, string CodiceISTAT)
+        public static string Calcola( string nome, string cognome, DateTime dataDiNascita, string sesso, string codiceISTAT)
         {
+            var mesi = "ABCDEHLMPRST";
 
-            string Mesi = "ABCDEHLMPRST",
-                 
-                   CodiceFiscale = "";
+            cognome = cognome.ToUpper();
+            nome = nome.ToUpper();
 
-
-            Cognome = Cognome.ToUpper();
-            Nome = Nome.ToUpper();
-
-            CodiceFiscale = CalcCognome( Cognome );
-            CodiceFiscale += CalcNome( Nome );
+            var codiceFiscale = CalcCognome(cognome);
+            codiceFiscale += CalcNome(nome);
 
             //DateTimeFormatInfo dtfi = new CultureInfo( "IT-it" ).DateTimeFormat;
-            CodiceFiscale += DataDiNascita.Year.ToString().Substring( 2 ) + Mesi[DataDiNascita.Month - 1];
+            codiceFiscale += dataDiNascita.Year.ToString().Substring( 2 ) + mesi[dataDiNascita.Month - 1];
 
-            if ( Sesso == "F" ) CodiceFiscale += ( DataDiNascita.Day + 40 ).ToString();
-            else CodiceFiscale += DataDiNascita.Day.ToString( "00" );
+            if (sesso == "F") 
+                codiceFiscale += ( dataDiNascita.Day + 40 ).ToString();
+            else 
+                codiceFiscale += dataDiNascita.Day.ToString( "00" );
 
-            CodiceFiscale += CodiceISTAT;
+            codiceFiscale += codiceISTAT;
 
-            CodiceFiscale += CalcolaCIN(CodiceFiscale);
+            codiceFiscale += CalcolaCIN(codiceFiscale);
 
-            return CodiceFiscale;
-
+            return codiceFiscale;
         }
 
 

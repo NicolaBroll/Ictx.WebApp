@@ -1,4 +1,5 @@
 using Ictx.WebApp.Api.AppStartUp;
+using Ictx.WebApp.Api.Common;
 using Ictx.WebApp.Api.SeedDatabase;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Infrastructure.Services.Implementation;
@@ -6,12 +7,14 @@ using Ictx.WebApp.Infrastructure.Services.Interface;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using Newtonsoft.Json.Serialization;
 using Serilog;
 
 namespace Ictx.WebApp.Server
@@ -40,6 +43,12 @@ namespace Ictx.WebApp.Server
             // Automapper.
             services.AddAutoMapperConfig();
 
+            // Validation.
+            services.Configure<ApiBehaviorOptions>(opt =>
+            {
+                opt.SuppressModelStateInvalidFilter = true;
+            });
+
             // Swagger.
             services.AddSwaggerGen(c => {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Application api", Version = "V1" });
@@ -59,7 +68,15 @@ namespace Ictx.WebApp.Server
                                   });
             });
 
-            services.AddControllers();
+            // Filter.
+            services.AddControllers(options =>
+            {
+                options.Filters.Add(typeof(ValidateModelControllerFilterr));
+            }).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+            });
+
         }
 
         private static void AddDependencyInjection(IServiceCollection services)
