@@ -1,14 +1,19 @@
 using Ictx.WebApp.Api.AppStartUp;
+using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Api.Database;
 using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Infrastructure.Data;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Serilog;
+using System.Linq;
 
 namespace Ictx.WebApp.Api
 {
@@ -33,7 +38,27 @@ namespace Ictx.WebApp.Api
                 app.UseDeveloperExceptionPage();
 
             // Health checks.
-            app.UseHealthChecks("/health");
+            app.UseHealthChecks("/health", new HealthCheckOptions()
+            {
+                ResponseWriter = async (context, report) => 
+                {
+                    context.Response.ContentType = "application/json";
+
+                    var response = new HealthCheckResponse()
+                    {
+                        Status = report.Status.ToString(),
+                        Checks = report.Entries.Select(x => new HealthCheck 
+                        {
+                            Component = x.Key,
+                            Status = x.Value.Status.ToString(),
+                            Description = x.Value.Description
+                        }),
+                        Duration = report.TotalDuration
+                    };
+
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+                }
+            });
 
             app.UseRouting();
 

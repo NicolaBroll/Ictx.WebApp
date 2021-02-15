@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Ictx.WebApp.Infrastructure.Data;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ictx.WebApp.Api.AppStartUp.Installers
@@ -7,7 +8,8 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
     {
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         { 
-            services.AddHealthChecks();
+            services.AddHealthChecks()
+                .AddDbContextCheck<AppDbContext>();
         }
     }
 }
