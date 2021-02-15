@@ -4,28 +4,28 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Api.Common;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Infrastructure.Services.Interface;
+using Ictx.WebApp.Infrastructure.Services;
 using static Ictx.WebApp.Core.Models.PaginationModel;
 using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
 using static Ictx.WebApp.Api.Models.DipendenteModel;
 using static Ictx.WebApp.Core.Models.DipendenteModel;
 
-namespace Ictx.WebApp.Api.Controllers
+namespace Ictx.WebApp.Api.Controllers.V1
 {
     [ApiController]
-    [Route("api/[controller]")]
-    public class DipendenteController : BaseApiController
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
+    public class DipendenteController : ControllerBase
     {
         private readonly IMapper            _mapper;
-        private readonly IDipendenteService _dipendenteService;
+        private readonly DipendenteService _dipendenteService;
 
-        public DipendenteController(IMapper mapper, IDipendenteService dipendenteService)
+        public DipendenteController(IMapper mapper, DipendenteService dipendenteService)
         {
             this._mapper = mapper;
             this._dipendenteService = dipendenteService;
         }
 
-        // GET: api/Dipendente
         [HttpGet]
         public async Task<PageResult<DipendenteDto>> Get([FromQuery] DipendenteQueryParameters dipendenteQueryParameters)
         {
@@ -37,7 +37,6 @@ namespace Ictx.WebApp.Api.Controllers
             return res;
         }
 
-        // GET: api/Dipendente/id
         [HttpGet("{id}")]
         public async Task<ActionResult<DipendenteDto>> GetById(int id)
         {
@@ -52,7 +51,6 @@ namespace Ictx.WebApp.Api.Controllers
             }
         }
 
-        // DELETE: api/Dipendente/id
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(int id)
         {
@@ -67,7 +65,6 @@ namespace Ictx.WebApp.Api.Controllers
             }
         }
 
-        // POST: api/Dipendente
         [HttpPost]
         public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model)
         {
@@ -82,7 +79,6 @@ namespace Ictx.WebApp.Api.Controllers
             }
         }
 
-        // PUT: api/Dipendente/id
         [HttpPut("{id}")]
         public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model)
         {

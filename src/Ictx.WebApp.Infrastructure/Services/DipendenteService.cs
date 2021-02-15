@@ -4,14 +4,13 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
-using Ictx.WebApp.Infrastructure.Services.Interface;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using static Ictx.WebApp.Core.Models.PaginationModel;
 using static Ictx.WebApp.Core.Models.DipendenteModel;
 
-namespace Ictx.WebApp.Infrastructure.Services.Implementation
+namespace Ictx.WebApp.Infrastructure.Services
 {
-    public class DipendenteService: IDipendenteService
+    public class DipendenteService
     {
         private readonly AppUnitOfWork _appUnitOfWork;
 
