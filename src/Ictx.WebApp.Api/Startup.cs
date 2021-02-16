@@ -1,3 +1,4 @@
+using System.Linq;
 using Ictx.WebApp.Api.AppStartUp;
 using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Api.Database;
@@ -13,7 +14,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Serilog;
-using System.Linq;
 
 namespace Ictx.WebApp.Api
 {
