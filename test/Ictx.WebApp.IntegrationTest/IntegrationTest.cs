@@ -30,9 +30,9 @@ namespace Ictx.WebApp.IntegrationTest
             this.HttpClient = appFactory.CreateClient();
         }
 
-        protected string GetVersionedUrl(string getById, int version)
+        protected string GetVersionedUrl(string url, int version)
         {
-            return getById.Replace("{version:apiVersion}", version.ToString());
+            return url.Replace("{version:apiVersion}", version.ToString());
         }
 
         protected async Task AuthenticateAsync() 
