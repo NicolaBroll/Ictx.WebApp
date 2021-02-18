@@ -6,12 +6,13 @@ namespace Ictx.WebApp.Infrastructure.Data
 {
     public class AppDbContext : DbContext
     {
+        public DbSet<Comune> Comune { get; set; }
+        public DbSet<UfficioBase> UfficioBase { get; set; }
+        public DbSet<Ufficio> Ufficio { get; set; }
+        public DbSet<Impresa> Impresa { get; set; }
+        public DbSet<Ditta> Ditta { get; set; }
         public DbSet<Dipendente> Dipendente { get; set; }
-        public DbSet<FoglioPresenza> FoglioPresenza { get; set; }
-        public DbSet<FoglioPresenzaGiorno> FoglioPresenzaGiorno { get; set; }
-        public DbSet<FoglioPresenzaGiornoDettaglio> FoglioPresenzaGiornoDettaglio { get; set; }
-        public DbSet<FoglioPresenzaVpa> FoglioPresenzaVpa { get; set; }
-
+       
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
 

@@ -28,10 +28,10 @@ namespace Ictx.WebApp.Infrastructure.Data.Configuration
                 .IsRequired(true)
                 .HasColumnType("char(1)");
 
-            // Relazione FoglioPresenza.
-            builder.HasMany(p => p.LstFoglioPresenza)
-                .WithOne(b => b.Dipendente)
-                .HasForeignKey(p => p.DipendenteId);
+            // Relazione Ditta.
+            builder.HasOne(p => p.Ditta)
+                .WithMany(b => b.LstDipendenti)
+                .HasForeignKey(p => p.DittaId);
         }
     }
 }
