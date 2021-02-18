@@ -1,9 +1,5 @@
 using System.Linq;
-using Ictx.WebApp.Api.AppStartUp;
-using Ictx.WebApp.Api.Common.HealthCheck;
-using Ictx.WebApp.Api.Database;
-using Ictx.WebApp.Api.Helper;
-using Ictx.WebApp.Infrastructure.Data;
+using Newtonsoft.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -12,8 +8,12 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using Serilog;
+using Ictx.WebApp.Api.Helper;
+using Ictx.WebApp.Api.Database;
+using Ictx.WebApp.Api.AppStartUp;
+using Ictx.WebApp.Infrastructure.Data;
+using Ictx.WebApp.Api.Common.HealthCheck;
 
 namespace Ictx.WebApp.Api
 {
