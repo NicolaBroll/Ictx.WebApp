@@ -5,11 +5,14 @@ namespace Ictx.WebApp.Api.Models
 {
     public class ErrorResponse
     {
-        public string Title { get; private set; }
-        public string Message { get; private set; }
+        public string Title { get; set; }
+        public string Message { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public Dictionary<string, IEnumerable<string>> Errors { get; private set; }
+
+        public ErrorResponse()
+        { }
 
         public ErrorResponse(string title, string message)
         {

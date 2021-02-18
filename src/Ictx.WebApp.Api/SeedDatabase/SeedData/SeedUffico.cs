@@ -24,7 +24,7 @@ namespace Ictx.WebApp.Api.Database.SeedData
 
             foreach (var ufficioBase in lstUfficiBase)
             {
-                foreach (var nRandom in Enumerable.Range(1, this._random.Next(1, 15)))
+                foreach (var nRandom in Enumerable.Range(1, this._random.Next(1, 5)))
                 {
                     result.Add(new Ufficio(nRandom, $"Sottoufficio {nRandom} - {ufficioBase.Denominazione}", ufficioBase));
                 }

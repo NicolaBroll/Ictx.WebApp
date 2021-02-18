@@ -20,9 +20,7 @@ namespace Ictx.WebApp.Api.Database.SeedData
         {
             return new List<UfficioBase>()
             {
-                new UfficioBase(1, "Ufficio base test 1"),
-                new UfficioBase(2, "Ufficio base test 2"),
-                new UfficioBase(3, "Ufficio base test 3")
+                new UfficioBase(1, "Ufficio base test")
             };
         }
     }

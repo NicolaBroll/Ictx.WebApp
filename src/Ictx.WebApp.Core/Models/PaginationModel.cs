@@ -11,8 +11,8 @@ namespace Ictx.WebApp.Core.Models
         /// <typeparam name="T">Tipo dell'oggetto selezionato dalla query</typeparam>
         public class PageResult<T>
         {
-            public IEnumerable<T> Data { get; private set; }
-            public int TotalCount { get; private set; }
+            public IEnumerable<T> Data { get; set; }
+            public int TotalCount { get; set; }
 
             public PageResult()
             {

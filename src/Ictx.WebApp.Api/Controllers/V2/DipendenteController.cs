@@ -9,12 +9,12 @@ using static Ictx.WebApp.Core.Models.PaginationModel;
 using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
 using static Ictx.WebApp.Api.Models.DipendenteModel;
 using static Ictx.WebApp.Core.Models.DipendenteModel;
+using static Ictx.WebApp.Api.Controllers.V2.ApiRoutes;
 
 namespace Ictx.WebApp.Api.Controllers.V2
 {
     [ApiController]
     [ApiVersion("2.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
     public class DipendenteController : ControllerBase
     {
         private readonly IMapper            _mapper;
@@ -26,7 +26,7 @@ namespace Ictx.WebApp.Api.Controllers.V2
             this._dipendenteService = dipendenteService;
         }
 
-        [HttpGet]
+        [HttpGet(DipendenteRoute.Get)]
         public async Task<PageResult<DipendenteDto>> Get([FromQuery] DipendenteQueryParameters dipendenteQueryParameters)
         {
             var filterModel = _mapper.Map<DipendenteListFilter>(dipendenteQueryParameters);            
@@ -37,7 +37,7 @@ namespace Ictx.WebApp.Api.Controllers.V2
             return res;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet(DipendenteRoute.GetById)]
         public async Task<ActionResult<DipendenteDto>> GetById(int id)
         {
             try
@@ -51,7 +51,7 @@ namespace Ictx.WebApp.Api.Controllers.V2
             }
         }
 
-        [HttpDelete("{id}")]
+        [HttpDelete(DipendenteRoute.Delete)]
         public async Task<ActionResult> Delete(int id)
         {
             try
@@ -65,7 +65,7 @@ namespace Ictx.WebApp.Api.Controllers.V2
             }
         }
 
-        [HttpPost]
+        [HttpPost(DipendenteRoute.Post)]
         public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model)
         {
             try
@@ -79,7 +79,7 @@ namespace Ictx.WebApp.Api.Controllers.V2
             }
         }
 
-        [HttpPut("{id}")]
+        [HttpPut(DipendenteRoute.Put)]
         public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model)
         {
             try

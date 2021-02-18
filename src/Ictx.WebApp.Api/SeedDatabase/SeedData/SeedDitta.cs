@@ -24,7 +24,7 @@ namespace Ictx.WebApp.Api.Database.SeedData
 
             foreach (var impresa in lstImprese)
             {
-                foreach (var nRandom in Enumerable.Range(1, this._random.Next(1, 5)))
+                foreach (var nRandom in Enumerable.Range(1, this._random.Next(1, 3)))
                 {
                     result.Add(new Ditta(nRandom, $"Ditta {nRandom}", impresa));
                 }

@@ -8,6 +8,11 @@ namespace Ictx.WebApp.Api.Dtos
     {
         public class DipendenteDto
         {
+            public int Id { get; set; }
+
+            [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
+            public int DittaId { get; set; }
+
             [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
             [StringLength(16, MinimumLength = 16, ErrorMessage = "Il campo {0} dev'essere di 16 caratteri. ")]
             public string CodiceFiscale { get; set; }
@@ -26,6 +31,19 @@ namespace Ictx.WebApp.Api.Dtos
 
             [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
             public DateTime DataNascita { get; set; }
+
+            public DipendenteDto()
+            { }
+
+            public DipendenteDto(int dittaId, string codiceFiscale, string cognome, string nome, string sesso, DateTime dataNascita)
+            {
+                this.DittaId = dittaId;
+                this.CodiceFiscale = codiceFiscale;
+                this.Cognome = cognome;
+                this.Nome = nome;
+                this.Sesso = sesso;
+                this.DataNascita = dataNascita;
+            }
         }
     }
 }

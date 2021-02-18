@@ -54,7 +54,7 @@ namespace Ictx.WebApp.Infrastructure.Services
             await this._appUnitOfWork.DipendenteRepository.InsertAsync(objToInsert);
             await this._appUnitOfWork.SaveAsync();
 
-            return model;
+            return objToInsert;
         }
 
         public async Task<Dipendente> SaveAsync(int id, Dipendente model)
@@ -73,7 +73,7 @@ namespace Ictx.WebApp.Infrastructure.Services
             this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
             await this._appUnitOfWork.SaveAsync();
 
-            return model;
+            return objToUpdate;
         }
 
         public async Task DeleteAsync(int id)
