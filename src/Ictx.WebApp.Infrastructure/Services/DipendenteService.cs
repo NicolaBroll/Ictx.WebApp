@@ -68,6 +68,7 @@ namespace Ictx.WebApp.Infrastructure.Services
             objToUpdate.CodiceFiscale = model.CodiceFiscale.ToUpper();
             objToUpdate.Nome = Char.ToUpperInvariant(model.Nome[0]) + model.Nome.ToLower().Substring(1);
             objToUpdate.Cognome = Char.ToUpperInvariant(model.Cognome[0]) + model.Cognome.ToLower().Substring(1);
+            objToUpdate.Sesso = model.Sesso;
             objToUpdate.DataNascita = model.DataNascita;
 
             this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);

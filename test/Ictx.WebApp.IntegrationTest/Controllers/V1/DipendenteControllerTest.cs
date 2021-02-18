@@ -1,11 +1,12 @@
 using Xunit;
+using FluentAssertions;
+
 using System;
 using System.Linq;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using FluentAssertions;
+using System.Collections.Generic;
 using Ictx.WebApp.Api.Controllers.V1;
 using Ictx.WebApp.Api.Models;
 using static Ictx.WebApp.Core.Models.PaginationModel;
@@ -43,6 +44,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
             var parsedRespose = await response.Content.ReadAsAsync<PageResult<DipendenteDto>>();
 
+            parsedRespose.Data.Count().Should().Be(0);
             parsedRespose.TotalCount.Should().Be(0);
         }
 
@@ -149,6 +151,21 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             parsedRespose.DataNascita.Should().Be(dipendenteToCreate.DataNascita);
         }
 
+        [Fact]
+        public async Task CreateOne_ReturnBadRequest()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+
+            dipendenteToCreate.CodiceFiscale = string.Empty;
+
+            // Act.
+            var response = await PostDipendente(dipendenteToCreate);
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
         private async Task<HttpResponseMessage> PostDipendente(DipendenteDto dipendenteToCreate)
         {
             var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Post, _version);
@@ -156,6 +173,94 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             var rsponse =await HttpClient.PostAsJsonAsync(url, dipendenteToCreate);
 
             return rsponse;
+        }
+
+        #endregion
+
+        #region PUT
+
+        [Fact]
+        public async Task EditOne_WithDipendente_ReturnResponse()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+            var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
+            var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
+
+            dipendenteCreated.CodiceFiscale = "MMMMMMMMMMMMMMMM";
+            dipendenteCreated.Cognome = "MMMMMMMMMMMMMMMM";
+            dipendenteCreated.Nome = "MMMMMMMMMMMMMMMM";
+            dipendenteCreated.Sesso = "M";
+            dipendenteCreated.DataNascita = DateTime.MinValue;
+
+            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Put, _version);
+
+            // Act.
+            var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()), dipendenteCreated);
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+
+            var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
+
+            parsedRespose.Id.Should().Be(dipendenteCreated.Id);
+            parsedRespose.DittaId.Should().Be(dipendenteCreated.DittaId);
+            parsedRespose.CodiceFiscale.ToLower().Should().Be(dipendenteCreated.CodiceFiscale.ToLower());
+            parsedRespose.Cognome.ToLower().Should().Be(dipendenteCreated.Cognome.ToLower());
+            parsedRespose.Nome.ToLower().Should().Be(dipendenteCreated.Nome.ToLower());
+            parsedRespose.Sesso.ToLower().Should().Be(dipendenteCreated.Sesso.ToLower());
+            parsedRespose.DataNascita.Should().Be(dipendenteCreated.DataNascita);
+        }
+
+        [Fact]
+        public async Task EditOne_WithoutDipendente_ReturnNotFound()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+            var id = 999;
+
+            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Put, _version);
+
+            // Act.
+            var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", id.ToString()), dipendenteToCreate);
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        #endregion
+
+        #region DELETE
+
+        [Fact]
+        public async Task DeleteOne_WithDipendente_ReturnOk()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+            var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
+            var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
+
+            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Delete, _version);
+
+            // Act.
+            var response = await HttpClient.GetAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()));
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
+        public async Task DeleteOne_WithoutDipendente_ReturnNotFound()
+        {
+            // Arrange.
+            var id = 999999;
+            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Delete, _version);
+
+            // Act.
+            var response = await HttpClient.GetAsync(url.Replace("{id}", id.ToString()));
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         #endregion
