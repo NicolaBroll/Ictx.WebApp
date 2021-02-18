@@ -31,11 +31,17 @@ namespace Ictx.WebApp.Api
             services.InstallServiceAssembly(_configuration);
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
+            // Serilog.
+            Log.Logger = new LoggerConfiguration()
+            .ReadFrom.Configuration(_configuration)
+            .CreateLogger();
+
             if (env.IsDevelopment())
+            {
                 app.UseDeveloperExceptionPage();
+            }
 
             // Health checks.
             app.UseHealthChecks("/health", new HealthCheckOptions()
@@ -73,14 +79,8 @@ namespace Ictx.WebApp.Api
                     {
                         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                     }
-                }
-                );
+                });
             }
-
-            // Serilog.
-            Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(_configuration)
-            .CreateLogger();
 
             // Seed database.
             var seedDatabase = new SeedDatabase(app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetRequiredService<AppDbContext>());
