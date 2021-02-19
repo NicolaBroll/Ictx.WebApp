@@ -34,7 +34,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
         public async Task GetAll_WithOutDipendenti_ReturnEmptyResponse()
         {
             // Arrange.
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Get, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Get, _version);
 
             // Act.
             var response = await HttpClient.GetAsync(url);
@@ -61,7 +61,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
                 await PostDipendente(dipendente);
             }
 
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Get, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Get, _version);
             url += $"?dittaId={this._dittaId}&page=1&pageSize=5";
 
             // Act.
@@ -84,7 +84,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
         public async Task GetOne_WithOutDipendente_ReturnEmptyResponse()
         {
             // Arrange.
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.GetById, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.GetById, _version);
             var dipendenteId = 99999999;
 
             // Act.
@@ -106,7 +106,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
             var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
 
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.GetById, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.GetById, _version);
 
             // Act.
             var response = await HttpClient.GetAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()));
@@ -213,7 +213,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
         private async Task<HttpResponseMessage> PostDipendente(DipendenteDto dipendenteToCreate)
         {
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Post, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Post, _version);
 
             var rsponse =await HttpClient.PostAsJsonAsync(url, dipendenteToCreate);
 
@@ -238,7 +238,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             dipendenteCreated.Sesso = "M";
             dipendenteCreated.DataNascita = DateTime.MinValue;
 
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Put, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Put, _version);
 
             // Act.
             var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()), dipendenteCreated);
@@ -264,7 +264,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             var dipendenteToCreate = this._lstDipendenteDto.First();
             var id = 999;
 
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Put, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Put, _version);
 
             // Act.
             var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", id.ToString()), dipendenteToCreate);
@@ -283,7 +283,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
             dipendenteCreated.DittaId = 99999;
 
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Put, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Put, _version);
 
             // Act.
             var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()), dipendenteCreated);
@@ -304,7 +304,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
             var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
 
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Delete, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Delete, _version);
 
             // Act.
             var response = await HttpClient.GetAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()));
@@ -318,7 +318,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
         {
             // Arrange.
             var id = 999999;
-            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Delete, _version);
+            var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Delete, _version);
 
             // Act.
             var response = await HttpClient.GetAsync(url.Replace("{id}", id.ToString()));

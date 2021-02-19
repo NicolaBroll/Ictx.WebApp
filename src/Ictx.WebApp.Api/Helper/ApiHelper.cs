@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Ictx.WebApp.Api.Helper
+﻿namespace Ictx.WebApp.Api.Helper
 {
     public class ApiHelper
     {
-        public static string AnyCors = "any";
+        public const string AnyCors = "any";
+        public const string ApiRouteVersionedBase = "api/v{version:apiVersion}";
     }
 }

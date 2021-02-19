@@ -10,7 +10,7 @@ using static Ictx.WebApp.Core.Models.PaginationModel;
 using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
 using static Ictx.WebApp.Api.Models.DipendenteModel;
 using static Ictx.WebApp.Core.Models.DipendenteModel;
-using static Ictx.WebApp.Api.Controllers.V1.ApiRoutes;
+using static Ictx.WebApp.Api.Controllers.V1.ApiRoutesV1;
 
 namespace Ictx.WebApp.Api.Controllers.V1
 {
@@ -30,7 +30,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [HttpGet(DipendenteRoute.Get)]
         public async Task<PageResult<DipendenteDto>> Get([FromQuery] DipendenteQueryParameters dipendenteQueryParameters)
         {
-            var filterModel = _mapper.Map<DipendenteListFilter>(dipendenteQueryParameters);            
+            var filterModel = _mapper.Map<DipendenteListFilter>(dipendenteQueryParameters);
 
             var list = await _dipendenteService.GetListAsync(filterModel);
             var res = _mapper.Map<PageResult<DipendenteDto>>(list);
