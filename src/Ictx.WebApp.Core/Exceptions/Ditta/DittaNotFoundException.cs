@@ -4,7 +4,7 @@ namespace Ictx.WebApp.Core.Exceptions.Dipendente
 {
     public class DittaNotFoundException : Exception
     {
-        public DittaNotFoundException(string message) : base(message)
+        public DittaNotFoundException(int id) : base($"Ditta con id: {id} non trovata.")
         {
         }
     }

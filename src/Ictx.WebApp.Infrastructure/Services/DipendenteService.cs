@@ -39,7 +39,7 @@ namespace Ictx.WebApp.Infrastructure.Services
             var dipendente = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if (dipendente is null)
-                throw new DipendenteNotFoundException($"Dipendente con id: {id} non trovato.");
+                throw new DipendenteNotFoundException(id);
 
             return dipendente;
         }
@@ -72,7 +72,7 @@ namespace Ictx.WebApp.Infrastructure.Services
             var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if (objToUpdate is null)
-                throw new DipendenteNotFoundException($"Dipendente con id: {id} non trovato.");
+                throw new DipendenteNotFoundException(id);
 
             var ditta = await this._dittaService.GetByIdAsync(model.DittaId);
 
@@ -95,7 +95,7 @@ namespace Ictx.WebApp.Infrastructure.Services
             var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if(objToDelete is null)
-                throw new DipendenteNotFoundException($"Dipendente con id: {id} non trovato.");
+                throw new DipendenteNotFoundException(id);
 
             this._appUnitOfWork.DipendenteRepository.Delete(id);
             await this._appUnitOfWork.SaveAsync();

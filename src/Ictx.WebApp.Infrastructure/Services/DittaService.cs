@@ -19,7 +19,7 @@ namespace Ictx.WebApp.Infrastructure.Services
             var dipendente = await this._appUnitOfWork.DittaRepository.ReadAsync(id);
 
             if (dipendente is null)
-                throw new DittaNotFoundException($"Ditta con id: {id} non trovata.");
+                throw new DittaNotFoundException(id);
 
             return dipendente;
         }

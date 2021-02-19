@@ -290,8 +290,6 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
             // Assert.
             response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-
-            var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
         }
 
         #endregion
