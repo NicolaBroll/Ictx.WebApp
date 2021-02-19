@@ -33,14 +33,23 @@ namespace Ictx.WebApp.Api
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
         {
-            // Serilog.
-            Log.Logger = new LoggerConfiguration()
-            .ReadFrom.Configuration(_configuration)
-            .CreateLogger();
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+
+            if (!env.IsProduction())
+            {
+                // Swagger.
+                app.UseSwagger();
+                app.UseSwaggerUI(options =>
+                {
+                    // build a swagger endpoint for each discovered API version
+                    foreach (var description in provider.ApiVersionDescriptions)
+                    {
+                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
+                    }
+                });
             }
 
             // Health checks.
@@ -67,20 +76,6 @@ namespace Ictx.WebApp.Api
             });
 
             app.UseRouting();
-
-            if (!env.IsProduction())
-            {
-                // Swagger.
-                app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                    // build a swagger endpoint for each discovered API version
-                    foreach (var description in provider.ApiVersionDescriptions)
-                    {
-                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-                    }
-                });
-            }
 
             // Seed database.
             var seedDatabase = new SeedDatabase(app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetRequiredService<AppDbContext>());

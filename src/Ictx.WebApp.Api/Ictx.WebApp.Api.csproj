@@ -23,16 +23,4 @@
     <ProjectReference Include="..\Ictx.WebApp.Infrastructure\Ictx.WebApp.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <None Update="SeedDatabase\SeedData\Static\Cognomi.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SeedDatabase\SeedData\Static\Comuni.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="SeedDatabase\SeedData\Static\Nomi.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-
 </Project>

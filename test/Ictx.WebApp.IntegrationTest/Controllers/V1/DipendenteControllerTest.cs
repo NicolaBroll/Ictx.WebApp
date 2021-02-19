@@ -144,9 +144,9 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
 
             parsedRespose.DittaId.Should().Be(dipendenteToCreate.DittaId);
-            parsedRespose.CodiceFiscale.Should().Be(dipendenteToCreate.CodiceFiscale);
-            parsedRespose.Cognome.Should().Be(dipendenteToCreate.Cognome);
-            parsedRespose.Nome.Should().Be(dipendenteToCreate.Nome);
+            parsedRespose.CodiceFiscale.ToUpper().Should().Be(dipendenteToCreate.CodiceFiscale.ToUpper());
+            parsedRespose.Cognome.ToUpper().Should().Be(dipendenteToCreate.Cognome.ToUpper());
+            parsedRespose.Nome.ToUpper().Should().Be(dipendenteToCreate.Nome.ToUpper());
             parsedRespose.Sesso.Should().Be(dipendenteToCreate.Sesso);
             parsedRespose.DataNascita.Should().Be(dipendenteToCreate.DataNascita);
         }
@@ -205,10 +205,10 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
             parsedRespose.Id.Should().Be(dipendenteCreated.Id);
             parsedRespose.DittaId.Should().Be(dipendenteCreated.DittaId);
-            parsedRespose.CodiceFiscale.ToLower().Should().Be(dipendenteCreated.CodiceFiscale.ToLower());
-            parsedRespose.Cognome.ToLower().Should().Be(dipendenteCreated.Cognome.ToLower());
-            parsedRespose.Nome.ToLower().Should().Be(dipendenteCreated.Nome.ToLower());
-            parsedRespose.Sesso.ToLower().Should().Be(dipendenteCreated.Sesso.ToLower());
+            parsedRespose.CodiceFiscale.ToUpper().Should().Be(dipendenteCreated.CodiceFiscale.ToUpper());
+            parsedRespose.Cognome.ToUpper().Should().Be(dipendenteCreated.Cognome.ToUpper());
+            parsedRespose.Nome.ToUpper().Should().Be(dipendenteCreated.Nome.ToUpper());
+            parsedRespose.Sesso.Should().Be(dipendenteCreated.Sesso);
             parsedRespose.DataNascita.Should().Be(dipendenteCreated.DataNascita);
         }
 
