@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
+using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.Services;
 using static Ictx.WebApp.Core.Models.PaginationModel;
 using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
@@ -70,12 +71,14 @@ namespace Ictx.WebApp.Api.Controllers.V1
         {
             try
             {
-                var objDb = await this._dipendenteService.InsertAsync(_mapper.Map<Dipendente>(model));
+                var objToInsert = _mapper.Map<Dipendente>(model);
+                var objDb = await this._dipendenteService.InsertAsync(objToInsert);
+
                 return Ok(_mapper.Map<DipendenteDto>(objDb));
             }
             catch (Exception ex)
             {
-                return NotFound(new ErrorResponse("Errore durante l'inserimento del dato.", ex.Message));
+                return BadRequest(new ErrorResponse("Errore durante l'inserimento del dato.", ex.Message));
             }
         }
 
@@ -89,9 +92,13 @@ namespace Ictx.WebApp.Api.Controllers.V1
 
                 return Ok(_mapper.Map<DipendenteDto>(objDb));
             }
-            catch (Exception ex)
+            catch (DipendenteNotFoundException ex)
             {
                 return NotFound(new ErrorResponse("Errore durante la modifica del dato.", ex.Message));
+            }
+            catch (DittaNotFoundException ex)
+            {
+                return BadRequest(new ErrorResponse("Errore durante la modifica del dato.", ex.Message));
             }
         }
     }

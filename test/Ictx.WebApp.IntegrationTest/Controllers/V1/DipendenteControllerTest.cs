@@ -152,12 +152,57 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
         }
 
         [Fact]
-        public async Task CreateOne_ReturnBadRequest()
+        public async Task CreateOne_WithCodiceFiscaleEmpty_ReturnBadRequest()
         {
             // Arrange.
             var dipendenteToCreate = this._lstDipendenteDto.First();
 
             dipendenteToCreate.CodiceFiscale = string.Empty;
+
+            // Act.
+            var response = await PostDipendente(dipendenteToCreate);
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task CreateOne_WithNomeEmpty_ReturnBadRequest()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+
+            dipendenteToCreate.Nome = string.Empty;
+
+            // Act.
+            var response = await PostDipendente(dipendenteToCreate);
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task CreateOne_WithCognomeEmpty_ReturnBadRequest()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+
+            dipendenteToCreate.Cognome = string.Empty;
+
+            // Act.
+            var response = await PostDipendente(dipendenteToCreate);
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
+
+        [Fact]
+        public async Task CreateOne_WithOutDitta_ReturnBadRequest()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+
+            dipendenteToCreate.DittaId = 0;
 
             // Act.
             var response = await PostDipendente(dipendenteToCreate);
@@ -226,6 +271,27 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
             // Assert.
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
+
+        [Fact]
+        public async Task EditOne_WithDipendenteWithOutDitta_ReturnBadRequest()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+            var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
+            var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
+
+            dipendenteCreated.DittaId = 99999;
+
+            var url = GetVersionedUrl(ApiRoutes.DipendenteRoute.Put, _version);
+
+            // Act.
+            var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()), dipendenteCreated);
+
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+
+            var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
         }
 
         #endregion
