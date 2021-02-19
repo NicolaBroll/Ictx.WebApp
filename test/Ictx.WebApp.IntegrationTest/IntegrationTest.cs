@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ictx.WebApp.Api;
 using Ictx.WebApp.Infrastructure.Data;
+using System;
 
 namespace Ictx.WebApp.IntegrationTest
 {
@@ -41,8 +42,8 @@ namespace Ictx.WebApp.IntegrationTest
         }
 
         private async Task<string> GetJwtAsync()
-        {
-            return await Task.FromResult<string>(string.Empty);
+        {            
+            return await Task.FromException<string>(new NotImplementedException());
         }
     }
 }

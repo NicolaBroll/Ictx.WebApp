@@ -29,10 +29,6 @@ namespace Ictx.WebApp.Api.Database
             // Uffici base.
             if(!_context.UfficioBase.Any())
             {
-                // Comuni.
-                //var seedComune = new SeedComuni(_appUnitOfWork);
-                //await seedComune.Popola();
-
                 // Ufficio base.
                 var seedUfficioBase = new SeedUfficioBase(_appUnitOfWork);
                 await seedUfficioBase.Popola();
@@ -48,10 +44,6 @@ namespace Ictx.WebApp.Api.Database
                 // Ditta.
                 var seedDitta = new SeedDitta(_appUnitOfWork);
                 await seedDitta.Popola();
-
-                // Dipendente.
-                //var seedDipendente = new SeedDipendente(_appUnitOfWork);
-                //await seedDipendente.Popola();
             }
 
             _context.Dispose();
