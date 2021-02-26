@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using LanguageExt.Common;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
@@ -34,12 +35,12 @@ namespace Ictx.WebApp.Infrastructure.Services
             return new PageResult<Dipendente>(list, count);
         }
 
-        public async Task<Dipendente> GetByIdAsync(int id)
+        public async Task<Result<Dipendente>> GetByIdAsync(int id)
         {
             var dipendente = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if (dipendente is null)
-                throw new DipendenteNotFoundException(id);
+                return new Result<Dipendente>(new DipendenteNotFoundException(id));
 
             return dipendente;
         }
@@ -90,15 +91,17 @@ namespace Ictx.WebApp.Infrastructure.Services
             return objToUpdate;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<Result<bool>> DeleteAsync(int id)
         {
             var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if(objToDelete is null)
-                throw new DipendenteNotFoundException(id);
+                new Result<bool>(new DipendenteNotFoundException(id));
 
             this._appUnitOfWork.DipendenteRepository.Delete(id);
             await this._appUnitOfWork.SaveAsync();
+
+            return true;
         }
     }
 }

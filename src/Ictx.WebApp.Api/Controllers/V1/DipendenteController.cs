@@ -60,15 +60,12 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.NotFound)]
         public async Task<ActionResult<DipendenteDto>> GetById(int id)
         {
-            try
-            {
-                var dipendente = await this._dipendenteService.GetByIdAsync(id);
-                return Ok(_mapper.Map<DipendenteDto>(dipendente));
-            }
-            catch (Exception ex)
-            {
-                return NotFound(new ErrorResponse("Errore durante la lettura del dato.", ex.Message));
-            }
+            var dipendenteResult = await this._dipendenteService.GetByIdAsync(id);
+
+            return dipendenteResult.Match<ActionResult<DipendenteDto>>(
+                (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
+                (fail) => NotFound(new ErrorResponse("Errore durante la lettura del dato.", fail.Message))
+                );
         }
 
         /// <summary>
@@ -83,15 +80,12 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.NotFound)]
         public async Task<ActionResult> Delete(int id)
         {
-            try
-            {
-                await this._dipendenteService.DeleteAsync(id);
-                return Ok();
-            }
-            catch(Exception ex)
-            {
-                return NotFound(new ErrorResponse("Errore durante l'eliminazione del dato.", ex.Message));
-            }
+            var result = await this._dipendenteService.DeleteAsync(id);
+
+            return result.Match<ActionResult>(
+                (succ) => Ok(),
+                (fail) => NotFound(new ErrorResponse("Errore durante l'eliminazione del dato.", fail.Message))
+                );
         }
 
         /// <summary>
