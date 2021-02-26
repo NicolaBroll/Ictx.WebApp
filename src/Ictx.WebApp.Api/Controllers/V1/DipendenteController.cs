@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Net;
 using AutoMapper;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -100,17 +100,17 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.BadRequest)]
         public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model)
         {
-            try
-            {
-                var objToInsert = _mapper.Map<Dipendente>(model);
-                var objDb = await this._dipendenteService.InsertAsync(objToInsert);
+            var objToInsert = _mapper.Map<Dipendente>(model);
+            var result = await this._dipendenteService.InsertAsync(objToInsert);
 
-                return Ok(_mapper.Map<DipendenteDto>(objDb));
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new ErrorResponse("Errore durante l'inserimento del dato.", ex.Message));
-            }
+            return result.Match<ActionResult>(
+                (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
+                (fail) => {
+                    if(fail is DittaNotFoundException)
+                        return BadRequest(new ErrorResponse("Errore durante l'inserimento del dato.", fail.Message));
+
+                    return StatusCode((int)HttpStatusCode.InternalServerError);
+                });
         }
 
         /// <summary>
@@ -128,21 +128,22 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.NotFound)]
         public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model)
         {
-            try
-            {
-                var objToUpdate = _mapper.Map<Dipendente>(model);
-                var objDb = await this._dipendenteService.SaveAsync(id, objToUpdate);
+            var objToUpdate = _mapper.Map<Dipendente>(model);
+            var result = await this._dipendenteService.SaveAsync(id, objToUpdate);
 
-                return Ok(_mapper.Map<DipendenteDto>(objDb));
-            }
-            catch (DipendenteNotFoundException ex)
-            {
-                return NotFound(new ErrorResponse("Errore durante la modifica del dato.", ex.Message));
-            }
-            catch (DittaNotFoundException ex)
-            {
-                return BadRequest(new ErrorResponse("Errore durante la modifica del dato.", ex.Message));
-            }
+            return result.Match<ActionResult>(
+                (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
+                (fail) => {
+                    var title = "Errore durante l'inserimento del dato.";
+
+                    if (fail is DipendenteNotFoundException)
+                        return NotFound(new ErrorResponse(title, fail.Message));
+
+                    if (fail is DittaNotFoundException)
+                        return BadRequest(new ErrorResponse(title, fail.Message));
+
+                    return StatusCode((int)HttpStatusCode.InternalServerError);
+                });
         }
     }
 }

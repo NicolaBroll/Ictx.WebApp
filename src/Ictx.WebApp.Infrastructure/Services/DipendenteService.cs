@@ -45,9 +45,12 @@ namespace Ictx.WebApp.Infrastructure.Services
             return dipendente;
         }
 
-        public async Task<Dipendente> InsertAsync(Dipendente model)
+        public async Task<Result<Dipendente>> InsertAsync(Dipendente model)
         {
-            var ditta = await this._dittaService.GetByIdAsync(model.DittaId);
+            var ditta = await this._appUnitOfWork.DittaRepository.ReadAsync(model.DittaId);
+
+            if (ditta is null)
+                return new Result<Dipendente>(new DittaNotFoundException(model.DittaId));
 
             var utcNow = DateTime.UtcNow;
 
@@ -68,14 +71,17 @@ namespace Ictx.WebApp.Infrastructure.Services
             return objToInsert;
         }
 
-        public async Task<Dipendente> SaveAsync(int id, Dipendente model)
+        public async Task<Result<Dipendente>> SaveAsync(int id, Dipendente model)
         {
             var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if (objToUpdate is null)
-                throw new DipendenteNotFoundException(id);
+                return new Result<Dipendente>(new DipendenteNotFoundException(id));
 
-            var ditta = await this._dittaService.GetByIdAsync(model.DittaId);
+            var ditta = await this._appUnitOfWork.DittaRepository.ReadAsync(model.DittaId);
+
+            if (ditta is null)
+                return new Result<Dipendente>(new DittaNotFoundException(model.DittaId));
 
             objToUpdate.CodiceFiscale = model.CodiceFiscale.ToUpper();
             objToUpdate.Nome = model.Nome.ToUpper();

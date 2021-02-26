@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using LanguageExt.Common;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
@@ -14,12 +15,12 @@ namespace Ictx.WebApp.Infrastructure.Services
             this._appUnitOfWork = appUnitOfWork;
         }
 
-        public async Task<Ditta> GetByIdAsync(int id)
+        public async Task<Result<Ditta>> GetByIdAsync(int id)
         {
             var dipendente = await this._appUnitOfWork.DittaRepository.ReadAsync(id);
 
             if (dipendente is null)
-                throw new DittaNotFoundException(id);
+                return new Result<Ditta>(new DittaNotFoundException(id));
 
             return dipendente;
         }
