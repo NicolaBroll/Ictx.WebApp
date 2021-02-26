@@ -106,10 +106,12 @@ namespace Ictx.WebApp.Api.Controllers.V1
             return result.Match<ActionResult>(
                 (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
                 (fail) => {
-                    if(fail is DittaNotFoundException)
-                        return BadRequest(new ErrorResponse("Errore durante l'inserimento del dato.", fail.Message));
+                    var errorResponse = new ErrorResponse("Errore durante l'inserimento del dato.", fail.Message);
 
-                    return StatusCode((int)HttpStatusCode.InternalServerError);
+                    if (fail is DittaNotFoundException)
+                        return BadRequest(errorResponse);
+
+                    return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);
                 });
         }
 
@@ -134,15 +136,17 @@ namespace Ictx.WebApp.Api.Controllers.V1
             return result.Match<ActionResult>(
                 (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
                 (fail) => {
-                    var title = "Errore durante l'inserimento del dato.";
+                    var errorResponse = new ErrorResponse("Errore durante l'inserimento del dato.", fail.Message);
 
                     if (fail is DipendenteNotFoundException)
-                        return NotFound(new ErrorResponse(title, fail.Message));
+                        return NotFound(errorResponse);
 
                     if (fail is DittaNotFoundException)
-                        return BadRequest(new ErrorResponse(title, fail.Message));
+                        return BadRequest(errorResponse);
 
-                    return StatusCode((int)HttpStatusCode.InternalServerError);
+                    
+
+                    return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);
                 });
         }
     }
