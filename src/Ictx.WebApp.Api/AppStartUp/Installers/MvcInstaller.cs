@@ -6,6 +6,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System;
+using System.IO;
+using System.Reflection;
 
 namespace Ictx.WebApp.Api.AppStartUp.Installers
 {
@@ -67,6 +70,11 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
                 {
                     // add a custom operation filter which sets default values
                     options.OperationFilter<SwaggerDefaultValues>();
+
+                    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+
+                    options.IncludeXmlComments(xmlPath);
 
                     //options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                     //{

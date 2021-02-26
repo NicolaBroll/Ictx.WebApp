@@ -60,9 +60,9 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
         [Fact]
         public async Task GetAll_With5Dipendenti_Return5Dipendenti()
         {
+            // Arrange.  
             var dipendentiDb = 10;
 
-            // Arrange.
             var lstDipendentiToCreate = this._lstDipendenteDto.Take(dipendentiDb);
 
             foreach(var dipendente in lstDipendentiToCreate)
