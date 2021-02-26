@@ -1,8 +1,8 @@
-﻿using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Infrastructure.UnitOfWork;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using Ictx.WebApp.Core.Entities;
+using Ictx.WebApp.Infrastructure.UnitOfWork;
 
 namespace Ictx.WebApp.Api.Database.SeedData
 {

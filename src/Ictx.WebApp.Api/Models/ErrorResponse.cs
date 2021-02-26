@@ -9,7 +9,7 @@ namespace Ictx.WebApp.Api.Models
         public string Message { get; set; }
 
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
-        public Dictionary<string, IEnumerable<string>> Errors { get; private set; }
+        public Dictionary<string, IEnumerable<string>> Errors { get; set; }
 
         public ErrorResponse()
         { }

@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using LanguageExt.Common;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
@@ -13,10 +14,12 @@ namespace Ictx.WebApp.Infrastructure.Services
     public class DipendenteService
     {
         private readonly AppUnitOfWork _appUnitOfWork;
+        private readonly DittaService _dittaService;
 
-        public DipendenteService(AppUnitOfWork appUnitOfWork)
+        public DipendenteService(AppUnitOfWork appUnitOfWork, DittaService dittaService)
         {
             this._appUnitOfWork = appUnitOfWork;
+            this._dittaService = dittaService;
         }
 
         public async Task<PageResult<Dipendente>> GetListAsync(DipendenteListFilter filter)
@@ -32,24 +35,32 @@ namespace Ictx.WebApp.Infrastructure.Services
             return new PageResult<Dipendente>(list, count);
         }
 
-        public async Task<Dipendente> GetByIdAsync(int id)
+        public async Task<Result<Dipendente>> GetByIdAsync(int id)
         {
             var dipendente = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if (dipendente is null)
-                throw new DipendenteNotFoundException($"Dipendente con id: {id} non trovato.");
+                return new Result<Dipendente>(new DipendenteNotFoundException(id));
 
             return dipendente;
         }
 
         public async Task<Dipendente> InsertAsync(Dipendente model)
         {
-            var ditta = await this._appUnitOfWork.DittaRepository.ReadAsync(model.DittaId);
+            var ditta = await this._dittaService.GetByIdAsync(model.DittaId);
 
-            if (ditta is null)
-                throw new DittaNotFoundException($"Ditta con id: {model.DittaId} non trovata.");
+            var utcNow = DateTime.UtcNow;
 
-            var objToInsert = new Dipendente(model.CodiceFiscale, model.Cognome, model.Nome, model.Sesso, model.DataNascita, ditta);
+            var objToInsert = new Dipendente {
+                CodiceFiscale = model.CodiceFiscale.ToUpper(),
+                Cognome = model.Cognome.ToUpper(),
+                Nome = model.Nome.ToUpper(),
+                Sesso = model.Sesso,
+                DataNascita = model.DataNascita,
+                Inserted = utcNow,
+                Updated = utcNow,
+                DittaId = ditta.Id
+            };
 
             await this._appUnitOfWork.DipendenteRepository.InsertAsync(objToInsert);
             await this._appUnitOfWork.SaveAsync();
@@ -62,14 +73,17 @@ namespace Ictx.WebApp.Infrastructure.Services
             var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if (objToUpdate is null)
-                throw new DipendenteNotFoundException($"Dipendente con id: {id} non trovato.");
+                throw new DipendenteNotFoundException(id);
 
-            objToUpdate.Updated = DateTime.UtcNow;
+            var ditta = await this._dittaService.GetByIdAsync(model.DittaId);
+
             objToUpdate.CodiceFiscale = model.CodiceFiscale.ToUpper();
-            objToUpdate.Nome = Char.ToUpperInvariant(model.Nome[0]) + model.Nome.ToLower().Substring(1);
-            objToUpdate.Cognome = Char.ToUpperInvariant(model.Cognome[0]) + model.Cognome.ToLower().Substring(1);
+            objToUpdate.Nome = model.Nome.ToUpper();
+            objToUpdate.Cognome = model.Cognome.ToUpper();
             objToUpdate.Sesso = model.Sesso;
             objToUpdate.DataNascita = model.DataNascita;
+            objToUpdate.Updated = DateTime.UtcNow;
+            objToUpdate.DittaId = ditta.Id;
 
             this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
             await this._appUnitOfWork.SaveAsync();
@@ -77,15 +91,17 @@ namespace Ictx.WebApp.Infrastructure.Services
             return objToUpdate;
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task<Result<bool>> DeleteAsync(int id)
         {
             var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if(objToDelete is null)
-                throw new DipendenteNotFoundException($"Dipendente con id: {id} non trovato.");
+                new Result<bool>(new DipendenteNotFoundException(id));
 
             this._appUnitOfWork.DipendenteRepository.Delete(id);
             await this._appUnitOfWork.SaveAsync();
+
+            return true;
         }
     }
 }

@@ -1,7 +1,7 @@
-﻿using Ictx.WebApp.Infrastructure.UnitOfWork;
-using System;
+﻿using System;
 using System.IO;
 using System.Threading.Tasks;
+using Ictx.WebApp.Infrastructure.UnitOfWork;
 
 namespace Ictx.WebApp.Api.Database.SeedData
 {

@@ -19,6 +19,12 @@ namespace Ictx.WebApp.Infrastructure.Repositories
             this.dbSet = context.Set<T>();
         }
 
+        public async virtual Task<bool> AnyAsync()
+        {
+            IQueryable<T> query = dbSet;
+            return await query.AnyAsync();
+        }
+
         public virtual IQueryable<T> QueryMany(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
@@ -47,6 +53,7 @@ namespace Ictx.WebApp.Infrastructure.Repositories
 
             return await query.ToListAsync();
         }
+        
         public async virtual Task<T> ReadAsync(object id)
         {
             return await dbSet.FindAsync(id);

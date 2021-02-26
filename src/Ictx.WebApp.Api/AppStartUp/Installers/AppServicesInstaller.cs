@@ -11,6 +11,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             // Services.
+            services.TryAddScoped<DittaService>();
             services.TryAddScoped<DipendenteService>();
 
             // Unit of work.

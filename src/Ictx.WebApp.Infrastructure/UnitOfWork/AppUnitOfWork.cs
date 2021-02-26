@@ -10,7 +10,6 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
         private readonly AppDbContext _context;
 
         // Repository.
-        private ComuneRepository _comuneRepository;
         private UfficioBaseRepository _ufficioBaseRepository;
         private UfficioRepository _ufficioRepository;
         private ImpresaRepository _impresaRepository;
@@ -20,17 +19,6 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
         public AppUnitOfWork(AppDbContext context)
         {
             this._context = context;
-        }
-
-        public ComuneRepository ComuneRepository
-        {
-            get
-            {
-                if (this._comuneRepository == null)
-                    this._comuneRepository = new ComuneRepository(_context);
-
-                return _comuneRepository;
-            }
         }
 
         public UfficioBaseRepository UfficioBaseRepository

@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -41,8 +42,8 @@ namespace Ictx.WebApp.IntegrationTest
         }
 
         private async Task<string> GetJwtAsync()
-        {
-            return await Task.FromResult<string>(string.Empty);
+        {            
+            return await Task.FromException<string>(new NotImplementedException());
         }
     }
 }
