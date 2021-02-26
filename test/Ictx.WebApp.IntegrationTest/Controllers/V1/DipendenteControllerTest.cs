@@ -355,7 +355,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Delete, _version);
 
             // Act.
-            var response = await HttpClient.GetAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()));
+            var response = await HttpClient.DeleteAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()));
 
             // Assert.
             response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -373,7 +373,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Delete, _version);
 
             // Act.
-            var response = await HttpClient.GetAsync(url.Replace("{id}", id.ToString()));
+            var response = await HttpClient.DeleteAsync(url.Replace("{id}", id.ToString()));
 
             // Assert.
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);

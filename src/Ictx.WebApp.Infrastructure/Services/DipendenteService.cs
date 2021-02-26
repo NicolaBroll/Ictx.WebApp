@@ -102,9 +102,9 @@ namespace Ictx.WebApp.Infrastructure.Services
             var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if(objToDelete is null)
-                new Result<bool>(new DipendenteNotFoundException(id));
+                return new Result<bool>(new DipendenteNotFoundException(id));
 
-            this._appUnitOfWork.DipendenteRepository.Delete(id);
+            this._appUnitOfWork.DipendenteRepository.Delete(objToDelete);
             await this._appUnitOfWork.SaveAsync();
 
             return true;
