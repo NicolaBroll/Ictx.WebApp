@@ -53,7 +53,8 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// </summary>
         /// <param name="id">Identificativo dipendente.</param>
         /// <response code = "200">Ritorna un dipendente.</response>
-        /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con l'identificativo richesto.</response>
+        /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con
+        /// l'identificativo richesto.</response>
         /// <returns></returns>
         [HttpGet(DipendenteRoute.GetById)]
         [ProducesResponseType(typeof(DipendenteDto), (int)System.Net.HttpStatusCode.OK)]
@@ -73,7 +74,8 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// </summary>
         /// <param name="id">Identificativo dipendente.</param>
         /// <response code = "200">Dipendente eliminato con successo.</response>
-        /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con l'identificativo richesto.</response>
+        /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con
+        /// l'identificativo richesto.</response>
         /// <returns></returns>
         [HttpDelete(DipendenteRoute.Delete)]
         [ProducesResponseType(typeof(DipendenteDto), (int)System.Net.HttpStatusCode.OK)]
@@ -122,7 +124,8 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <param name="model">Dto rappresentante il dipendente.</param>
         /// <response code = "200">Dipendente modificato correttamente, ritorna l'oggetto modificato.</response>
         /// <response code = "400">Errore validazione dto.</response>
-        /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con l'identificativo richesto.</response>
+        /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente
+        /// con l'identificativo richesto.</response>
         /// <returns></returns>
         [HttpPut(DipendenteRoute.Put)]
         [ProducesResponseType(typeof(DipendenteDto), (int)System.Net.HttpStatusCode.OK)]
@@ -143,8 +146,6 @@ namespace Ictx.WebApp.Api.Controllers.V1
 
                     if (fail is DittaNotFoundException)
                         return BadRequest(errorResponse);
-
-                    
 
                     return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);
                 });
