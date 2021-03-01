@@ -22,6 +22,11 @@ namespace Ictx.WebApp.Infrastructure.Services
             this._dittaService = dittaService;
         }
 
+        /// <summary>
+        /// Ritorna una lista di dipendenti paginata per una determinata ditta.
+        /// </summary>
+        /// <param name="filter">Id della ditta e parametri di paginazione</param>
+        /// <returns>Ritorna unoggetto contenente la lista di dipendenti paginata e il totalcount dei record su DB</returns>
         public async Task<PageResult<Dipendente>> GetListAsync(DipendenteListFilter filter)
         {
             var qy = this._appUnitOfWork.DipendenteRepository.QueryMany(
@@ -35,6 +40,12 @@ namespace Ictx.WebApp.Infrastructure.Services
             return new PageResult<Dipendente>(list, count);
         }
 
+        /// <summary>
+        /// Ritorna un dipendente. Se non viene trovato, ritorna DipendenteNotFoundException.
+        /// </summary>
+        /// <param name="id">Id dipendente</param>
+        /// <returns>Ritorna un Result<Dipendente> contenente il dipendente associato all'id richiesto oppure una 
+        /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
         public async Task<Result<Dipendente>> GetByIdAsync(int id)
         {
             var dipendente = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
@@ -45,6 +56,14 @@ namespace Ictx.WebApp.Infrastructure.Services
             return dipendente;
         }
 
+        /// <summary>
+        /// Crea un dipendente.
+        /// </summary>
+        /// <param name="model">Modello contenente i dati del nuovo dipendente.</param>
+        /// <returns>Ritorna un Result<Dipendente> contenente il dipendente creato.
+        /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
+        /// Se la ditta non viene trovata, ritorna DittaNotFoundException.
+        /// </returns>
         public async Task<Result<Dipendente>> InsertAsync(Dipendente model)
         {
             var ditta = await this._appUnitOfWork.DittaRepository.ReadAsync(model.DittaId);
@@ -71,6 +90,15 @@ namespace Ictx.WebApp.Infrastructure.Services
             return objToInsert;
         }
 
+        /// <summary>
+        /// Modifica un dipendente.
+        /// </summary>
+        /// <param name="id">Id dipendente da modificare.</param>
+        /// <param name="model">Modello contenente i nuovi dati.</param>
+        /// <returns>Ritorna un Result<Dipendente> contenente il dipendente modificato.
+        /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
+        /// Se la ditta non viene trovata, ritorna DittaNotFoundException.
+        /// </returns>
         public async Task<Result<Dipendente>> SaveAsync(int id, Dipendente model)
         {
             var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
@@ -97,17 +125,23 @@ namespace Ictx.WebApp.Infrastructure.Services
             return objToUpdate;
         }
 
-        public async Task<Result<bool>> DeleteAsync(int id)
+        /// <summary>
+        /// Elimina un dipendente. Se non viene trovato, ritorna DipendenteNotFoundException.
+        /// </summary>
+        /// <param name="id">Id dipendente</param>
+        /// <returns>Ritorna un Result<Dipendente> contenente il dipendente eliminato. Oppure una 
+        /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
+        public async Task<Result<Dipendente>> DeleteAsync(int id)
         {
             var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if(objToDelete is null)
-                return new Result<bool>(new DipendenteNotFoundException(id));
+                return new Result<Dipendente>(new DipendenteNotFoundException(id));
 
             this._appUnitOfWork.DipendenteRepository.Delete(objToDelete);
             await this._appUnitOfWork.SaveAsync();
 
-            return true;
+            return objToDelete;
         }
     }
 }

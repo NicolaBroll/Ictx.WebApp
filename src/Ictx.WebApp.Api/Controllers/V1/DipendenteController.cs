@@ -7,11 +7,11 @@ using Ictx.WebApp.Api.Common;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.Services;
+using static Ictx.WebApp.Core.Models.DipendenteModel;
+using static Ictx.WebApp.Core.Models.PaginationModel;
 using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
 using static Ictx.WebApp.Api.Models.DipendenteModel;
 using static Ictx.WebApp.Api.Controllers.V1.ApiRoutesV1;
-using static Ictx.WebApp.Core.Models.DipendenteModel;
-using static Ictx.WebApp.Core.Models.PaginationModel;
 
 namespace Ictx.WebApp.Api.Controllers.V1
 {
