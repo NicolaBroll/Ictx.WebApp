@@ -38,6 +38,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <response code = "200">Ritorna la lista paginata di dipendenti.</response>
         /// <returns></returns>
         [HttpGet(DipendenteRoute.Get)]
+        [ProducesResponseType(typeof(PageResult<DipendenteDto>), (int)HttpStatusCode.OK)]
         public async Task<PageResult<DipendenteDto>> Get([FromQuery] DipendenteQueryParameters dipendenteQueryParameters)
         {
             var filterModel = _mapper.Map<DipendenteListFilter>(dipendenteQueryParameters);
@@ -57,8 +58,8 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// l'identificativo richesto.</response>
         /// <returns></returns>
         [HttpGet(DipendenteRoute.GetById)]
-        [ProducesResponseType(typeof(DipendenteDto), (int)System.Net.HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<DipendenteDto>> GetById(int id)
         {
             var dipendenteResult = await this._dipendenteService.GetByIdAsync(id);
@@ -78,8 +79,8 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// l'identificativo richesto.</response>
         /// <returns></returns>
         [HttpDelete(DipendenteRoute.Delete)]
-        [ProducesResponseType(typeof(DipendenteDto), (int)System.Net.HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this._dipendenteService.DeleteAsync(id);
@@ -98,8 +99,8 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <response code = "400">Errore validazione dto.</response>
         /// <returns></returns> 
         [HttpPost(DipendenteRoute.Post)]
-        [ProducesResponseType(typeof(DipendenteDto), (int)System.Net.HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model)
         {
             var objToInsert = _mapper.Map<Dipendente>(model);
@@ -128,9 +129,9 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// con l'identificativo richesto.</response>
         /// <returns></returns>
         [HttpPut(DipendenteRoute.Put)]
-        [ProducesResponseType(typeof(DipendenteDto), (int)System.Net.HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)System.Net.HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model)
         {
             var objToUpdate = _mapper.Map<Dipendente>(model);
