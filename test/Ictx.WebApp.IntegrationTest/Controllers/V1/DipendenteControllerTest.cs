@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Api.Controllers.V1;
-using static Ictx.WebApp.Core.Models.PaginationModel;
-using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
+using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 {
@@ -20,7 +19,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
         private readonly int _dittaId;
         private readonly List<DipendenteDto> _lstDipendenteDto;
 
-        public DipendenteControllerTest()
+        public DipendenteControllerTest(AppInstance instance) : base(instance)
         {
             this._version = 1;
             this._dittaId = 1;
@@ -62,16 +61,18 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
         {
             // Arrange.  
             var dipendentiDb = 10;
+            var dipendentiRequest = 5;
 
             var lstDipendentiToCreate = this._lstDipendenteDto.Take(dipendentiDb);
 
-            foreach(var dipendente in lstDipendentiToCreate)
-            {
-                await PostDipendente(dipendente);
-            }
+            var postTasks = new List<Task>();
+
+            this._lstDipendenteDto.Take(dipendentiDb).ToList().ForEach(x => postTasks.Add(PostDipendente(x)));
+
+            Task.WaitAll(postTasks.ToArray());
 
             var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Get, _version);
-            url += $"?dittaId={this._dittaId}&page=1&pageSize=5";
+            url += $"?dittaId={this._dittaId}&page=1&pageSize={dipendentiRequest}";
 
             // Act.
             var response = await HttpClient.GetAsync(url);
@@ -81,7 +82,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
             var parsedRespose = await response.Content.ReadAsAsync<PageResult<DipendenteDto>>();
 
-            parsedRespose.TotalCount.Should().Be(dipendentiDb); // Dipendenti totali in database.
+            parsedRespose.TotalCount.Should().BeGreaterOrEqualTo(dipendentiDb); // Dipendenti totali in database.
             parsedRespose.Data.Count().Should().Be(5); // Dipendenti totali richiesti.
         }
 

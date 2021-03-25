@@ -3,14 +3,10 @@ using AutoMapper;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Api.Common;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
-using Ictx.WebApp.Infrastructure.Services;
-using static Ictx.WebApp.Core.Models.DipendenteModel;
-using static Ictx.WebApp.Core.Models.PaginationModel;
-using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
-using static Ictx.WebApp.Api.Models.DipendenteModel;
+using Ictx.WebApp.Core.Models;
+using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using static Ictx.WebApp.Api.Controllers.V1.ApiRoutesV1;
 
 namespace Ictx.WebApp.Api.Controllers.V1
@@ -20,15 +16,13 @@ namespace Ictx.WebApp.Api.Controllers.V1
     [Produces("application/json")]
     public class DipendenteController : ControllerBase
     {
-        private readonly IMapper                _mapper;
-        private readonly IApplicationSettings   _applicationSettings;
-        private readonly DipendenteService      _dipendenteService;
+        private readonly IMapper            _mapper;
+        private readonly IDipendenteService  _dipendenteService;
 
-        public DipendenteController(IMapper mapper, IApplicationSettings applicationSettings, DipendenteService dipendenteService)
+        public DipendenteController(IMapper mapper, IDipendenteService dipendenteService)
         {
-            this._mapper                = mapper;
-            this._applicationSettings   = applicationSettings;
-            this._dipendenteService     = dipendenteService;
+            this._mapper            = mapper;
+            this._dipendenteService = dipendenteService;
         }
 
         /// <summary>
@@ -111,7 +105,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
                 (fail) => {
                     var errorResponse = new ErrorResponse("Errore durante l'inserimento del dato.", fail.Message);
 
-                    if (fail is DittaNotFoundException)
+                    if (fail is BadRequestException)
                         return BadRequest(errorResponse);
 
                     return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);
@@ -142,10 +136,10 @@ namespace Ictx.WebApp.Api.Controllers.V1
                 (fail) => {
                     var errorResponse = new ErrorResponse("Errore durante l'inserimento del dato.", fail.Message);
 
-                    if (fail is DipendenteNotFoundException)
+                    if (fail is NotFoundException)
                         return NotFound(errorResponse);
 
-                    if (fail is DittaNotFoundException)
+                    if (fail is BadRequestException)
                         return BadRequest(errorResponse);
 
                     return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);

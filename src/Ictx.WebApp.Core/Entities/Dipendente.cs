@@ -1,6 +1,6 @@
 ﻿using System;
 using Ictx.WebApp.Core.Base;
-using static Ictx.WebApp.Core.Models.DipendenteModel;
+using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.Core.Entities
 {

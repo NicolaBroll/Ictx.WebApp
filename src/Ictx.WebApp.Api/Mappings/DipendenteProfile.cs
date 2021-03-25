@@ -1,9 +1,7 @@
 ﻿using AutoMapper;
+using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
-using static Ictx.WebApp.Core.Models.PaginationModel;
-using static Ictx.WebApp.Api.Dtos.DipendenteDtos;
-using static Ictx.WebApp.Api.Models.DipendenteModel;
-using static Ictx.WebApp.Core.Models.DipendenteModel;
+using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.Api.Mappings
 {

@@ -1,25 +1,23 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
 using LanguageExt.Common;
+using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
-using static Ictx.WebApp.Core.Models.PaginationModel;
-using static Ictx.WebApp.Core.Models.DipendenteModel;
+using Ictx.WebApp.Infrastructure.Services.Interfaces;
 
 namespace Ictx.WebApp.Infrastructure.Services
 {
-    public class DipendenteService
+    public class DipendenteService : IDipendenteService
     {
-        private readonly AppUnitOfWork _appUnitOfWork;
-        private readonly DittaService _dittaService;
+        private readonly IAppUnitOfWork     _appUnitOfWork;
+        private readonly IDateTimeService   _dateTimeService;
 
-        public DipendenteService(AppUnitOfWork appUnitOfWork, DittaService dittaService)
+        public DipendenteService(IAppUnitOfWork appUnitOfWork, IDateTimeService dateTimeService)
         {
-            this._appUnitOfWork = appUnitOfWork;
-            this._dittaService = dittaService;
+            this._appUnitOfWork     = appUnitOfWork;
+            this._dateTimeService   = dateTimeService;
         }
 
         /// <summary>
@@ -29,15 +27,10 @@ namespace Ictx.WebApp.Infrastructure.Services
         /// <returns>Ritorna unoggetto contenente la lista di dipendenti paginata e il totalcount dei record su DB</returns>
         public async Task<PageResult<Dipendente>> GetListAsync(DipendenteListFilter filter)
         {
-            var qy = this._appUnitOfWork.DipendenteRepository.QueryMany(
+            return await this._appUnitOfWork.DipendenteRepository.ReadManyPaginatedAsync(
                 filter: x => x.DittaId == filter.DittaId,
-                orderBy: x => x.OrderBy(o => o.Cognome).ThenBy(x => x.Nome)
-                );
-
-            var count = qy.Count();
-            var list = await qy.Skip((filter.Page - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
-
-            return new PageResult<Dipendente>(list, count);
+                orderBy: x => x.OrderBy(o => o.Cognome).ThenBy(x => x.Nome),
+                paginationModel: filter);
         }
 
         /// <summary>
@@ -51,7 +44,9 @@ namespace Ictx.WebApp.Infrastructure.Services
             var dipendente = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if (dipendente is null)
-                return new Result<Dipendente>(new DipendenteNotFoundException(id));
+            {
+                return new Result<Dipendente>(new NotFoundException(id));
+            }
 
             return dipendente;
         }
@@ -69,11 +64,14 @@ namespace Ictx.WebApp.Infrastructure.Services
             var ditta = await this._appUnitOfWork.DittaRepository.ReadAsync(model.DittaId);
 
             if (ditta is null)
-                return new Result<Dipendente>(new DittaNotFoundException(model.DittaId));
+            {
+                return new Result<Dipendente>(new BadRequestException(model.DittaId));
+            }
 
-            var utcNow = DateTime.UtcNow;
+            var utcNow = this._dateTimeService.UtcNow;
 
-            var objToInsert = new Dipendente {
+            var objToInsert = new Dipendente
+            {
                 CodiceFiscale = model.CodiceFiscale.ToUpper(),
                 Cognome = model.Cognome.ToUpper(),
                 Nome = model.Nome.ToUpper(),
@@ -104,19 +102,24 @@ namespace Ictx.WebApp.Infrastructure.Services
             var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
             if (objToUpdate is null)
-                return new Result<Dipendente>(new DipendenteNotFoundException(id));
+            {
+                return new Result<Dipendente>(new NotFoundException(id));
+            }
 
+            // Leggo la ditta.
             var ditta = await this._appUnitOfWork.DittaRepository.ReadAsync(model.DittaId);
 
             if (ditta is null)
-                return new Result<Dipendente>(new DittaNotFoundException(model.DittaId));
+            {
+                return new Result<Dipendente>(new BadRequestException(model.DittaId));
+            }
 
             objToUpdate.CodiceFiscale = model.CodiceFiscale.ToUpper();
             objToUpdate.Nome = model.Nome.ToUpper();
             objToUpdate.Cognome = model.Cognome.ToUpper();
             objToUpdate.Sesso = model.Sesso;
             objToUpdate.DataNascita = model.DataNascita;
-            objToUpdate.Updated = DateTime.UtcNow;
+            objToUpdate.Updated = this._dateTimeService.UtcNow;
             objToUpdate.DittaId = ditta.Id;
 
             this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
@@ -135,8 +138,10 @@ namespace Ictx.WebApp.Infrastructure.Services
         {
             var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(id);
 
-            if(objToDelete is null)
-                return new Result<Dipendente>(new DipendenteNotFoundException(id));
+            if (objToDelete is null)
+            {
+                return new Result<Dipendente>(new NotFoundException(id));
+            }
 
             this._appUnitOfWork.DipendenteRepository.Delete(objToDelete);
             await this._appUnitOfWork.SaveAsync();
