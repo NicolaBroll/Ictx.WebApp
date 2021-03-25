@@ -4,8 +4,7 @@ namespace Ictx.WebApp.Core.Utils
 {
     public static class CodiceFiscale
     {
-
-        public static string Calcola( string nome, string cognome, DateTime dataDiNascita, string sesso, string codiceISTAT)
+        public static string Calcola(string nome, string cognome, DateTime dataDiNascita, string sesso, string codiceISTAT)
         {
             var mesi = "ABCDEHLMPRST";
 

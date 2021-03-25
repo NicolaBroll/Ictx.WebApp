@@ -6,6 +6,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Ictx.WebApp.Api.AppStartUp
 {
+    public interface IInstaller
+    {
+        void InstallServices(IServiceCollection services, IConfiguration configuration);
+    }
+
     public static class InstallerExtensions
     {
         public static void InstallServiceAssembly(this IServiceCollection services, IConfiguration configuration) 
