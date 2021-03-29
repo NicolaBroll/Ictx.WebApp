@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System.Collections.Generic;
 
-namespace Ictx.WebApp.Api.Models
+namespace Ictx.WebApp.Api.Common
 {
     public class ErrorResponse
     {

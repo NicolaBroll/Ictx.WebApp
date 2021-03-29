@@ -2,33 +2,17 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Ictx.WebApp.Api;
-using Ictx.WebApp.Infrastructure.Data;
+using Xunit;
 
 namespace Ictx.WebApp.IntegrationTest
 {
-    public class IntegrationTest
+    public class IntegrationTest : IClassFixture<AppInstance>
     {
         protected readonly HttpClient HttpClient;
 
-        public IntegrationTest()
+        public IntegrationTest(AppInstance appInstance)
         {
-            var appFactory = new WebApplicationFactory<Startup>()
-                .WithWebHostBuilder(builder =>
-                {
-                    builder.ConfigureServices(services =>
-                    {
-                        services.RemoveAll(typeof(AppDbContext));
-                        services.RemoveAll(typeof(DbContextOptions<AppDbContext>));
-                        services.AddDbContext<AppDbContext>(options => { options.UseInMemoryDatabase("TestDb"); });
-                    });
-                });
-
-            this.HttpClient = appFactory.CreateClient();
+            this.HttpClient = appInstance.CreateClient();
         }
 
         protected string GetVersionedUrl(string url, int version)

@@ -1,76 +1,77 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Infrastructure.Repositories;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
-    public class AppUnitOfWork : IDisposable
+    public class AppUnitOfWork : IAppUnitOfWork
     {
         private readonly AppDbContext _context;
 
         // Repository.
-        private UfficioBaseRepository _ufficioBaseRepository;
-        private UfficioRepository _ufficioRepository;
-        private ImpresaRepository _impresaRepository;
-        private DittaRepository _dittaRepository;
-        private DipendenteRepository _dipendenteRepository;
+        private GenericRepository<UfficioBase>  _ufficioBaseRepository;
+        private GenericRepository<Ufficio>      _ufficioRepository;
+        private GenericRepository<Impresa>      _impresaRepository;
+        private GenericRepository<Ditta>        _dittaRepository;
+        private GenericRepository<Dipendente>   _dipendenteRepository;
 
         public AppUnitOfWork(AppDbContext context)
         {
             this._context = context;
         }
 
-        public UfficioBaseRepository UfficioBaseRepository
+        public GenericRepository<UfficioBase> UfficioBaseRepository
         {
             get
             {
                 if (this._ufficioBaseRepository == null)
-                    this._ufficioBaseRepository = new UfficioBaseRepository(_context);
+                    this._ufficioBaseRepository = new GenericRepository<UfficioBase>(_context);
 
                 return _ufficioBaseRepository;
             }
         }
 
-        public UfficioRepository UfficioRepository
+        public GenericRepository<Ufficio> UfficioRepository
         {
             get
             {
                 if (this._ufficioRepository == null)
-                    this._ufficioRepository = new UfficioRepository(_context);
+                    this._ufficioRepository = new GenericRepository<Ufficio>(_context);
 
                 return _ufficioRepository;
             }
         }
 
-        public ImpresaRepository ImpresaRepository
+        public GenericRepository<Impresa> ImpresaRepository
         {
             get
             {
                 if (this._impresaRepository == null)
-                    this._impresaRepository = new ImpresaRepository(_context);
+                    this._impresaRepository = new GenericRepository<Impresa>(_context);
 
                 return _impresaRepository;
             }
         }
 
-        public DittaRepository DittaRepository
+        public GenericRepository<Ditta> DittaRepository
         {
             get
             {
                 if (this._dittaRepository == null)
-                    this._dittaRepository = new DittaRepository(_context);
+                    this._dittaRepository = new GenericRepository<Ditta>(_context);
 
                 return _dittaRepository;
             }
         }
 
-        public DipendenteRepository DipendenteRepository
+        public GenericRepository<Dipendente> DipendenteRepository
         {
             get
             {
                 if (this._dipendenteRepository == null)
-                    this._dipendenteRepository = new DipendenteRepository(_context);
+                    this._dipendenteRepository = new GenericRepository<Dipendente>(_context);
 
                 return _dipendenteRepository;
             }

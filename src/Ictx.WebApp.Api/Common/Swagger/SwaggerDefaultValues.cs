@@ -3,7 +3,7 @@ using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Linq;
 
-namespace Ictx.WebApp.Api.Common
+namespace Ictx.WebApp.Api.Common.Swagger
 {
     public class SwaggerDefaultValues : IOperationFilter
     {

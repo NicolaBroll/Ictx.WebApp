@@ -6,13 +6,19 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Ictx.WebApp.Api.AppStartUp
 {
+    public interface IInstaller
+    {
+        void InstallServices(IServiceCollection services, IConfiguration configuration);
+    }
+
     public static class InstallerExtensions
     {
         public static void InstallServiceAssembly(this IServiceCollection services, IConfiguration configuration) 
         {
             var installs = typeof(Startup).Assembly.ExportedTypes
-            .Where(x => typeof(IInstaller).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
-            .Select(Activator.CreateInstance).Cast<IInstaller>().ToList();
+                .Where(x => typeof(IInstaller).IsAssignableFrom(x) && !x.IsInterface && !x.IsAbstract)
+                .Select(Activator.CreateInstance).Cast<IInstaller>()
+                .ToList();
 
             installs.ForEach(x => x.InstallServices(services, configuration));
         }

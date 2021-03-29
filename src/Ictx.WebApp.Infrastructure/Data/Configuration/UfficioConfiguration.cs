@@ -21,7 +21,7 @@ namespace Ictx.WebApp.Infrastructure.Data.Configuration
                 .WithMany(b => b.LstUffici)
                 .HasForeignKey(p => p.UfficioBaseId);
 
-            // Relazione Ditta.
+            // Relazione Impresa.
             builder.HasMany(p => p.LstImprese)
                 .WithOne(b => b.Ufficio)
                 .HasForeignKey(p => p.UfficioId);

@@ -1,14 +1,15 @@
-﻿using Ictx.WebApp.Api.Common;
-using Ictx.WebApp.Api.Helper;
+﻿using System;
+using System.IO;
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
-using System.IO;
-using System.Reflection;
+using Ictx.WebApp.Api.Common;
+using Ictx.WebApp.Api.Common.Swagger;
+using Ictx.WebApp.Api.Helper;
 
 namespace Ictx.WebApp.Api.AppStartUp.Installers
 {

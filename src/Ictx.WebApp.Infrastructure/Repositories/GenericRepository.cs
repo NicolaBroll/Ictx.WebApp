@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Ictx.WebApp.Infrastructure.Data;
+using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.Infrastructure.Repositories
 {
@@ -19,9 +20,13 @@ namespace Ictx.WebApp.Infrastructure.Repositories
             this.dbSet = context.Set<T>();
         }
 
-        public async virtual Task<bool> AnyAsync()
+        public async virtual Task<bool> AnyAsync(Expression<Func<T, bool>> filter = null)
         {
             IQueryable<T> query = dbSet;
+
+            if(filter != null)
+                return await query.AnyAsync(filter);
+
             return await query.AnyAsync();
         }
 
@@ -53,7 +58,27 @@ namespace Ictx.WebApp.Infrastructure.Repositories
 
             return await query.ToListAsync();
         }
-        
+
+        public async virtual Task<PageResult<T>> ReadManyPaginatedAsync(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = "",
+            PaginationModel paginationModel = null)
+        { 
+            if (paginationModel == null)
+                throw new ArgumentNullException();
+
+            if (paginationModel.Page <= 0 || paginationModel.PageSize <= 0)
+                return new PageResult<T>(new List<T>(), 0);
+
+            IQueryable<T> qy = QueryMany(filter, orderBy, includeProperties);
+
+            var count = qy.Count();
+            var list = await qy.Skip((paginationModel.Page - 1) * paginationModel.PageSize).Take(paginationModel.PageSize).ToListAsync();
+
+            return new PageResult<T>(list, count);
+        }
+
         public async virtual Task<T> ReadAsync(object id)
         {
             return await dbSet.FindAsync(id);

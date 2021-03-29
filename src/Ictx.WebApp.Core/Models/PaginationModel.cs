@@ -2,78 +2,81 @@
 
 namespace Ictx.WebApp.Core.Models
 {
-    public static class PaginationModel
+    /// <summary>
+    /// Rappresenta l'oggetto restituito da una query che utilizza la paginazione. Contiene l'elenco degli oggetti letti dalla query
+    /// ed il numero totale degli oggetti senza considerare la paginazione. 
+    /// </summary>
+    /// <typeparam name="T">Tipo dell'oggetto selezionato dalla query</typeparam>
+    public class PageResult<T>
     {
+        public IEnumerable<T> Data { get; set; }
+        public int TotalCount { get; set; }
+
+        public PageResult()
+        {
+        }
+        public PageResult(IEnumerable<T> data, int totalCount)
+        {
+            this.Data       = data;
+            this.TotalCount = totalCount;
+        }
+    }
+
+    public class PaginationModel
+    {
+        const int maxPageSize = (int)PAGE_SIZE.PAGE_MAX;
+        const int minPageSize = (int)PAGE_SIZE.PAGE_MIN;
+
+        private int _pageSize;
+        private int _page;
+
         /// <summary>
-        /// Rappresenta l'oggetto restituito da una query che utilizza la paginazione. Contiene l'elenco degli oggetti letti dalla query
-        /// ed il numero totale degli oggetti senza considerare la paginazione. 
+        /// Pagina corrente
         /// </summary>
-        /// <typeparam name="T">Tipo dell'oggetto selezionato dalla query</typeparam>
-        public class PageResult<T>
+        public int Page
         {
-            public IEnumerable<T> Data { get; set; }
-            public int TotalCount { get; set; }
-
-            public PageResult()
+            get
             {
+                return _page <= 0 ? 1 : _page;
             }
-            public PageResult(IEnumerable<T> data, int totalCount)
+            set
             {
-                this.Data = data;
-                this.TotalCount = totalCount;
+                _page = value;
             }
         }
 
-        public class PaginationFilterModel
+        /// <summary>
+        /// Dimensione pagina
+        /// </summary>
+        public int PageSize
         {
-            const short maxPageSize = (short)PAGE_SIZE.PAGE_MAX;
-
-            private short _pageSize { get; set; } = maxPageSize;
-            private short _page { get; set; } = 1;
-
-
-            /// <summary>
-            /// Pagina corrente
-            /// </summary>
-            public short Page
+            get
             {
-                get
+                if (this._pageSize > maxPageSize) 
                 {
-                    return _page < 0 ? (short)1 : _page;
+                    return maxPageSize;
                 }
-                set
-                {
-                    _page = value;
-                }
-            }
 
-            /// <summary>
-            /// Dimensione pagina
-            /// </summary>
-            public short PageSize
+                if (this._pageSize < minPageSize) 
+                {
+                    return minPageSize;
+                }
+
+                return this._pageSize;
+            }
+            set
             {
-                get
-                {
-                    return _pageSize < 0 ? (short)PAGE_SIZE.PAGE_MIN : _pageSize;
-                }
-                set
-                {
-                    _pageSize = (value > maxPageSize) ? maxPageSize : value;
-                }
+                this._pageSize = value;
             }
-
-            //public string Order { get; set; }
-            //public string OrderDirection { get; set; }
         }
+    }
 
-        public enum PAGE_SIZE
-        {
-            PAGE_15 = 15,
-            PAGE_30 = 30,
-            PAGE_50 = 50,
-            PAGE_MAX = 500,
-            PAGE_MIN = 15,
-            PAGE_ALL = 9999
-        }
+    public enum PAGE_SIZE
+    {
+        PAGE_15 = 15,
+        PAGE_30 = 30,
+        PAGE_50 = 50,
+        PAGE_MAX = 500,
+        PAGE_MIN = 15
     }
 }
