@@ -34,11 +34,9 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <returns></returns>
         [HttpGet(DipendenteRoute.Get)]
         [ProducesResponseType(typeof(PageResult<DipendenteDto>), (int)HttpStatusCode.OK)]
-        public async Task<PageResult<DipendenteDto>> Get([FromQuery] DipendenteQueryParameters dipendenteQueryParameters)
+        public async Task<PageResult<DipendenteDto>> Get([FromQuery] DipendenteListFilter dipendenteQueryParameters)
         {
-            var filterModel = _mapper.Map<DipendenteListFilter>(dipendenteQueryParameters);
-
-            var list = await _dipendenteService.GetListAsync(filterModel);
+            var list = await _dipendenteService.GetListAsync(dipendenteQueryParameters);
             var res = _mapper.Map<PageResult<DipendenteDto>>(list);
 
             return res;

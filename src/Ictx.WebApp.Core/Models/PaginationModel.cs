@@ -17,27 +17,27 @@ namespace Ictx.WebApp.Core.Models
         }
         public PageResult(IEnumerable<T> data, int totalCount)
         {
-            this.Data = data;
+            this.Data       = data;
             this.TotalCount = totalCount;
         }
     }
 
     public class PaginationModel
     {
-        const short maxPageSize = (short)PAGE_SIZE.PAGE_MAX;
+        const int maxPageSize = (int)PAGE_SIZE.PAGE_MAX;
+        const int minPageSize = (int)PAGE_SIZE.PAGE_MIN;
 
-        private short _pageSize { get; set; } = maxPageSize;
-        private short _page { get; set; } = 1;
-
+        private int _pageSize;
+        private int _page;
 
         /// <summary>
         /// Pagina corrente
         /// </summary>
-        public short Page
+        public int Page
         {
             get
             {
-                return _page < 0 ? (short)1 : _page;
+                return _page <= 0 ? 1 : _page;
             }
             set
             {
@@ -48,20 +48,27 @@ namespace Ictx.WebApp.Core.Models
         /// <summary>
         /// Dimensione pagina
         /// </summary>
-        public short PageSize
+        public int PageSize
         {
             get
             {
-                return _pageSize < 0 ? (short)PAGE_SIZE.PAGE_MIN : _pageSize;
+                if (this._pageSize > maxPageSize) 
+                {
+                    return maxPageSize;
+                }
+
+                if (this._pageSize < minPageSize) 
+                {
+                    return minPageSize;
+                }
+
+                return this._pageSize;
             }
             set
             {
-                _pageSize = (value > maxPageSize) ? maxPageSize : value;
+                this._pageSize = value;
             }
         }
-
-        //public string Order { get; set; }
-        //public string OrderDirection { get; set; }
     }
 
     public enum PAGE_SIZE
@@ -70,7 +77,6 @@ namespace Ictx.WebApp.Core.Models
         PAGE_30 = 30,
         PAGE_50 = 50,
         PAGE_MAX = 500,
-        PAGE_MIN = 15,
-        PAGE_ALL = 9999
-    }    
+        PAGE_MIN = 15
+    }
 }

@@ -6,6 +6,7 @@ using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
+using System.Collections.Generic;
 
 namespace Ictx.WebApp.Infrastructure.Services
 {
@@ -27,10 +28,17 @@ namespace Ictx.WebApp.Infrastructure.Services
         /// <returns>Ritorna unoggetto contenente la lista di dipendenti paginata e il totalcount dei record su DB</returns>
         public async Task<PageResult<Dipendente>> GetListAsync(DipendenteListFilter filter)
         {
-            return await this._appUnitOfWork.DipendenteRepository.ReadManyPaginatedAsync(
+            if (filter.DittaId <= 0) 
+            {  
+                return new PageResult<Dipendente>(new List<Dipendente>(), 0);
+            }
+
+            var result = await this._appUnitOfWork.DipendenteRepository.ReadManyPaginatedAsync(
                 filter: x => x.DittaId == filter.DittaId,
                 orderBy: x => x.OrderBy(o => o.Cognome).ThenBy(x => x.Nome),
                 paginationModel: filter);
+
+            return result;
         }
 
         /// <summary>
@@ -71,7 +79,8 @@ namespace Ictx.WebApp.Infrastructure.Services
             var utcNow = this._dateTimeService.UtcNow;
 
             var objToInsert = new Dipendente
-            {
+            { 
+                DittaId = ditta.Id,
                 CodiceFiscale = model.CodiceFiscale.ToUpper(),
                 Cognome = model.Cognome.ToUpper(),
                 Nome = model.Nome.ToUpper(),
@@ -79,7 +88,6 @@ namespace Ictx.WebApp.Infrastructure.Services
                 DataNascita = model.DataNascita,
                 Inserted = utcNow,
                 Updated = utcNow,
-                DittaId = ditta.Id
             };
 
             await this._appUnitOfWork.DipendenteRepository.InsertAsync(objToInsert);

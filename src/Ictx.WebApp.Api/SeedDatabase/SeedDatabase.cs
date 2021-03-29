@@ -1,10 +1,12 @@
 ﻿using Ictx.WebApp.Api.Database.SeedData;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
+using System;
+using System.Threading.Tasks;
 
 namespace Ictx.WebApp.Api.Database
 {
-    public class SeedDatabase
+    public class SeedDatabase: IDisposable
     {
         private readonly AppUnitOfWork _appUnitOfWork;
         private readonly AppDbContext _context;
@@ -15,7 +17,7 @@ namespace Ictx.WebApp.Api.Database
             this._context = context;
         }
 
-        public async void Initialize()
+        public async Task Initialize()
         {
             _context.Database.EnsureCreated();
 
@@ -38,8 +40,11 @@ namespace Ictx.WebApp.Api.Database
                 var seedDitta = new SeedDitta(_appUnitOfWork);
                 await seedDitta.Popola();
             }
+        }
 
-            _context.Dispose();
+        public void Dispose()
+        {
+            this._appUnitOfWork.Dispose();
         }
     }
 }

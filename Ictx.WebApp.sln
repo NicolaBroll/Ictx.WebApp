@@ -15,7 +15,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{195A4074-4
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ictx.WebApp.IntegrationTest", "test\Ictx.WebApp.IntegrationTest\Ictx.WebApp.IntegrationTest.csproj", "{7984A845-C24A-4A99-9FD2-8AAD5FD359CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ictx.WebApp.UnitTest", "test\Ictx.WebApp.UnitTest\Ictx.WebApp.UnitTest.csproj", "{9B27B7F4-6811-49A8-840A-FA2446912C22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ictx.WebApp.UnitTest", "test\Ictx.WebApp.UnitTest\Ictx.WebApp.UnitTest.csproj", "{9B27B7F4-6811-49A8-840A-FA2446912C22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using Serilog;
 
 namespace Ictx.WebApp.Api.AppStartUp.Installers
@@ -14,7 +13,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
             // DB context.
             services.AddDbContext<AppDbContext>(options => options
                 .UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
-                .LogTo(Log.Information, LogLevel.Information));
+                .LogTo(Log.Debug));
         }
     }
 }

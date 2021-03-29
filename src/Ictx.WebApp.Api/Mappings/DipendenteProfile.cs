@@ -12,7 +12,6 @@ namespace Ictx.WebApp.Api.Mappings
 			CreateMap<PageResult<Dipendente>, PageResult<DipendenteDto>>();
 			CreateMap<Dipendente, DipendenteDto>();
 			CreateMap<DipendenteDto, Dipendente>();
-			CreateMap<DipendenteQueryParameters, DipendenteListFilter>();
 		}
 	}
 }

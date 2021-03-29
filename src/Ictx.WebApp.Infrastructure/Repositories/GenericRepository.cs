@@ -68,6 +68,9 @@ namespace Ictx.WebApp.Infrastructure.Repositories
             if (paginationModel == null)
                 throw new ArgumentNullException();
 
+            if (paginationModel.Page <= 0 || paginationModel.PageSize <= 0)
+                return new PageResult<T>(new List<T>(), 0);
+
             IQueryable<T> qy = QueryMany(filter, orderBy, includeProperties);
 
             var count = qy.Count();

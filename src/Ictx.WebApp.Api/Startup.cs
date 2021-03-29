@@ -8,7 +8,6 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Serilog;
 using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Database;
 using Ictx.WebApp.Api.AppStartUp;
@@ -44,8 +43,8 @@ namespace Ictx.WebApp.Api
                 app.UseSwagger();
                 app.UseSwaggerUI(options =>
                 {
-                    // build a swagger endpoint for each discovered API version
-                    foreach (var description in provider.ApiVersionDescriptions)
+                // build a swagger endpoint for each discovered API version
+                foreach (var description in provider.ApiVersionDescriptions)
                     {
                         options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
                     }
@@ -78,8 +77,15 @@ namespace Ictx.WebApp.Api
             app.UseRouting();
 
             // Seed database.
-            var seedDatabase = new SeedDatabase(app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetRequiredService<AppDbContext>());
-            seedDatabase.Initialize();
+            if (env.IsDevelopment())
+            {
+                var ctx = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
+
+                using (var seedDatabase = new SeedDatabase(ctx))
+                {
+                    seedDatabase.Initialize().Wait();
+                }
+            }
 
             // Cors.
             app.UseCors(ApiHelper.AnyCors);

@@ -61,14 +61,11 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
         public async Task GetAll_With5Dipendenti_Return5Dipendenti()
         {
             // Arrange.  
-            var dipendentiDb = 10;
-            var dipendentiRequest = 5;
-
-            var lstDipendentiToCreate = this._lstDipendenteDto.Take(dipendentiDb);
+            var dipendentiRequest = 16;
 
             var postTasks = new List<Task>();
 
-            this._lstDipendenteDto.Take(dipendentiDb).ToList().ForEach(x => postTasks.Add(PostDipendente(x)));
+            this._lstDipendenteDto.ToList().ForEach(x => postTasks.Add(PostDipendente(x)));
 
             Task.WaitAll(postTasks.ToArray());
 
@@ -83,8 +80,8 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
             var parsedRespose = await response.Content.ReadAsAsync<PageResult<DipendenteDto>>();
 
-            parsedRespose.TotalCount.Should().BeGreaterOrEqualTo(dipendentiDb); // Dipendenti totali in database.
-            parsedRespose.Data.Count().Should().Be(5); // Dipendenti totali richiesti.
+            parsedRespose.TotalCount.Should().BeGreaterOrEqualTo(this._lstDipendenteDto.Count()); // Dipendenti totali in database.
+            parsedRespose.Data.Count().Should().Be(dipendentiRequest); // Dipendenti totali richiesti.
         }
 
         #endregion
