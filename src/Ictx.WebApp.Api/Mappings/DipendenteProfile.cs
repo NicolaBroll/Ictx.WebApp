@@ -9,7 +9,9 @@ namespace Ictx.WebApp.Api.Mappings
 	{
 		public DipendenteProfile()
 		{
-			CreateMap<PageResult<Dipendente>, PageResult<DipendenteDto>>();
+			// Pagination.
+			CreateMap<PageResult<Dipendente>, PageResultDto<DipendenteDto>>();
+
 			CreateMap<Dipendente, DipendenteDto>();
 			CreateMap<DipendenteDto, Dipendente>();
 		}

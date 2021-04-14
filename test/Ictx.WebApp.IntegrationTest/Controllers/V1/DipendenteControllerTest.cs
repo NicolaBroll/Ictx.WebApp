@@ -8,7 +8,6 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Api.Common;
 using Ictx.WebApp.Api.Controllers.V1;
 using Ictx.WebApp.Core.Models;
 
@@ -18,7 +17,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
     {
         private readonly int _version;
         private readonly int _dittaId;
-        private readonly List<DipendenteDto> _lstDipendenteDto;
+        private readonly IReadOnlyList<DipendenteDto> _lstDipendenteDto;
 
         public DipendenteControllerTest(AppInstance instance) : base(instance)
         {
@@ -46,19 +45,19 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             // Assert.
             response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-            var parsedRespose = await response.Content.ReadAsAsync<PageResult<DipendenteDto>>();
+            var parsedRespose = await response.Content.ReadAsAsync<PageResultDto<DipendenteDto>>();
 
             parsedRespose.Data.Count().Should().Be(0);
             parsedRespose.TotalCount.Should().Be(0);
         }
 
         /// <summary>
-        /// Inserisce 10 dipendenti in DB e successivamente richiede 5 dipendenti verificando sia il total count 
+        /// Inserisce i dipendenti in DB e successivamente richiede X dipendenti verificando sia il total count 
         /// sia il count effettivo dei dipendenti ritornati dal server.
         /// </summary>
         /// <returns></returns>
         [Fact]
-        public async Task GetAll_With5Dipendenti_Return5Dipendenti()
+        public async Task GetAll_WithDipendenti_ReturnXDipendenti()
         {
             // Arrange.  
             var dipendentiRequest = 16;
@@ -105,7 +104,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             // Assert.
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-            var parsedRespose = await response.Content.ReadAsAsync<ErrorResponse>();
+            var parsedRespose = await response.Content.ReadAsAsync<ErrorResponseDto>();
 
             parsedRespose.Message.Should().NotBeNullOrEmpty();
         }
@@ -377,7 +376,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             // Assert.
             response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-            var parsedRespose = await response.Content.ReadAsAsync<ErrorResponse>();
+            var parsedRespose = await response.Content.ReadAsAsync<ErrorResponseDto>();
 
             parsedRespose.Message.Should().NotBeNullOrEmpty();
         }

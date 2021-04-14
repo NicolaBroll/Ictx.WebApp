@@ -12,7 +12,7 @@ namespace Ictx.WebApp.Api.Common
             if (!context.ModelState.IsValid) 
             { 
                 // validation error object.
-                context.Result = new BadRequestObjectResult(new ErrorResponse(context.ModelState.Where(x => x.Value.Errors.Count > 0).ToDictionary(k => k.Key, v => v.Value.Errors.Select(x => x.ErrorMessage))));
+                context.Result = new BadRequestObjectResult(new ErrorResponseDto(context.ModelState.Where(x => x.Value.Errors.Count > 0).ToDictionary(k => k.Key, v => v.Value.Errors.Select(x => x.ErrorMessage))));
             }
 
             base.OnActionExecuting(context);

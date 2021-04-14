@@ -1,12 +1,11 @@
 ﻿using System.Net;
-using AutoMapper;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Api.Common;
+using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
-using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using static Ictx.WebApp.Api.Controllers.V1.ApiRoutesV1;
 
@@ -18,7 +17,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
     public class DipendenteController : ControllerBase
     {
         private readonly IMapper            _mapper;
-        private readonly IDipendenteService  _dipendenteService;
+        private readonly IDipendenteService _dipendenteService;
 
         public DipendenteController(IMapper mapper, IDipendenteService dipendenteService)
         {
@@ -33,11 +32,11 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <response code = "200">Ritorna la lista paginata di dipendenti.</response>
         /// <returns></returns>
         [HttpGet(DipendenteRoute.Get)]
-        [ProducesResponseType(typeof(PageResult<DipendenteDto>), (int)HttpStatusCode.OK)]
-        public async Task<PageResult<DipendenteDto>> Get([FromQuery] DipendenteListFilter dipendenteQueryParameters)
+        [ProducesResponseType(typeof(PageResultDto<DipendenteDto>), (int)HttpStatusCode.OK)]
+        public async Task<PageResultDto<DipendenteDto>> Get([FromQuery] DipendenteListFilter dipendenteQueryParameters)
         {
             var list = await _dipendenteService.GetListAsync(dipendenteQueryParameters);
-            var res = _mapper.Map<PageResult<DipendenteDto>>(list);
+            var res = _mapper.Map<PageResultDto<DipendenteDto>>(list);
 
             return res;
         }
@@ -52,14 +51,14 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <returns></returns>
         [HttpGet(DipendenteRoute.GetById)]
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<DipendenteDto>> GetById(int id)
         {
             var dipendenteResult = await this._dipendenteService.GetByIdAsync(id);
 
             return dipendenteResult.Match<ActionResult<DipendenteDto>>(
                 (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
-                (fail) => NotFound(new ErrorResponse("Errore durante la lettura del dato.", fail.Message))
+                (fail) => NotFound(new ErrorResponseDto("Errore durante la lettura del dato.", fail.Message))
                 );
         }
 
@@ -73,14 +72,14 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <returns></returns>
         [HttpDelete(DipendenteRoute.Delete)]
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult> Delete(int id)
         {
             var result = await this._dipendenteService.DeleteAsync(id);
 
             return result.Match<ActionResult>(
                 (succ) => Ok(),
-                (fail) => NotFound(new ErrorResponse("Errore durante l'eliminazione del dato.", fail.Message))
+                (fail) => NotFound(new ErrorResponseDto("Errore durante l'eliminazione del dato.", fail.Message))
                 );
         }
 
@@ -93,7 +92,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <returns></returns> 
         [HttpPost(DipendenteRoute.Post)]
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model)
         {
             var objToInsert = _mapper.Map<Dipendente>(model);
@@ -102,7 +101,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
             return result.Match<ActionResult>(
                 (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
                 (fail) => {
-                    var errorResponse = new ErrorResponse("Errore durante l'inserimento del dato.", fail.Message);
+                    var errorResponse = new ErrorResponseDto("Errore durante l'inserimento del dato.", fail.Message);
 
                     if (fail is BadRequestException)
                         return BadRequest(errorResponse);
@@ -123,8 +122,8 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <returns></returns>
         [HttpPut(DipendenteRoute.Put)]
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.BadRequest)]
-        [ProducesResponseType(typeof(ErrorResponse), (int)HttpStatusCode.NotFound)]
+        [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model)
         {
             var objToUpdate = _mapper.Map<Dipendente>(model);
@@ -133,7 +132,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
             return result.Match<ActionResult>(
                 (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
                 (fail) => {
-                    var errorResponse = new ErrorResponse("Errore durante l'inserimento del dato.", fail.Message);
+                    var errorResponse = new ErrorResponseDto("Errore durante l'inserimento del dato.", fail.Message);
 
                     if (fail is NotFoundException)
                         return NotFound(errorResponse);
