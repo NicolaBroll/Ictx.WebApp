@@ -6,11 +6,6 @@ using Newtonsoft.Json;
 
 namespace Ictx.WebApp.Api.Models
 {
-    public class DipendenteQueryParameters : PaginationModel
-    {
-        public int DittaId { get; set; }
-    }
-
     public class DipendenteDto
     {
         [JsonProperty("id")]

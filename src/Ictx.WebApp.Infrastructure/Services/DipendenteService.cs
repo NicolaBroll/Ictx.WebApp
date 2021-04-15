@@ -1,21 +1,22 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 using LanguageExt.Common;
-using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
-using System.Collections.Generic;
+using Ictx.Framework.Models;
+using Ictx.WebApp.Infrastructure.Models;
 
 namespace Ictx.WebApp.Infrastructure.Services
 {
     public class DipendenteService : IDipendenteService
     {
-        private readonly IAppUnitOfWork     _appUnitOfWork;
+        private readonly AppUnitOfWork     _appUnitOfWork;
         private readonly IDateTimeService   _dateTimeService;
 
-        public DipendenteService(IAppUnitOfWork appUnitOfWork, IDateTimeService dateTimeService)
+        public DipendenteService(AppUnitOfWork appUnitOfWork, IDateTimeService dateTimeService)
         {
             this._appUnitOfWork     = appUnitOfWork;
             this._dateTimeService   = dateTimeService;

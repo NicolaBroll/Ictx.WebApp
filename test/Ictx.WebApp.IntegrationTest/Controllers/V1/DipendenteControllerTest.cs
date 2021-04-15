@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Api.Controllers.V1;
-using Ictx.WebApp.Core.Models;
+using Ictx.Framework.Models;
 
 namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 {

@@ -3,11 +3,11 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using static Ictx.WebApp.Api.Controllers.V1.ApiRoutesV1;
+using Ictx.WebApp.Infrastructure.Models;
 
 namespace Ictx.WebApp.Api.Controllers.V1
 {

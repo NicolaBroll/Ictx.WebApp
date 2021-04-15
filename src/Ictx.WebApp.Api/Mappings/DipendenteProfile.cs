@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using Ictx.Framework.Models;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.Api.Mappings
 {

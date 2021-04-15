@@ -1,5 +1,6 @@
-﻿using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.Models;
+﻿using Ictx.Framework.Models;
+using Ictx.WebApp.Core.Entities;
+using Ictx.WebApp.Infrastructure.Models;
 using LanguageExt.Common;
 using System.Threading.Tasks;
 
