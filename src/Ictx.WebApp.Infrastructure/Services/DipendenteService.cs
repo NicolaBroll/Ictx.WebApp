@@ -13,10 +13,10 @@ namespace Ictx.WebApp.Infrastructure.Services
 {
     public class DipendenteService : IDipendenteService
     {
-        private readonly AppUnitOfWork     _appUnitOfWork;
+        private readonly IAppUnitOfWork _appUnitOfWork;
         private readonly IDateTimeService   _dateTimeService;
 
-        public DipendenteService(AppUnitOfWork appUnitOfWork, IDateTimeService dateTimeService)
+        public DipendenteService(IAppUnitOfWork appUnitOfWork, IDateTimeService dateTimeService)
         {
             this._appUnitOfWork     = appUnitOfWork;
             this._dateTimeService   = dateTimeService;

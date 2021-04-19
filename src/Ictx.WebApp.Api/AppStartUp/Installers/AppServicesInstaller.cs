@@ -17,7 +17,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
             services.TryAddSingleton<IDateTimeService, DateTimeService>();
 
             // Unit of work.
-            services.TryAddScoped<AppUnitOfWork>();
+            services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();
         }
     }
 }

@@ -22,6 +22,19 @@ namespace Ictx.WebApp.Core.Entities
         {
             return base.ToString() + $" CodiceFiscale:{CodiceFiscale} Cognome:{Cognome} Nome:{Nome}";
         }
+
+        public Dipendente()
+        { }
+
+        public Dipendente(int dittaId, string codiceFiscale, string cognome, string nome, Sesso sesso, DateTime dataNascita)
+        {
+            this.DittaId = dittaId;
+            this.CodiceFiscale = codiceFiscale;
+            this.Cognome = cognome;
+            this.Nome = nome;
+            this.Sesso = sesso;
+            this.DataNascita = dataNascita;
+        }
     }
 
 }

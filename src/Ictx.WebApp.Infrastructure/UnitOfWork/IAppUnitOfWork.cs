@@ -1,0 +1,20 @@
+﻿using System;
+using System.Threading.Tasks;
+using Ictx.Framework.Repository;
+using Ictx.WebApp.Core.Entities;
+using Ictx.WebApp.Infrastructure.Data;
+using Ictx.Framework.Repository.Interfaces;
+
+namespace Ictx.WebApp.Infrastructure.UnitOfWork
+{
+    public interface IAppUnitOfWork: IDisposable
+    {
+        IGenericRepository<Dipendente> DipendenteRepository { get; }
+        IGenericRepository<Ditta> DittaRepository { get; }
+        IGenericRepository<Impresa> ImpresaRepository { get; }
+        IGenericRepository<UfficioBase> UfficioBaseRepository { get; }
+        IGenericRepository<Ufficio> UfficioRepository { get; }
+
+        Task SaveAsync();
+    }
+}

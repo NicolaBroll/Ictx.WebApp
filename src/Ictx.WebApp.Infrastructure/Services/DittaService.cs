@@ -9,9 +9,9 @@ namespace Ictx.WebApp.Infrastructure.Services
 {
     public class DittaService : IDittaService
     {
-        private readonly AppUnitOfWork _appUnitOfWork;
+        private readonly IAppUnitOfWork _appUnitOfWork;
 
-        public DittaService(AppUnitOfWork appUnitOfWork)
+        public DittaService(IAppUnitOfWork appUnitOfWork)
         {
             this._appUnitOfWork = appUnitOfWork;
         }

@@ -4,7 +4,7 @@ namespace Ictx.WebApp.Core.Base
 {
     public abstract class BaseEntity
     {
-        public virtual int Id { get; protected set; }
+        public int Id { get; set; }
 
         public override string ToString()
         {

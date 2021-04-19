@@ -3,26 +3,27 @@ using System.Threading.Tasks;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.Framework.Repository;
+using Ictx.Framework.Repository.Interfaces;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
-    public class AppUnitOfWork
+    public class AppUnitOfWork : IAppUnitOfWork
     {
         private readonly AppDbContext _context;
 
         // Repository.
-        private GenericRepository<UfficioBase, AppDbContext>  _ufficioBaseRepository;
-        private GenericRepository<Ufficio, AppDbContext>      _ufficioRepository;
-        private GenericRepository<Impresa, AppDbContext>      _impresaRepository;
-        private GenericRepository<Ditta, AppDbContext>        _dittaRepository;
-        private GenericRepository<Dipendente, AppDbContext>   _dipendenteRepository;
+        private IGenericRepository<UfficioBase> _ufficioBaseRepository;
+        private IGenericRepository<Ufficio> _ufficioRepository;
+        private IGenericRepository<Impresa> _impresaRepository;
+        private IGenericRepository<Ditta> _dittaRepository;
+        private IGenericRepository<Dipendente> _dipendenteRepository;
 
         public AppUnitOfWork(AppDbContext context)
         {
             this._context = context;
         }
 
-        public GenericRepository<UfficioBase, AppDbContext> UfficioBaseRepository
+        public IGenericRepository<UfficioBase> UfficioBaseRepository
         {
             get
             {
@@ -33,7 +34,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             }
         }
 
-        public GenericRepository<Ufficio, AppDbContext> UfficioRepository
+        public IGenericRepository<Ufficio> UfficioRepository
         {
             get
             {
@@ -44,7 +45,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             }
         }
 
-        public GenericRepository<Impresa, AppDbContext> ImpresaRepository
+        public IGenericRepository<Impresa> ImpresaRepository
         {
             get
             {
@@ -55,7 +56,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             }
         }
 
-        public GenericRepository<Ditta, AppDbContext> DittaRepository
+        public IGenericRepository<Ditta> DittaRepository
         {
             get
             {
@@ -66,7 +67,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             }
         }
 
-        public GenericRepository<Dipendente, AppDbContext> DipendenteRepository
+        public IGenericRepository<Dipendente> DipendenteRepository
         {
             get
             {
