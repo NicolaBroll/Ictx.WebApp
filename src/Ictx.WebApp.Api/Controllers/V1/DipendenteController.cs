@@ -1,27 +1,26 @@
 ﻿using System.Net;
 using System.Threading.Tasks;
-using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using AutoMapper;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
-using static Ictx.WebApp.Api.Controllers.V1.ApiRoutesV1;
 using Ictx.WebApp.Infrastructure.Models;
+using static Ictx.WebApp.Api.Controllers.V1.ApiRoutesV1;
 
 namespace Ictx.WebApp.Api.Controllers.V1
 {
     [ApiController]
     [ApiVersion("1.0")]
     [Produces("application/json")]
-    public class DipendenteController : ControllerBase
+    public class DipendenteController : AppBaseController
     {
-        private readonly IMapper            _mapper;
+        private readonly IMapper _mapper;
         private readonly IDipendenteService _dipendenteService;
 
-        public DipendenteController(IMapper mapper, IDipendenteService dipendenteService)
+        public DipendenteController(IMapper mapper, IDipendenteService dipendenteService): base(mapper)
         {
-            this._mapper            = mapper;
+            this._mapper = mapper;
             this._dipendenteService = dipendenteService;
         }
 
@@ -54,12 +53,8 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<DipendenteDto>> GetById(int id)
         {
-            var dipendenteResult = await this._dipendenteService.GetByIdAsync(id);
-
-            return dipendenteResult.Match<ActionResult<DipendenteDto>>(
-                (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
-                (fail) => NotFound(new ErrorResponseDto("Errore durante la lettura del dato.", fail.Message))
-                );
+            var result = await this._dipendenteService.GetByIdAsync(id);
+            return ApiResponse<Dipendente, DipendenteDto>(result);
         }
 
         /// <summary>
@@ -73,14 +68,10 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [HttpDelete(DipendenteRoute.Delete)]
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult> Delete(int id)
+        public async Task<ActionResult<DipendenteDto>> Delete(int id)
         {
             var result = await this._dipendenteService.DeleteAsync(id);
-
-            return result.Match<ActionResult>(
-                (succ) => Ok(),
-                (fail) => NotFound(new ErrorResponseDto("Errore durante l'eliminazione del dato.", fail.Message))
-                );
+            return ApiResponse<Dipendente, DipendenteDto>(result);
         }
 
         /// <summary>
@@ -98,16 +89,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
             var objToInsert = _mapper.Map<Dipendente>(model);
             var result = await this._dipendenteService.InsertAsync(objToInsert);
 
-            return result.Match<ActionResult>(
-                (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
-                (fail) => {
-                    var errorResponse = new ErrorResponseDto("Errore durante l'inserimento del dato.", fail.Message);
-
-                    if (fail is BadRequestException)
-                        return BadRequest(errorResponse);
-
-                    return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);
-                });
+            return ApiResponse<Dipendente, DipendenteDto>(result);
         }
 
         /// <summary>
@@ -129,19 +111,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
             var objToUpdate = _mapper.Map<Dipendente>(model);
             var result = await this._dipendenteService.SaveAsync(id, objToUpdate);
 
-            return result.Match<ActionResult>(
-                (succ) => Ok(_mapper.Map<DipendenteDto>(succ)),
-                (fail) => {
-                    var errorResponse = new ErrorResponseDto("Errore durante l'inserimento del dato.", fail.Message);
-
-                    if (fail is NotFoundException)
-                        return NotFound(errorResponse);
-
-                    if (fail is BadRequestException)
-                        return BadRequest(errorResponse);
-
-                    return StatusCode((int)HttpStatusCode.InternalServerError, errorResponse);
-                });
+            return ApiResponse<Dipendente, DipendenteDto>(result);
         }
     }
 }

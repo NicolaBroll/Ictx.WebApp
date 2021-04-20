@@ -2,10 +2,11 @@
 
 namespace Ictx.WebApp.Core.Exceptions.Dipendente
 {
-    public class NotFoundException : Exception
+    public class NotFoundException: Exception
     {
-        public NotFoundException(int id) : base($"Dipendente con id: {id} non trovato.")
-        {
-        }
+        public NotFoundException(string message = "") : base(
+            String.IsNullOrEmpty(message) ? "I dato non trovato." : message
+        )
+        { }
     }
 }

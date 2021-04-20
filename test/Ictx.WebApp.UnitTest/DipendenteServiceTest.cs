@@ -21,7 +21,6 @@ namespace Ictx.WebApp.UnitTest
         private readonly DipendenteService _sut;
         private readonly Mock<IAppUnitOfWork> _appUnitOfWork = new Mock<IAppUnitOfWork>();
         private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new Mock<IGenericRepository<Dipendente>>();
-
         private readonly Mock<IDateTimeService> _dateTimeService = new Mock<IDateTimeService>();
         private readonly int _dittaId;
         private readonly IReadOnlyList<Dipendente> _listaDipendentiFake;
@@ -44,15 +43,14 @@ namespace Ictx.WebApp.UnitTest
             this._appUnitOfWork.Setup(x => x.DipendenteRepository.ReadAsync(dipendente.Id)).ReturnsAsync(dipendente);
 
             // Act.
-            var responseResult = await this._sut.GetByIdAsync(dipendente.Id);
+            var response = await this._sut.GetByIdAsync(dipendente.Id);
 
             // Assert.
-            var response = responseResult.Match<Dipendente>(
-                (succ) => succ,
-                (fail) => null
-            );
+            response.IsSuccess.Should().BeTrue();
 
-            response.Id.Should().Be(dipendente.Id);
+            response.IfSucc(
+                (succ) => succ.Id.Should().Be(dipendente.Id)
+            );
         }
 
         [Fact]
@@ -66,8 +64,9 @@ namespace Ictx.WebApp.UnitTest
             var responseResult = await this._sut.GetByIdAsync(0);
 
             // Assert.
-            var response = responseResult.Match<object>(
-                (succ) => succ,
+            responseResult.IsSuccess.Should().BeFalse();
+
+            responseResult.IfFail(
                 (fail) => fail.Should().BeOfType(typeof(NotFoundException))
             );
         }

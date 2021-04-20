@@ -13,13 +13,15 @@ namespace Ictx.WebApp.Infrastructure.Services
 {
     public class DipendenteService : IDipendenteService
     {
-        private readonly IAppUnitOfWork _appUnitOfWork;
+        private readonly IAppUnitOfWork     _appUnitOfWork;
         private readonly IDateTimeService   _dateTimeService;
+        private readonly IDittaService      _dittaService;
 
-        public DipendenteService(IAppUnitOfWork appUnitOfWork, IDateTimeService dateTimeService)
+        public DipendenteService(IAppUnitOfWork appUnitOfWork, IDateTimeService dateTimeService, IDittaService dittaService)
         {
             this._appUnitOfWork     = appUnitOfWork;
             this._dateTimeService   = dateTimeService;
+            this._dittaService      = dittaService;
         }
 
         /// <summary>
@@ -54,7 +56,7 @@ namespace Ictx.WebApp.Infrastructure.Services
 
             if (dipendente is null)
             {
-                return new Result<Dipendente>(new NotFoundException(id));
+                return new Result<Dipendente>(new NotFoundException($"Dipendente con id: {id} non trovato."));
             }
 
             return dipendente;
@@ -74,7 +76,7 @@ namespace Ictx.WebApp.Infrastructure.Services
 
             if (ditta is null)
             {
-                return new Result<Dipendente>(new BadRequestException(model.DittaId));
+                return new Result<Dipendente>(new BadRequestException($"Ditta con id: {model.DittaId} non trovata."));
             }
 
             var utcNow = this._dateTimeService.UtcNow;
@@ -112,7 +114,7 @@ namespace Ictx.WebApp.Infrastructure.Services
 
             if (objToUpdate is null)
             {
-                return new Result<Dipendente>(new NotFoundException(id));
+                return new Result<Dipendente>(new NotFoundException($"Dipendente con id: {id} non trovato."));
             }
 
             // Leggo la ditta.
@@ -120,7 +122,7 @@ namespace Ictx.WebApp.Infrastructure.Services
 
             if (ditta is null)
             {
-                return new Result<Dipendente>(new BadRequestException(model.DittaId));
+                return new Result<Dipendente>(new BadRequestException($"Ditta con id: {model.DittaId} non trovata."));
             }
 
             objToUpdate.CodiceFiscale = model.CodiceFiscale.ToUpper();
@@ -149,7 +151,7 @@ namespace Ictx.WebApp.Infrastructure.Services
 
             if (objToDelete is null)
             {
-                return new Result<Dipendente>(new NotFoundException(id));
+                return new Result<Dipendente>(new NotFoundException($"Dipendente con id: {id} non trovato."));
             }
 
             this._appUnitOfWork.DipendenteRepository.Delete(objToDelete);

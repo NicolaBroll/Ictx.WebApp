@@ -374,7 +374,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             var response = await HttpClient.DeleteAsync(url.Replace("{id}", id.ToString()));
 
             // Assert.
-            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            ; response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
             var parsedRespose = await response.Content.ReadAsAsync<ErrorResponseDto>();
 
