@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Ictx.Framework.Repository;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Infrastructure.Data;
 using Ictx.Framework.Repository.Interfaces;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork

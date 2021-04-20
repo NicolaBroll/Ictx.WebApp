@@ -1,4 +1,5 @@
-﻿using Ictx.WebApp.Core.Entities;
+﻿using Ictx.Framework.BO.Interfaces;
+using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Models;
 
 namespace Ictx.WebApp.Infrastructure.BO.Interfaces

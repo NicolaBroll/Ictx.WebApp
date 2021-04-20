@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using AutoMapper;
+using Ictx.Framework.Models;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
-using Ictx.WebApp.Infrastructure.BO.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ictx.WebApp.Api.Controllers

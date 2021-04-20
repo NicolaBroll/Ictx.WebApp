@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ictx.Framework.Models;
+using Ictx.Framework.BO;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Models;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
-using Ictx.WebApp.Infrastructure.BO.Base;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using Ictx.WebApp.Infrastructure.BO.Interfaces;
