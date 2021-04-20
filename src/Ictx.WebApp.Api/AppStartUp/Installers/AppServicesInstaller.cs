@@ -1,4 +1,6 @@
-﻿using Ictx.WebApp.Infrastructure.Services;
+﻿using Ictx.WebApp.Infrastructure.BO;
+using Ictx.WebApp.Infrastructure.BO.Interfaces;
+using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.Extensions.Configuration;
@@ -12,9 +14,11 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
         public void InstallServices(IServiceCollection services, IConfiguration configuration)
         {
             // Services.
-            services.TryAddScoped<IDittaService, DittaService>();
-            services.TryAddScoped<IDipendenteService, DipendenteService>();
             services.TryAddSingleton<IDateTimeService, DateTimeService>();
+
+            // BO.
+            services.TryAddScoped<IDipendenteBO, DipendenteBO>();
+            services.TryAddScoped<IDittaBO, DittaBO>();
 
             // Unit of work.
             services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();

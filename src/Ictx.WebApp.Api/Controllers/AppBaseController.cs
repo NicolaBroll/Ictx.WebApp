@@ -2,7 +2,7 @@
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
-using LanguageExt.Common;
+using Ictx.WebApp.Infrastructure.BO.Base;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ictx.WebApp.Api.Controllers
@@ -16,22 +16,28 @@ namespace Ictx.WebApp.Api.Controllers
             this._mapper = mapper;
         }
 
-        protected ActionResult<R> ApiResponse<T, R>(Result<T> dipendenteResult)
+        protected ActionResult<R> ApiResponse<T, R>(BOResult<T> dipendenteResult)
         {
-            return dipendenteResult.Match<ActionResult<R>>(
-                (succ) => Ok(_mapper.Map<R>(succ)),
-                (fail) => {
+            // Success.
+            if (dipendenteResult.IsSuccess)
+            {
+                return Ok(_mapper.Map<R>(dipendenteResult.ResultData));
+            }
 
-                    var errorMessage = new ErrorResponseDto(fail.Message);
+            var errorMessage = new ErrorResponseDto(dipendenteResult.Exception.Message);
 
-                    if (fail is BadRequestException)
-                        return BadRequest(errorMessage);
+            // Fail.
+            if (dipendenteResult.Exception is BadRequestException) 
+            {
+                return BadRequest(errorMessage);
+            }
 
-                    if (fail is NotFoundException)
-                        return NotFound(errorMessage);
+            if (dipendenteResult.Exception is NotFoundException) 
+            {
+                return NotFound(errorMessage);
+            }
 
-                    return StatusCode((int)HttpStatusCode.InternalServerError, errorMessage);
-                });
+            return StatusCode((int)HttpStatusCode.InternalServerError, errorMessage);
         }
     }
 }

@@ -6,28 +6,31 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
+using Ictx.WebApp.Infrastructure.BO;
+using Ictx.WebApp.Infrastructure.BO.Interfaces;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
-using Ictx.Framework.Repository.Interfaces;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
+using Ictx.Framework.Repository.Interfaces;
 
 namespace Ictx.WebApp.UnitTest
 {
-    public class DipendenteServiceTest
+    public class DipendenteBOTest
     {
-        private readonly DipendenteService _sut;
-        private readonly Mock<IAppUnitOfWork> _appUnitOfWork = new Mock<IAppUnitOfWork>();
-        private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new Mock<IGenericRepository<Dipendente>>();
-        private readonly Mock<IDateTimeService> _dateTimeService = new Mock<IDateTimeService>();
+        private readonly DipendenteBO _sut;
+        private readonly Mock<IAppUnitOfWork> _appUnitOfWork = new ();
+        private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new ();
+        private readonly Mock<IDateTimeService> _dateTimeService = new ();
+        private readonly Mock<IDittaBO> _dittaBO = new ();
+
         private readonly int _dittaId;
         private readonly IReadOnlyList<Dipendente> _listaDipendentiFake;
 
-        public DipendenteServiceTest()
+        public DipendenteBOTest()
         {
-            this._sut = new DipendenteService(this._appUnitOfWork.Object, this._dateTimeService.Object);
+            this._sut = new DipendenteBO(this._appUnitOfWork.Object, this._dateTimeService.Object, this._dittaBO.Object);
             this._dittaId = 1;
             this._listaDipendentiFake = GetListaDipendentiFake();
         }
@@ -43,14 +46,11 @@ namespace Ictx.WebApp.UnitTest
             this._appUnitOfWork.Setup(x => x.DipendenteRepository.ReadAsync(dipendente.Id)).ReturnsAsync(dipendente);
 
             // Act.
-            var response = await this._sut.GetByIdAsync(dipendente.Id);
+            var response = await this._sut.ReadAsync(dipendente.Id);
 
             // Assert.
             response.IsSuccess.Should().BeTrue();
-
-            response.IfSucc(
-                (succ) => succ.Id.Should().Be(dipendente.Id)
-            );
+            response.ResultData.Id.Should().Be(dipendente.Id);
         }
 
         [Fact]
@@ -61,14 +61,11 @@ namespace Ictx.WebApp.UnitTest
             this._appUnitOfWork.Setup(x => x.DipendenteRepository.ReadAsync(It.IsAny<int>())).ReturnsAsync(() => null);
 
             // Act.
-            var responseResult = await this._sut.GetByIdAsync(0);
+            var responseResult = await this._sut.ReadAsync(0);
 
             // Assert.
             responseResult.IsSuccess.Should().BeFalse();
-
-            responseResult.IfFail(
-                (fail) => fail.Should().BeOfType(typeof(NotFoundException))
-            );
+            responseResult.Exception.Should().BeOfType(typeof(NotFoundException));
         }
 
         #region Utils
