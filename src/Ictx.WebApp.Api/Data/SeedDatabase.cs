@@ -1,10 +1,11 @@
-﻿using Ictx.WebApp.Api.Database.SeedData;
+﻿using System;
+using System.Threading.Tasks;
+using Ictx.WebApp.Api.Data.SeedData;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
-using System;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace Ictx.WebApp.Api.Database
+namespace Ictx.WebApp.Api.Data
 {
     public class SeedDatabase: IDisposable
     {
@@ -19,7 +20,11 @@ namespace Ictx.WebApp.Api.Database
 
         public async Task Initialize()
         {
-            _context.Database.EnsureCreated();
+            // Crea il db in base al dtc e non considerando le migrations.
+            // _context.Database.EnsureCreated();
+
+            // Eseguo le migrations.
+            _context.Database.Migrate();
 
             // Uffici base.
             if(!(await _appUnitOfWork.UfficioBaseRepository.AnyAsync()))

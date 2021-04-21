@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ictx.WebApp.Api.Helper;
-using Ictx.WebApp.Api.Database;
+using Ictx.WebApp.Api.Data;
 using Ictx.WebApp.Api.AppStartUp;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Api.Common.HealthCheck;

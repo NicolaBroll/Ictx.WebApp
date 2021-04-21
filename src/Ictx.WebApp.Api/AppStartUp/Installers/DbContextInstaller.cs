@@ -12,7 +12,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
         {
             // DB context.
             services.AddDbContext<AppDbContext>(options => options
-                .UseSqlServer(configuration.GetConnectionString("DefaultConnection"))
+                .UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(typeof(Startup).Assembly.FullName))
                 .LogTo(Log.Debug));
         }
     }
