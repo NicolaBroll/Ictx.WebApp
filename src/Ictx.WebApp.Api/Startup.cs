@@ -10,24 +10,42 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Data;
-using Ictx.WebApp.Api.AppStartUp;
-using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Api.Common.HealthCheck;
+using Ictx.WebApp.Api.AppStartUp.Configurations;
+using Ictx.WebApp.Infrastructure.Data;
 
 namespace Ictx.WebApp.Api
 {
     public class Startup
     {
-        private readonly IConfiguration _configuration;
+        private readonly IConfiguration         _configuration;
+        private readonly IWebHostEnvironment    _env;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
         {
-            _configuration = configuration;
+            this._configuration = configuration;
+            this._env           = env;
         }
 
         public void ConfigureServices(IServiceCollection services)
-        {
-            services.InstallServiceAssembly(_configuration);
+        {    
+            // Application settings.
+            services.ConfigureApplicationSettings(this._configuration);
+
+            // AppDbContext.
+            services.ConfigureAppDbContext(this._configuration, this._env);
+
+            // Configuro i servizi consumati dall'app.
+            services.ConfigureApplicationServices();
+
+            // Automapper.
+            services.ConfigureAutomapper();
+
+            // Health check.
+            services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
+
+            // MVC.
+            services.ConfigureMvc();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
@@ -41,14 +59,9 @@ namespace Ictx.WebApp.Api
             {
                 // Swagger.
                 app.UseSwagger();
-                app.UseSwaggerUI(options =>
-                {
-                // build a swagger endpoint for each discovered API version
-                foreach (var description in provider.ApiVersionDescriptions)
-                    {
-                        options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant());
-                    }
-                });
+                app.UseSwaggerUI(options => provider.ApiVersionDescriptions
+                .ToList()
+                .ForEach(description => options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant())));
             }
 
             // Health checks.

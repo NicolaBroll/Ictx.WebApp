@@ -3,15 +3,15 @@ using Ictx.WebApp.Infrastructure.BO.Interfaces;
 using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Ictx.WebApp.Api.AppStartUp.Installers
+namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {
-    public class AppServicesInstaller: IInstaller
+    public static class ApplicationServicesConfiguration
     {
-        public void InstallServices(IServiceCollection services, IConfiguration configuration)
+        /// <summary>Configura la Dependency Injection aggiungendo tutti i servizi che utilizza l'app.</summary>
+        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
         {
             // Services.
             services.TryAddSingleton<IDateTimeService, DateTimeService>();
@@ -22,6 +22,8 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
 
             // Unit of work.
             services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();
+
+            return services;
         }
     }
 }

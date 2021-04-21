@@ -2,20 +2,20 @@
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json.Serialization;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using Ictx.WebApp.Api.Common;
 using Ictx.WebApp.Api.Common.Swagger;
 using Ictx.WebApp.Api.Helper;
+using Ictx.WebApp.Api.Common;
 
-namespace Ictx.WebApp.Api.AppStartUp.Installers
+namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {
-    public class MvcInstaller : IInstaller
+    public static class MvcConfiguration
     {
-        public void InstallServices(IServiceCollection services, IConfiguration configuration)
+        /// <summary>Configura la Dependency Injection aggiungendo la configurazione letta dall'appsettings.json.</summary>
+        public static IServiceCollection ConfigureMvc(this IServiceCollection services)
         {
             // Validation.
             services.Configure<ApiBehaviorOptions>(opt =>
@@ -52,7 +52,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
                     // reporting api versions will return the headers "api-supported-versions" and "api-deprecated-versions"
                     options.ReportApiVersions = true;
                 });
-            
+
             services.AddVersionedApiExplorer(
                 options =>
                 {
@@ -97,6 +97,8 @@ namespace Ictx.WebApp.Api.AppStartUp.Installers
                     //    }
                     //});
                 });
+
+            return services;
         }
     }
 }

@@ -47,7 +47,7 @@ namespace Ictx.WebApp.Core.Utils
                 TempNum = TempNum + (int)((AppoNum - 1) & 0x7ffe) / 2;
                 I = I + 1;
                 if (I > 15)
-                    break; // TODO: might not be correct. Was : Exit Do
+                    break;
 
 
                 // I PARI 
