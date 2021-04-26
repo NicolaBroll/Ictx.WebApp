@@ -1,6 +1,6 @@
 using System;
 using System.Collections.Generic;
-using Ictx.WebApp.Core.Base;
+using Ictx.WebApp.Core.Entities.Base;
 
 namespace Ictx.WebApp.Core.Entities
 {

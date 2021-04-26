@@ -9,7 +9,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ictx.WebApp.Api.Helper;
-using Ictx.WebApp.Api.Data;
 using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
 using Ictx.WebApp.Infrastructure.Data;
@@ -88,17 +87,6 @@ namespace Ictx.WebApp.Api
             });
 
             app.UseRouting();
-
-            // Seed database.
-            if (env.IsDevelopment())
-            {
-                var ctx = app.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope().ServiceProvider.GetRequiredService<AppDbContext>();
-
-                using (var seedDatabase = new SeedDatabase(ctx))
-                {
-                    seedDatabase.Initialize().Wait();
-                }
-            }
 
             // Cors.
             app.UseCors(ApiHelper.AnyCors);

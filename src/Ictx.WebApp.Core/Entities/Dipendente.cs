@@ -1,5 +1,5 @@
 ﻿using System;
-using Ictx.WebApp.Core.Base;
+using Ictx.WebApp.Core.Entities.Base;
 using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.Core.Entities

@@ -8,7 +8,7 @@ namespace Ictx.WebApp.Api.Data.SeedData
 {
     public class SeedDitta : SeedDataCore
     {
-        public SeedDitta(AppUnitOfWork appUnitOfWork) : base(appUnitOfWork)
+        public SeedDitta(IAppUnitOfWork appUnitOfWork) : base(appUnitOfWork)
         { }
 
         public override async Task Popola()

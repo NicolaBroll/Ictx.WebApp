@@ -103,10 +103,14 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             GC.SuppressFinalize(this);
         }
 
+        public AppDbContext GetAppDbContext()
+        {
+            return this._context;
+        }
+
         //public override bool Equals(object obj)
         //{
-        //    return obj is AppUnitOfWork work &&
-        //           EqualityComparer<AppDbContext>.Default.Equals(_context, work._context);
+        //    return obj is AppUnitOfWork work && EqualityComparer<AppDbContext>.Default.Equals(_context, work._context);
         //}
     }
 }

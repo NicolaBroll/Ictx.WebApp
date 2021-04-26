@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Ictx.WebApp.Api.Data.SeedData;
-using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,13 +8,11 @@ namespace Ictx.WebApp.Api.Data
 {
     public class SeedDatabase: IDisposable
     {
-        private readonly AppUnitOfWork _appUnitOfWork;
-        private readonly AppDbContext _context;
+        private readonly IAppUnitOfWork _appUnitOfWork;
 
-        public SeedDatabase(AppDbContext context)
+        public SeedDatabase(IAppUnitOfWork appUnitOfWork)
         {
-            this._appUnitOfWork = new AppUnitOfWork(context);
-            this._context = context;
+            this._appUnitOfWork = appUnitOfWork;
         }
 
         public async Task Initialize()
@@ -24,7 +21,7 @@ namespace Ictx.WebApp.Api.Data
             // _context.Database.EnsureCreated();
 
             // Eseguo le migrations.
-            _context.Database.Migrate();
+            this._appUnitOfWork.GetAppDbContext().Database.Migrate();
 
             // Uffici base.
             if(!(await _appUnitOfWork.UfficioBaseRepository.AnyAsync()))

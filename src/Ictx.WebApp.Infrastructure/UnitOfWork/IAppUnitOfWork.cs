@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Ictx.WebApp.Core.Entities;
 using Ictx.Framework.Repository.Interfaces;
+using Ictx.WebApp.Infrastructure.Data;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
@@ -14,5 +15,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
         IGenericRepository<Ufficio> UfficioRepository { get; }
 
         Task SaveAsync();
+
+        AppDbContext GetAppDbContext();
     }
 }

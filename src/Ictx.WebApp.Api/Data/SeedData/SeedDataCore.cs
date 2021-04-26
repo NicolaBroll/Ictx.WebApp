@@ -7,11 +7,11 @@ namespace Ictx.WebApp.Api.Data.SeedData
 {
     public partial class SeedDataCore
     {
-        protected readonly AppUnitOfWork _appUnitOfWork;
+        protected readonly IAppUnitOfWork _appUnitOfWork;
         protected readonly string _seedStaticDataDirectory;
         protected readonly Random _random;
 
-        public SeedDataCore(AppUnitOfWork appUnitOfWork)
+        public SeedDataCore(IAppUnitOfWork appUnitOfWork)
         {
             this._appUnitOfWork = appUnitOfWork;
             this._seedStaticDataDirectory = Path.Combine(Directory.GetCurrentDirectory(), "SeedDatabase", "SeedData", "Static");
