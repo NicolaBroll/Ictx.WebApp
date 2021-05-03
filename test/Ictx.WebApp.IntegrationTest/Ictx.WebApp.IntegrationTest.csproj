@@ -28,10 +28,4 @@
     <ProjectReference Include="..\..\src\Ictx.WebApp.Api\Ictx.WebApp.Api.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Ictx.Framework">
-      <HintPath>..\..\dll\Ictx.Framework.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Ictx.WebApp.Api.Data;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
+using Ictx.WebApp.Infrastructure.Data;
 using Serilog;
 
 namespace Ictx.WebApp.Api

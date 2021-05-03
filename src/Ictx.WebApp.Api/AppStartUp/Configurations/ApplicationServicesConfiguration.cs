@@ -1,7 +1,5 @@
-﻿using Ictx.WebApp.Infrastructure.BO;
-using Ictx.WebApp.Infrastructure.BO.Interfaces;
+﻿using Ictx.WebApp.Core.Interfaces;
 using Ictx.WebApp.Infrastructure.Services;
-using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -17,8 +15,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             services.TryAddSingleton<IDateTimeService, DateTimeService>();
 
             // BO.
-            services.TryAddScoped<IDipendenteBO, DipendenteBO>();
-            services.TryAddScoped<IDittaBO, DittaBO>();
+            services.TryAddScoped<IDipendenteService, DipendenteService>();
 
             // Unit of work.
             services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();

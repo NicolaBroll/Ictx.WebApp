@@ -4,9 +4,10 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Infrastructure.Models;
-using Ictx.WebApp.Infrastructure.BO.Interfaces;
+using Ictx.WebApp.Core.Interfaces;
+using Ictx.WebApp.Core.Models;
 using static Ictx.WebApp.Api.Controllers.V1.ApiRoutesV1;
+using Ictx.WebApp.Api.Common;
 
 namespace Ictx.WebApp.Api.Controllers.V1
 {
@@ -15,13 +16,15 @@ namespace Ictx.WebApp.Api.Controllers.V1
     [Produces("application/json")]
     public class DipendenteController : AppBaseController
     {
-        private readonly IMapper        _mapper;
-        private readonly IDipendenteBO  _dipendenteBO;
+        private readonly IMapper            _mapper;
+        private readonly SessionData        _sessionData;
+        private readonly IDipendenteService _dipendenteService;
 
-        public DipendenteController(IMapper mapper, IDipendenteBO dipendenteBO): base(mapper)
+        public DipendenteController(IMapper mapper, SessionData sessionData, IDipendenteService dipendenteService): base(mapper)
         {
-            this._mapper        = mapper;
-            this._dipendenteBO  = dipendenteBO;
+            this._mapper            = mapper;
+            this._sessionData       = sessionData;
+            this._dipendenteService = dipendenteService;
         }
 
         /// <summary>
@@ -34,7 +37,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(PageResultDto<DipendenteDto>), (int)HttpStatusCode.OK)]
         public async Task<PageResultDto<DipendenteDto>> Get([FromQuery] DipendenteListFilter dipendenteQueryParameters)
         {
-            var list = await _dipendenteBO.ReadManyAsync(dipendenteQueryParameters);
+            var list = await _dipendenteService.ReadManyAsync(dipendenteQueryParameters);
             var res = _mapper.Map<PageResultDto<DipendenteDto>>(list);
 
             return res;
@@ -53,7 +56,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<DipendenteDto>> GetById(int id)
         {
-            var result = await this._dipendenteBO.ReadAsync(id);
+            var result = await this._dipendenteService.ReadAsync(id);
             return ApiResponse<Dipendente, DipendenteDto>(result);
         }
 
@@ -70,7 +73,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
         public async Task<ActionResult<bool>> Delete(int id)
         {
-            var result = await this._dipendenteBO.DeleteAsync(id);
+            var result = await this._dipendenteService.DeleteAsync(id);
             return ApiResponse<bool, bool>(result);
         }
 
@@ -87,7 +90,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model)
         {
             var objToInsert = _mapper.Map<Dipendente>(model);
-            var result = await this._dipendenteBO.InsertAsync(objToInsert);
+            var result = await this._dipendenteService.InsertAsync(objToInsert);
 
             return ApiResponse<Dipendente, DipendenteDto>(result);
         }
@@ -109,7 +112,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model)
         {
             var objToUpdate = _mapper.Map<Dipendente>(model);
-            var result = await this._dipendenteBO.SaveAsync(id, objToUpdate);
+            var result = await this._dipendenteService.SaveAsync(id, objToUpdate);
 
             return ApiResponse<Dipendente, DipendenteDto>(result);
         }

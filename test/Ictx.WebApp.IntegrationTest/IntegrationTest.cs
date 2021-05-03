@@ -15,7 +15,7 @@ namespace Ictx.WebApp.IntegrationTest
             this.HttpClient = appInstance.CreateClient();
         }
 
-        protected string GetVersionedUrl(string url, int version)
+        protected static string GetVersionedUrl(string url, int version)
         {
             return url.Replace("{version:apiVersion}", version.ToString());
         }
@@ -25,7 +25,7 @@ namespace Ictx.WebApp.IntegrationTest
             this.HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", await GetJwtAsync());
         }
 
-        private async Task<string> GetJwtAsync()
+        private static async Task<string> GetJwtAsync()
         {            
             return await Task.FromException<string>(new NotImplementedException());
         }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Api.Controllers.V1;
-using Ictx.Framework.Models;
+using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 {
@@ -17,7 +17,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
     {
         private readonly int _version;
         private readonly int _dittaId;
-        private readonly IReadOnlyList<DipendenteDto> _lstDipendenteDto;
+        private readonly List<DipendenteDto> _lstDipendenteDto;
 
         public DipendenteControllerTest(AppInstance instance) : base(instance)
         {
@@ -79,7 +79,7 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
             var parsedRespose = await response.Content.ReadAsAsync<PageResult<DipendenteDto>>();
 
-            parsedRespose.TotalCount.Should().BeGreaterOrEqualTo(this._lstDipendenteDto.Count()); // Dipendenti totali in database.
+            parsedRespose.TotalCount.Should().BeGreaterOrEqualTo(this._lstDipendenteDto.Count); // Dipendenti totali in database.
             parsedRespose.Data.Count().Should().Be(dipendentiRequest); // Dipendenti totali richiesti.
         }
 

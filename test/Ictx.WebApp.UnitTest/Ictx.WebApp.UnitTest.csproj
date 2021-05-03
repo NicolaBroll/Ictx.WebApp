@@ -25,10 +25,4 @@
     <ProjectReference Include="..\..\src\Ictx.WebApp.Infrastructure\Ictx.WebApp.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Reference Include="Ictx.Framework">
-      <HintPath>..\..\dll\Ictx.Framework.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
 </Project>

@@ -6,31 +6,28 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Ictx.WebApp.Infrastructure.Services.Interfaces;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
-using Ictx.WebApp.Infrastructure.BO;
-using Ictx.WebApp.Infrastructure.BO.Interfaces;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
-using Ictx.Framework.Repository.Interfaces;
+using Ictx.WebApp.Infrastructure.Services;
+using Ictx.WebApp.Infrastructure.Repositories;
 
 namespace Ictx.WebApp.UnitTest
 {
-    public class DipendenteBOTest
+    public class DipendenteServiceTest
     {
-        private readonly DipendenteBO _sut;
+        private readonly DipendenteService _sut;
         private readonly Mock<IAppUnitOfWork> _appUnitOfWork = new ();
         private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new ();
         private readonly Mock<IDateTimeService> _dateTimeService = new ();
-        private readonly Mock<IDittaBO> _dittaBO = new ();
 
         private readonly int _dittaId;
-        private readonly IReadOnlyList<Dipendente> _listaDipendentiFake;
+        private readonly List<Dipendente> _listaDipendentiFake;
 
-        public DipendenteBOTest()
+        public DipendenteServiceTest()
         {
-            this._sut = new DipendenteBO(this._appUnitOfWork.Object, this._dateTimeService.Object, this._dittaBO.Object);
+            this._sut = new DipendenteService(this._appUnitOfWork.Object, this._dateTimeService.Object);
             this._dittaId = 1;
             this._listaDipendentiFake = GetListaDipendentiFake();
         }

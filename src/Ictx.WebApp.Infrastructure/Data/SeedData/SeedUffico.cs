@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 
-namespace Ictx.WebApp.Api.Data.SeedData
+namespace Ictx.WebApp.Infrastructure.Data.SeedData
 {
     public class SeedUfficio: SeedDataCore
     {

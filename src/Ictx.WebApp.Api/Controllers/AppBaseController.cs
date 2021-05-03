@@ -1,8 +1,8 @@
 ﻿using System.Net;
 using AutoMapper;
-using Ictx.Framework.Models;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
+using Ictx.WebApp.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ictx.WebApp.Api.Controllers
@@ -16,7 +16,7 @@ namespace Ictx.WebApp.Api.Controllers
             this._mapper = mapper;
         }
 
-        protected ActionResult<R> ApiResponse<T, R>(BOResult<T> dipendenteResult)
+        protected ActionResult<R> ApiResponse<T, R>(OperationResult<T> dipendenteResult)
         {
             // Success.
             if (dipendenteResult.IsSuccess)

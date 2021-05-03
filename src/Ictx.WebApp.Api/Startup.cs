@@ -27,7 +27,9 @@ namespace Ictx.WebApp.Api
         }
 
         public void ConfigureServices(IServiceCollection services)
-        {    
+        {
+            services.AddHttpContextAccessor();
+
             // Application settings.
             services.ConfigureApplicationSettings(this._configuration);
 
@@ -42,6 +44,9 @@ namespace Ictx.WebApp.Api
 
             // Health check.
             services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
+
+            // Session data.
+            services.ConfigureSessionData();
 
             // MVC.
             services.ConfigureMvc();
@@ -59,8 +64,8 @@ namespace Ictx.WebApp.Api
                 // Swagger.
                 app.UseSwagger();
                 app.UseSwaggerUI(options => provider.ApiVersionDescriptions
-                .ToList()
-                .ForEach(description => options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant())));
+                    .ToList()
+                    .ForEach(description => options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant())));
             }
 
             // Health checks.

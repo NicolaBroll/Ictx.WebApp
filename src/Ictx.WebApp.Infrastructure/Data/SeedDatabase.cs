@@ -1,12 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Ictx.WebApp.Api.Data.SeedData;
+﻿using System.Threading.Tasks;
+using Ictx.WebApp.Infrastructure.Data.SeedData;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ictx.WebApp.Api.Data
+namespace Ictx.WebApp.Infrastructure.Data
 {
-    public class SeedDatabase: IDisposable
+    public class SeedDatabase
     {
         private readonly IAppUnitOfWork _appUnitOfWork;
 
@@ -42,11 +41,6 @@ namespace Ictx.WebApp.Api.Data
                 var seedDitta = new SeedDitta(_appUnitOfWork);
                 await seedDitta.Popola();
             }
-        }
-
-        public void Dispose()
-        {
-            this._appUnitOfWork.Dispose();
         }
     }
 }

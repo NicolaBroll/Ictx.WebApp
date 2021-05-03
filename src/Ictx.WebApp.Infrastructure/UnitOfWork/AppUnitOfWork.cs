@@ -2,11 +2,22 @@
 using System.Threading.Tasks;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Data;
-using Ictx.Framework.Repository;
-using Ictx.Framework.Repository.Interfaces;
+using Ictx.WebApp.Infrastructure.Repositories;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
+    public interface IAppUnitOfWork : IDisposable
+    {
+        IGenericRepository<Dipendente> DipendenteRepository { get; }
+        IGenericRepository<Ditta> DittaRepository { get; }
+        IGenericRepository<Impresa> ImpresaRepository { get; }
+        IGenericRepository<UfficioBase> UfficioBaseRepository { get; }
+        IGenericRepository<Ufficio> UfficioRepository { get; }
+
+        Task SaveAsync();
+        AppDbContext GetAppDbContext();
+    }
+
     public class AppUnitOfWork : IAppUnitOfWork
     {
         private readonly AppDbContext _context;
@@ -83,18 +94,18 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             await _context.SaveChangesAsync();
         }
 
-        private bool disposed = false;
+        private bool _disposed = false;
 
         protected virtual void Dispose(bool disposing)
         {
-            if (!this.disposed)
+            if (!this._disposed)
             {
                 if (disposing)
                 {
                     _context.DisposeAsync();
                 }
             }
-            this.disposed = true;
+            this._disposed = true;
         }
 
         public void Dispose()

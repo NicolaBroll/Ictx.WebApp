@@ -20,7 +20,7 @@ namespace Ictx.WebApp.IntegrationTest
             });
         }
 
-        private void ReplaceDbContext(IServiceCollection services)
+        private static void ReplaceDbContext(IServiceCollection services)
         {
             var appDbContext = services.SingleOrDefault(d => d.ServiceType == typeof(AppDbContext));
             var dbContextOptions = services.SingleOrDefault(d => d.ServiceType == typeof(DbContextOptions<AppDbContext>));
