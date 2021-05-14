@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Ictx.WebApp.Infrastructure.Repositories
@@ -19,6 +18,7 @@ namespace Ictx.WebApp.Infrastructure.Repositories
         IQueryable<T> QueryMany(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "");
         Task<T> ReadAsync(object id);
         Task<IEnumerable<T>> ReadManyAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "");
+        Task<PageResult<T>> ReadManyPaginatedAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "", PaginationModel pagination = null);
         void Update(T entityToUpdate);
     }
 
@@ -70,6 +70,26 @@ namespace Ictx.WebApp.Infrastructure.Repositories
             IQueryable<T> query = QueryMany(filter, orderBy, includeProperties);
 
             return await query.ToListAsync();
+        }
+
+        public async virtual Task<PageResult<T>> ReadManyPaginatedAsync(
+            Expression<Func<T, bool>> filter = null,
+            Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
+            string includeProperties = "",
+            PaginationModel pagination = null)
+        {
+            IQueryable<T> query = QueryMany(filter, orderBy, includeProperties);
+
+            if(pagination is null) 
+            {
+                throw new ArgumentException("PaginationModel is null.");
+            }
+
+            // Pagination.
+            var count = query.Count();
+            var list = await query.Skip((pagination.Page - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync();
+
+            return new PageResult<T>(list, count);            
         }
 
         public async virtual Task<T> ReadAsync(object id)

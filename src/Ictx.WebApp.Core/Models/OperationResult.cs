@@ -4,21 +4,19 @@ namespace Ictx.WebApp.Core.Models
 {
     public class OperationResult<T>
     {
-        public bool IsSuccess { get; }
-        public bool IsFail { get { return !IsSuccess; } }
+        public bool IsSuccess { get => ResultData != null; }
+        public bool IsFail { get => Exception != null; } 
 
-        public T ResultData { get; set; }
-        public Exception Exception { get; set; }
+        public T ResultData { get; }
+        public Exception Exception { get; }
 
         public OperationResult(T data)
         {
-            this.IsSuccess = true;
             this.ResultData = data;
         }
 
         public OperationResult(Exception ex)
         {
-            this.IsSuccess = false;
             this.Exception = ex;
         }
     }

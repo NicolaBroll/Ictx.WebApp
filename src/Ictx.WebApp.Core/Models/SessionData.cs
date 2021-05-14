@@ -1,6 +1,11 @@
-﻿namespace Ictx.WebApp.Api.Common
+﻿namespace Ictx.WebApp.Core.Models
 {
-    public class SessionData
+    public interface ISessionData
+    {
+        int UserId { get; }
+    }
+
+    public class SessionData : ISessionData
     {
         public int UserId { get; private set; }
 

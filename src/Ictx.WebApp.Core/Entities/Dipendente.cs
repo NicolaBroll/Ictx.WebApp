@@ -6,17 +6,31 @@ namespace Ictx.WebApp.Core.Entities
 {
     public class Dipendente : BaseEntity
     {
-        public int DittaId { get; set; }
-        public string CodiceFiscale { get; set; }
-        public string Cognome { get; set; }
-        public string Nome { get; set; }
+        private string _codiceFiscale;
+        private string _cognome;
+        private string _nome;
+
+        public string CodiceFiscale
+        {
+            get => this._codiceFiscale;
+            set => this._codiceFiscale = value.ToUpper();
+        }
+
+        public string Cognome
+        {
+            get => this._cognome;
+            set => this._cognome = value.ToUpper();
+        }
+
+        public string Nome
+        {
+            get => this._nome;
+            set => this._nome = value.ToUpper();
+        }
+
         public Sesso Sesso { get; set; }
         public DateTime DataNascita { get; set; }
-        public DateTime Inserted { get; set; }
-        public DateTime Updated { get; set; }
-
-        // Relazioni.
-        public Ditta Ditta { get; set; }
+        public bool IsDeleted { get; set; }
 
         public override string ToString()
         {
@@ -26,9 +40,8 @@ namespace Ictx.WebApp.Core.Entities
         public Dipendente()
         { }
 
-        public Dipendente(int dittaId, string codiceFiscale, string cognome, string nome, Sesso sesso, DateTime dataNascita)
+        public Dipendente(string codiceFiscale, string cognome, string nome, Sesso sesso, DateTime dataNascita)
         {
-            this.DittaId = dittaId;
             this.CodiceFiscale = codiceFiscale;
             this.Cognome = cognome;
             this.Nome = nome;

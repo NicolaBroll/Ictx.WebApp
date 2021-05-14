@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
-using Ictx.WebApp.Infrastructure.Data;
 using Serilog;
 
 namespace Ictx.WebApp.Api
@@ -25,8 +24,7 @@ namespace Ictx.WebApp.Api
                     var appUnitOfWork = services.GetRequiredService<IAppUnitOfWork>();
 
                     // Seed database.
-                    var seedDatabase = new SeedDatabase(appUnitOfWork);                
-                    await seedDatabase.Initialize();
+                    appUnitOfWork.GetAppDbContext().Database.EnsureCreated();
                 }
                 catch (Exception ex)
                 {

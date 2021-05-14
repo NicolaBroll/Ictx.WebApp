@@ -1,5 +1,5 @@
-﻿using Ictx.WebApp.Api.Common;
-using Ictx.WebApp.Api.Services;
+﻿using Ictx.WebApp.Api.Services;
+using Ictx.WebApp.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations
@@ -11,7 +11,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
 		{
 			services.AddScoped<SessionDataService>();
 
-			services.AddScoped<SessionData>(serviceProvider => {
+			services.AddScoped<ISessionData, SessionData>(serviceProvider => {
 				SessionDataService sessionDataService = serviceProvider.GetService<SessionDataService>();
 				return sessionDataService.GetSessionData();
 			});

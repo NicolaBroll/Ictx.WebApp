@@ -11,11 +11,6 @@ namespace Ictx.WebApp.Api.Models
         [JsonProperty("id")]
         public int Id { get; set; }
 
-        [JsonProperty("dittaId")]
-        [DisplayName("Identificativo ditta")]
-        [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
-        public int DittaId { get; set; }
-
         [JsonProperty("codiceFiscale")]
         [DisplayName("Codice fiscale")]
         [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
@@ -45,9 +40,8 @@ namespace Ictx.WebApp.Api.Models
         public DipendenteDto()
         { }
 
-        public DipendenteDto(int dittaId, string codiceFiscale, string cognome, string nome, string sesso, DateTime dataNascita)
+        public DipendenteDto(string codiceFiscale, string cognome, string nome, string sesso, DateTime dataNascita)
         {
-            this.DittaId = dittaId;
             this.CodiceFiscale = codiceFiscale;
             this.Cognome = cognome;
             this.Nome = nome;

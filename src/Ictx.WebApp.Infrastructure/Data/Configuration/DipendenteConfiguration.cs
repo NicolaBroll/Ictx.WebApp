@@ -28,10 +28,7 @@ namespace Ictx.WebApp.Infrastructure.Data.Configuration
                 .IsRequired(true)
                 .HasColumnType("char(1)");
 
-            // Relazione Ditta.
-            builder.HasOne(p => p.Ditta)
-                .WithMany(b => b.LstDipendenti)
-                .HasForeignKey(p => p.DittaId);
+            builder.HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }
