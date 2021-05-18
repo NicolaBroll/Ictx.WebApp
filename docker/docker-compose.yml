@@ -1,8 +1,0 @@
-version: '3.4'
-
-services:
-  ictx.webapp.api:
-    image: ${DOCKER_REGISTRY-}ictxwebappapi
-    build:
-      context: .
-      dockerfile: ../src/Ictx.WebApp.Api/Dockerfile
