@@ -18,21 +18,25 @@ namespace Ictx.WebApp.Infrastructure.Services
             this._mailSettings = mailSettings;
         }
 
-        public async Task SendEmail(List<UtenteEmailModel> toUsers, string subject, string body)
+        public async Task SendEmail(List<MailModel> mails)
+        {
+            foreach (var mail in mails)
+            {
+                await SendEmail(mail);
+            }
+        }
+
+        public async Task SendEmail(MailModel mail)
         {
             var message = new MimeMessage();
+
             message.From.Add(new MailboxAddress(this._mailSettings.FromName, this._mailSettings.FromMailAddress));
-
-            foreach (var to in toUsers)
-            {
-                message.To.Add(new MailboxAddress($"{to.Nome} {to.Cognome}", to.Mail));
-            }
-
-            message.Subject = subject;
+            message.To.Add(new MailboxAddress($"{mail.Nome} {mail.Cognome}", mail.Mail));
+            message.Subject = mail.Subject;
 
             message.Body = new TextPart(TextFormat.Html)
             {
-                Text = body
+                Text = mail.Body
             };
 
             using var client = new SmtpClient

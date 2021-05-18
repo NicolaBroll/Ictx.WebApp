@@ -6,6 +6,7 @@ namespace Ictx.WebApp.Core.Interfaces
 {
     public interface IMailService
     {
-        Task SendEmail(List<UtenteEmailModel> toUsers, string subject, string body);
+        Task SendEmail(List<MailModel> mails);
+        Task SendEmail(MailModel mail);
     }
 }

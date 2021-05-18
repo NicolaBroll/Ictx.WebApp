@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
@@ -59,17 +58,16 @@ namespace Ictx.WebApp.Application.BO
 
             string body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/Prova.cshtml", new { });
 
-            var toAddresses = new List<UtenteEmailModel> 
-            { 
-                new UtenteEmailModel
-                {
-                    Nome = "Nicola",
-                    Cognome = "Broll",
-                    Mail = "nbroll@gmail.com"
-                } 
-            };
+            var mail = new MailModel
+            {
+                Nome = dipendente.Nome,
+                Cognome = dipendente.Cognome,
+                Mail = $"{dipendente.Nome}.{dipendente.Cognome}@gmail.com",
+                Subject = "Prova",
+                Body = body
+            };            
 
-            await this._mailService.SendEmail(toAddresses, "Prova", body);
+            await this._mailService.SendEmail(mail);
 
             return new OperationResult<Dipendente>(dipendente);
         }

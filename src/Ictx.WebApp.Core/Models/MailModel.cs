@@ -4,10 +4,12 @@ using System.Text;
 
 namespace Ictx.WebApp.Core.Models
 {
-    public class UtenteEmailModel
+    public class MailModel
     {
         public string Nome { get; set; }
         public string Cognome { get; set; }
         public string Mail { get; set; }
+        public string Subject { get; set; }
+        public string Body { get; set; }
     }
 }
