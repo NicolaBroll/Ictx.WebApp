@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Ictx.WebApp.Api.Templates.Mail\Ictx.WebApp.Api.Templates.Mail.csproj" />
     <ProjectReference Include="..\Ictx.WebApp.Application\Ictx.WebApp.Application.csproj" />
     <ProjectReference Include="..\Ictx.WebApp.Infrastructure\Ictx.WebApp.Infrastructure.csproj" />
   </ItemGroup>

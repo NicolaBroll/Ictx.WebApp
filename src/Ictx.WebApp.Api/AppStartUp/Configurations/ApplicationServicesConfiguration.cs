@@ -1,5 +1,8 @@
-﻿using Ictx.WebApp.Application.BO;
+﻿using Ictx.WebApp.Api.Templates.Mail;
+using Ictx.WebApp.Application.BO;
+using Ictx.WebApp.Core.Interfaces;
 using Ictx.WebApp.Infrastructure.Application;
+using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -14,6 +17,8 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             // Services.
             services.TryAddSingleton<IDateTimeService, DateTimeService>();
             services.TryAddScoped<DipendenteBO>();
+            services.AddScoped<IRazorViewToStringRenderer, RazorViewToStringRenderer>();
+            services.AddScoped<IMailService, MailService>();
 
             // Unit of work.
             services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();

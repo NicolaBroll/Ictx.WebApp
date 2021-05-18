@@ -50,6 +50,8 @@ namespace Ictx.WebApp.Api
 
             // MVC.
             services.ConfigureMvc();
+
+            services.AddRazorPages();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)

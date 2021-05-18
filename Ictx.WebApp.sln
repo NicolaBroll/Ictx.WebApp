@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "templates", "templates", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mail", "mail", "{1B67EFF5-C646-4DCE-9599-CE25C438D097}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ictx.WebApp.Api.Templates.Mail", "src\Ictx.WebApp.Api.Templates.Mail\Ictx.WebApp.Api.Templates.Mail.csproj", "{FC44E7A9-96CB-472D-862D-CD8C7235EB7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ictx.WebApp.Api.Templates.Mail", "src\Ictx.WebApp.Api.Templates.Mail\Ictx.WebApp.Api.Templates.Mail.csproj", "{FC44E7A9-96CB-472D-862D-CD8C7235EB7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

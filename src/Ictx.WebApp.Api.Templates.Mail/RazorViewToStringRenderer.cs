@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Ictx.WebApp.Core.Interfaces;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -86,10 +87,5 @@ namespace Ictx.WebApp.Api.Templates.Mail
             httpContext.RequestServices = _serviceProvider;
             return new ActionContext(httpContext, new RouteData(), new ActionDescriptor());
         }
-
-    }
-    public interface IRazorViewToStringRenderer
-    {
-        Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model);
     }
 }
