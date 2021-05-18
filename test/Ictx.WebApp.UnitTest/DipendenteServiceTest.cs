@@ -14,6 +14,7 @@ using Ictx.WebApp.Infrastructure.Repositories;
 using Ictx.WebApp.Application.BO;
 using Ictx.WebApp.Infrastructure.Application;
 using Microsoft.Extensions.Logging;
+using Ictx.WebApp.Core.Interfaces;
 
 namespace Ictx.WebApp.UnitTest
 {

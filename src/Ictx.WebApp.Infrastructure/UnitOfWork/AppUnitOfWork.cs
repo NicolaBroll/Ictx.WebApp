@@ -3,20 +3,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Entities.Base;
+using Ictx.WebApp.Core.Interfaces;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
-    public interface IAppUnitOfWork : IDisposable
-    {
-        IGenericRepository<Dipendente> DipendenteRepository { get; } 
-
-        Task SaveAsync();
-        AppDbContext GetAppDbContext();
-    }
-
     public class AppUnitOfWork : IAppUnitOfWork
     {
         private readonly AppDbContext _context;

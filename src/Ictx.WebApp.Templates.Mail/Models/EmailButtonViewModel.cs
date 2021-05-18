@@ -1,4 +1,4 @@
-﻿namespace Ictx.WebApp.Api.Templates.Mail.Models
+﻿namespace Ictx.WebApp.Templates.Mail.Models
 {
     public class EmailButtonViewModel
     {

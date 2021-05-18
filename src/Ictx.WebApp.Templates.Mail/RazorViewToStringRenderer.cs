@@ -13,7 +13,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Ictx.WebApp.Api.Templates.Mail
+namespace Ictx.WebApp.Templates.Mail
 {
     public class RazorViewToStringRenderer : IRazorViewToStringRenderer
     {

@@ -10,9 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ictx.WebApp.Application\Ictx.WebApp.Application.csproj" />
+    <ProjectReference Include="..\Ictx.WebApp.Core\Ictx.WebApp.Core.csproj" />
   </ItemGroup>
-  
-
 
 </Project>

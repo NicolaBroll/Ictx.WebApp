@@ -4,8 +4,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Serilog;
+using Ictx.WebApp.Core.Interfaces;
 
 namespace Ictx.WebApp.Api
 {
@@ -24,7 +24,7 @@ namespace Ictx.WebApp.Api
                     var appUnitOfWork = services.GetRequiredService<IAppUnitOfWork>();
 
                     // Seed database.
-                    appUnitOfWork.GetAppDbContext().Database.EnsureCreated();
+                    // appUnitOfWork.GetAppDbContext().Database.EnsureCreated();
                 }
                 catch (Exception ex)
                 {

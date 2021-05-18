@@ -1,4 +1,4 @@
-﻿using Ictx.WebApp.Api.Templates.Mail;
+﻿using Ictx.WebApp.Templates.Mail;
 using Ictx.WebApp.Application.BO;
 using Ictx.WebApp.Core.Interfaces;
 using Ictx.WebApp.Infrastructure.Application;

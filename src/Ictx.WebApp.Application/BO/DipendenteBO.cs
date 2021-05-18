@@ -5,7 +5,6 @@ using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Core.Interfaces;
 using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.Extensions.Logging;
 
 namespace Ictx.WebApp.Application.BO
