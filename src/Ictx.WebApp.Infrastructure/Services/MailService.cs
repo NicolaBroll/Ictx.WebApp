@@ -20,13 +20,28 @@ namespace Ictx.WebApp.Infrastructure.Services
 
         public async Task SendEmail(List<MailModel> mails)
         {
-            foreach (var mail in mails)
+            using (var client = new SmtpClient())
             {
-                await SendEmail(mail);
-            }
+                // For demo-purposes, accept all SSL certificates
+                //client.ServerCertificateValidationCallback = (_, _, _, _) => true;
+
+                await client.ConnectAsync(this._mailSettings.IpAddress, this._mailSettings.Port, this._mailSettings.UseSsl);
+
+                foreach (var mail in mails)
+                {
+                    await SendEmail(mail, client);
+                }
+
+                await client.DisconnectAsync(true);
+            };
         }
 
         public async Task SendEmail(MailModel mail)
+        {
+            await SendEmail(new List<MailModel> { mail });
+        }
+
+        private async Task SendEmail(MailModel mail, SmtpClient client)
         {
             var message = new MimeMessage();
 
@@ -39,16 +54,7 @@ namespace Ictx.WebApp.Infrastructure.Services
                 Text = mail.Body
             };
 
-            using var client = new SmtpClient
-            {
-                // For demo-purposes, accept all SSL certificates
-                // ServerCertificateValidationCallback = (_, _, _, _) => true
-            };
-
-            await client.ConnectAsync(this._mailSettings.IpAddress, this._mailSettings.Port, this._mailSettings.UseSsl);
-
-            await client.SendAsync(message);
-            await client.DisconnectAsync(true);
+            await client.SendAsync(message);            
         }
     }
 }

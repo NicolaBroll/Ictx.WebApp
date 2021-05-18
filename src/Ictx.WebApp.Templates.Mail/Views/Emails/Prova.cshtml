@@ -2,6 +2,21 @@
     ViewData["EmailTitle"] = "Prova";
 }
 
+@using  Ictx.WebApp.Core.Models
+@model DipendenteEmailTemplate
+
 <p>
     Email di prova.
+</p>
+<br />
+<p>
+    Nome: @Model.Nome
+</p>
+<br />
+<p>
+    Cognome: @Model.Cognome
+</p>
+<br />
+<p>
+    Codice fiscale: @Model.CodiceFiscale
 </p>

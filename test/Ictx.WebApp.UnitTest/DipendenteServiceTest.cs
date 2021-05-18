@@ -6,13 +6,10 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
-using Ictx.WebApp.Infrastructure.Repositories;
 using Ictx.WebApp.Application.BO;
-using Ictx.WebApp.Infrastructure.Application;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Core.Interfaces;
 
@@ -23,6 +20,8 @@ namespace Ictx.WebApp.UnitTest
         private readonly DipendenteBO _sut;
         private readonly Mock<ILogger<DipendenteBO>> _logger = new();
         private readonly Mock<ISessionData> _sessionData = new();
+        private readonly Mock<IRazorViewToStringRenderer> _razorViewToStringRenderer = new();
+        private readonly Mock<IMailService> _mailService = new();        
         private readonly Mock<IAppUnitOfWork> _appUnitOfWork = new ();
         private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new ();
 
@@ -30,7 +29,7 @@ namespace Ictx.WebApp.UnitTest
 
         public DipendenteServiceTest()
         {
-            this._sut = new DipendenteBO(this._logger.Object, this._appUnitOfWork.Object, this._sessionData.Object);
+            this._sut = new DipendenteBO(this._logger.Object, this._razorViewToStringRenderer.Object, this._appUnitOfWork.Object, this._mailService.Object, this._sessionData.Object);
             this._listaDipendentiFake = GetListaDipendentiFake();
         }
 
@@ -43,6 +42,7 @@ namespace Ictx.WebApp.UnitTest
 
             this._appUnitOfWork.Setup(x => x.DipendenteRepository).Returns(this._dipendenteRepository.Object);
             this._appUnitOfWork.Setup(x => x.DipendenteRepository.ReadAsync(dipendente.Id)).ReturnsAsync(dipendente);
+            this._razorViewToStringRenderer.Setup(x => x.RenderViewToStringAsync<DipendenteEmailTemplate>(It.IsAny<string>(), It.IsAny<DipendenteEmailTemplate>())).ReturnsAsync(() => String.Empty);
 
             // Act.
             var response = await this._sut.ReadAsync(dipendente.Id);
