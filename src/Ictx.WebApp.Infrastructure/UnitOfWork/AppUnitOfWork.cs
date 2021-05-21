@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Entities.Base;
@@ -35,7 +36,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             }
         }
 
-        public async Task SaveAsync()
+        public async Task SaveAsync(CancellationToken cancellationToken = default)
         {
             var entries = this._context.ChangeTracker
                 .Entries()
@@ -51,7 +52,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
                 }
             }
 
-            await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         private bool _disposed = false;

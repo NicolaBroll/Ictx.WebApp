@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Core.Models;
 using System.Linq;
+using System.Threading;
 
 namespace Ictx.WebApp.Application.BO
 {
@@ -17,11 +18,11 @@ namespace Ictx.WebApp.Application.BO
         }
 
         // Read many.
-        public async Task<PageResult<T>> ReadManyAsync(Q filter)
+        public async Task<PageResult<T>> ReadManyAsync(Q filter, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await ReadManyViewsAsync(filter);
+                return await ReadManyViewsAsync(filter, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -35,39 +36,46 @@ namespace Ictx.WebApp.Application.BO
             }
         }
 
-        protected virtual async Task<PageResult<T>> ReadManyViewsAsync(Q filter)
+        protected virtual async Task<PageResult<T>> ReadManyViewsAsync(Q filter, CancellationToken cancellationToken)
         {
             return await Task.FromException<PageResult<T>>(new NotImplementedException());
         }
 
 
-        // Read many.
-        public async Task<OperationResult<T>> ReadAsync(K key)
+        // Read.
+        public async Task<OperationResult<T>> ReadAsync(K key, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await ReadViewAsync(key);
+                return await ReadViewAsync(key, cancellationToken);
+            }
+            catch (TaskCanceledException) 
+            {
+                return new OperationResult<T>(new TaskCanceledException("Operazione annullata dall'utente."));
             }
             catch (Exception ex)
             {
                 this.Logger.LogError(ex, $"{GetBoName()} ReadAsync key: {key}");
-
                 return new OperationResult<T>(ex);
             }
         }
 
-        protected virtual async Task<OperationResult<T>> ReadViewAsync(K key)
+        protected virtual async Task<OperationResult<T>> ReadViewAsync(K key, CancellationToken cancellationToken)
         {
             return await Task.FromException<OperationResult<T>>(new NotImplementedException());
         }
 
 
         // Delete.
-        public async Task<OperationResult<bool>> DeleteAsync(K key)
+        public async Task<OperationResult<bool>> DeleteAsync(K key, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await DeleteViewAsync(key);
+                return await DeleteViewAsync(key, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return new OperationResult<bool>(new TaskCanceledException("Operazione annullata dall'utente."));
             }
             catch (Exception ex)
             {
@@ -77,18 +85,22 @@ namespace Ictx.WebApp.Application.BO
             }
         }
 
-        protected virtual async Task<OperationResult<bool>> DeleteViewAsync(K key)
+        protected virtual async Task<OperationResult<bool>> DeleteViewAsync(K key, CancellationToken cancellationToken)
         {
             return await Task.FromException<OperationResult<bool>>(new NotImplementedException());
         }
 
         // Save.
-        public async Task<OperationResult<T>> SaveAsync(K key, T value)
+        public async Task<OperationResult<T>> SaveAsync(K key, T value, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await SaveViewAsync(key, value);
+                return await SaveViewAsync(key, value, cancellationToken);
 
+            }
+            catch (TaskCanceledException)
+            {
+                return new OperationResult<T>(new TaskCanceledException("Operazione annullata dall'utente."));
             }
             catch (Exception ex)
             {
@@ -98,18 +110,22 @@ namespace Ictx.WebApp.Application.BO
             }
         }
 
-        protected virtual async Task<OperationResult<T>> SaveViewAsync(K key, T value)
+        protected virtual async Task<OperationResult<T>> SaveViewAsync(K key, T value, CancellationToken cancellationToken)
         {
             return await Task.FromException<OperationResult<T>>(new NotImplementedException());
         }
 
 
         // Insert.
-        public async Task<OperationResult<T>> InsertAsync(T value)
+        public async Task<OperationResult<T>> InsertAsync(T value, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await InsertViewAsync(value);
+                return await InsertViewAsync(value, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                return new OperationResult<T>(new TaskCanceledException("Operazione annullata dall'utente."));
             }
             catch (Exception ex)
             {
@@ -119,7 +135,7 @@ namespace Ictx.WebApp.Application.BO
             }
         }
 
-        protected virtual async Task<OperationResult<T>> InsertViewAsync(T value)
+        protected virtual async Task<OperationResult<T>> InsertViewAsync(T value, CancellationToken cancellationToken)
         {
             return await Task.FromException<OperationResult<T>>(new NotImplementedException());
         }

@@ -1,4 +1,6 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
@@ -16,25 +18,47 @@ namespace Ictx.WebApp.Api.Controllers
             this._mapper = mapper;
         }
 
-        protected ActionResult<R> ApiResponse<T, R>(OperationResult<T> dipendenteResult)
+        protected ActionResult<R> ApiResponse<T, R>(OperationResult<T> result)
         {
             // Success.
-            if (dipendenteResult.IsSuccess)
+            if (result.IsSuccess)
             {
-                return Ok(_mapper.Map<R>(dipendenteResult.ResultData));
+                return Ok(_mapper.Map<R>(result.ResultData));
             }
 
-            var errorMessage = new ErrorResponseDto(dipendenteResult.Exception.Message);
+            // Fail.
+            return FailResponse(result.Exception);
+        }
+
+        protected ActionResult<T> ApiResponse<T>(OperationResult<T> result)
+        {
+            // Success.
+            if (result.IsSuccess)
+            {
+                return Ok(result.ResultData);
+            }
 
             // Fail.
-            if (dipendenteResult.Exception is BadRequestException) 
+            return FailResponse(result.Exception);
+        }
+
+        private ActionResult FailResponse(Exception ex)
+        {
+            var errorMessage = new ErrorResponseDto(ex.Message);
+
+            if (ex is BadRequestException)
             {
                 return BadRequest(errorMessage);
             }
 
-            if (dipendenteResult.Exception is NotFoundException) 
+            if (ex is NotFoundException)
             {
                 return NotFound(errorMessage);
+            }
+
+            if (ex is TaskCanceledException)
+            {
+                return StatusCode(499, errorMessage);
             }
 
             return StatusCode((int)HttpStatusCode.InternalServerError, errorMessage);

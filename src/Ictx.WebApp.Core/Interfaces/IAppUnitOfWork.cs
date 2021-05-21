@@ -1,5 +1,6 @@
 ﻿using Ictx.WebApp.Core.Entities;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ictx.WebApp.Core.Interfaces
@@ -8,6 +9,6 @@ namespace Ictx.WebApp.Core.Interfaces
     {
         IGenericRepository<Dipendente> DipendenteRepository { get; }
 
-        Task SaveAsync();
+        Task SaveAsync(CancellationToken cancellationToken = default);
     }
 }

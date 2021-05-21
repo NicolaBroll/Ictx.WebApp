@@ -8,6 +8,7 @@ using Ictx.WebApp.Core.Interfaces;
 using System.Threading.Tasks;
 using System;
 using Microsoft.Extensions.Logging;
+using System.Threading;
 
 namespace Ictx.WebApp.Infrastructure.Services
 {
@@ -22,7 +23,7 @@ namespace Ictx.WebApp.Infrastructure.Services
             this._mailSettings  = mailSettings;
         }
 
-        public async Task SendEmail(List<MailModel> mails)
+        public async Task SendEmail(List<MailModel> mails, CancellationToken cancellationToken = default)
         {
             try
             {
@@ -35,7 +36,7 @@ namespace Ictx.WebApp.Infrastructure.Services
 
                     foreach (var mail in mails)
                     {
-                        await SendEmail(mail, client);
+                        await SendEmail(mail, client, cancellationToken);
                     }
 
                     await client.DisconnectAsync(true);
@@ -47,12 +48,12 @@ namespace Ictx.WebApp.Infrastructure.Services
             }           
         }
 
-        public async Task SendEmail(MailModel mail)
+        public async Task SendEmail(MailModel mail, CancellationToken cancellationToken = default)
         {
-            await SendEmail(new List<MailModel> { mail });
+            await SendEmail(new List<MailModel> { mail }, cancellationToken);
         }
 
-        private async Task SendEmail(MailModel mail, SmtpClient client)
+        private async Task SendEmail(MailModel mail, SmtpClient client, CancellationToken cancellationToken)
         {
             var message = new MimeMessage();
 
@@ -65,7 +66,7 @@ namespace Ictx.WebApp.Infrastructure.Services
                 Text = mail.Body
             };
 
-            await client.SendAsync(message);            
+            await client.SendAsync(message, cancellationToken: cancellationToken);            
         }
     }
 }
