@@ -20,7 +20,7 @@ namespace Ictx.WebApp.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<PageResultDto<TEntityDto>> Get([FromQuery] Parameters paginationModel, CancellationToken cancellationToken = default)
+        public async virtual Task<PageResultDto<TEntityDto>> Get([FromQuery] Parameters paginationModel, CancellationToken cancellationToken = default)
         {
             var list = await _baseBO.ReadManyAsync(paginationModel, cancellationToken);
             var res = _mapper.Map<PageResultDto<TEntityDto>>(list);
@@ -29,21 +29,21 @@ namespace Ictx.WebApp.Api.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TEntityDto>> GetById(Key id, CancellationToken cancellationToken = default)
+        public async virtual Task<ActionResult<TEntityDto>> GetById(Key id, CancellationToken cancellationToken = default)
         {
             var result = await this._baseBO.ReadAsync(id, cancellationToken);
             return ApiResponse<TEntity, TEntityDto>(result);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> Delete(Key id, CancellationToken cancellationToken = default)
+        public async virtual Task<ActionResult<bool>> Delete(Key id, CancellationToken cancellationToken = default)
         {
             var result = await this._baseBO.DeleteAsync(id, cancellationToken);
             return ApiResponse(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<TEntityDto>> Post([FromBody] TEntityDto model, CancellationToken cancellationToken = default)
+        public async virtual Task<ActionResult<TEntityDto>> Post([FromBody] TEntityDto model, CancellationToken cancellationToken = default)
         {
             var objToInsert = _mapper.Map<TEntity>(model);
             var result = await this._baseBO.InsertAsync(objToInsert, cancellationToken);
@@ -52,7 +52,7 @@ namespace Ictx.WebApp.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<TEntityDto>> Put(Key id, [FromBody] TEntityDto model, CancellationToken cancellationToken = default)
+        public async virtual Task<ActionResult<TEntityDto>> Put(Key id, [FromBody] TEntityDto model, CancellationToken cancellationToken = default)
         {
             var objToUpdate = _mapper.Map<TEntity>(model);
             var result = await this._baseBO.SaveAsync(id, objToUpdate, cancellationToken);
