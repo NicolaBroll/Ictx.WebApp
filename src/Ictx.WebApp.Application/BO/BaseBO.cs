@@ -1,20 +1,20 @@
 ﻿using System;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Core.Models;
-using System.Linq;
-using System.Threading;
 
 namespace Ictx.WebApp.Application.BO
 {
     public abstract class BaseBO<T, K, Q> where Q : PaginationModel
-    {    
-        protected ILogger Logger { get; }
+    {
+        private readonly ILogger _logger;
 
         public BaseBO(ILogger logger)
         {
-            this.Logger = logger;
+            this._logger = logger;
         }
 
         // Read many.
@@ -26,7 +26,7 @@ namespace Ictx.WebApp.Application.BO
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, $"{GetBoName()} ReadManyAsync filter: {filter}");
+                this._logger.LogError(ex, $"{GetBoName()} ReadManyAsync filter: {filter}");
 
                 return new PageResult<T>
                 {
@@ -55,7 +55,7 @@ namespace Ictx.WebApp.Application.BO
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, $"{GetBoName()} ReadAsync key: {key}");
+                this._logger.LogError(ex, $"{GetBoName()} ReadAsync key: {key}");
                 return new OperationResult<T>(ex);
             }
         }
@@ -79,7 +79,7 @@ namespace Ictx.WebApp.Application.BO
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, $"{GetBoName()} DeleteAsync key: {key}");
+                this._logger.LogError(ex, $"{GetBoName()} DeleteAsync key: {key}");
 
                 return new OperationResult<bool>(ex);
             }
@@ -90,11 +90,19 @@ namespace Ictx.WebApp.Application.BO
             return await Task.FromException<OperationResult<bool>>(new NotImplementedException());
         }
 
+
         // Save.
         public async Task<OperationResult<T>> SaveAsync(K key, T value, CancellationToken cancellationToken = default)
         {
             try
             {
+                var validazione = Validation(value);
+
+                if (validazione.IsFail) 
+                {
+                    return validazione;
+                }
+
                 return await SaveViewAsync(key, value, cancellationToken);
 
             }
@@ -104,7 +112,7 @@ namespace Ictx.WebApp.Application.BO
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, $"{GetBoName()} SaveAsync key: {key} value: {value}");
+                this._logger.LogError(ex, $"{GetBoName()} SaveAsync key: {key} value: {value}");
 
                 return new OperationResult<T>(ex);
             }
@@ -121,6 +129,13 @@ namespace Ictx.WebApp.Application.BO
         {
             try
             {
+                var validazione = Validation(value);
+
+                if (validazione.IsFail)
+                {
+                    return validazione;
+                }
+
                 return await InsertViewAsync(value, cancellationToken);
             }
             catch (TaskCanceledException)
@@ -129,7 +144,7 @@ namespace Ictx.WebApp.Application.BO
             }
             catch (Exception ex)
             {
-                this.Logger.LogError(ex, $"{GetBoName()} SaveAsync value: {value}");
+                this._logger.LogError(ex, $"{GetBoName()} SaveAsync value: {value}");
 
                 return new OperationResult<T>(ex);
             }
@@ -140,6 +155,15 @@ namespace Ictx.WebApp.Application.BO
             return await Task.FromException<OperationResult<T>>(new NotImplementedException());
         }
 
-        private string GetBoName() => String.Join(' ', this.Logger.GetType().GetGenericArguments().Select(x => x.Name)); 
+
+        // Validation.
+        public OperationResult<T> Validation(T value)
+        {
+            return ValidationView(value);
+        }
+
+        protected abstract OperationResult<T> ValidationView(T value);
+
+        private string GetBoName() => String.Join(' ', this._logger.GetType().GetGenericArguments().Select(x => x.Name)); 
     }
 }

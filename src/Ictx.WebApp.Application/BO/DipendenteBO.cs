@@ -29,6 +29,20 @@ namespace Ictx.WebApp.Application.BO
         }
 
         /// <summary>
+        /// Validazione model.
+        /// </summary>
+        /// <param name="value">Modello contenente i dati del nuovo dipendente.</param>
+        /// <returns>Ritorna un OperationResult<Dipendente> se il model è valido.
+        /// Se il model non è valido, ritorna BadRequestException.
+        /// </returns>
+        protected override OperationResult<Dipendente> ValidationView(Dipendente value)
+        {
+            // TODO: Validazione.
+            // Ritorna dipendente sempre valido.
+            return new OperationResult<Dipendente>(value);
+        }
+
+        /// <summary>
         /// Ritorna una lista di dipendenti paginata.
         /// </summary>
         /// <param name="filter">Parametri di paginazione</param>
@@ -94,7 +108,6 @@ namespace Ictx.WebApp.Application.BO
         /// <param name="value">Modello contenente i dati del nuovo dipendente.</param>
         /// <returns>Ritorna un Result<Dipendente> contenente il dipendente creato.
         /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
-        /// Se la ditta non viene trovata, ritorna DittaNotFoundException.
         /// </returns>
         protected override async Task<OperationResult<Dipendente>> InsertViewAsync(Dipendente value, CancellationToken cancellationToken)
         {

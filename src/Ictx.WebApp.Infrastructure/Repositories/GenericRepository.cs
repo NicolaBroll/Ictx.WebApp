@@ -84,7 +84,7 @@ namespace Ictx.WebApp.Infrastructure.Repositories
 
         public async virtual Task<T> ReadAsync(object id, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.FindAsync(id, cancellationToken);
+            return await _dbSet.FindAsync(new object[] { id }, cancellationToken: cancellationToken);
         }
 
         public async virtual Task InsertAsync(T entity, CancellationToken cancellationToken = default)
