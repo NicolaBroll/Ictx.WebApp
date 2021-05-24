@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Ictx.WebApp.Api.Common;
+using Ictx.WebApp.Infrastructure.Common;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {
@@ -10,8 +10,9 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
         /// <summary>Configura la Dependency Injection aggiungendo la configurazione letta dall'appsettings.json.</summary>
         public static IServiceCollection ConfigureApplicationSettings(this IServiceCollection services, IConfiguration _configuration)
         {
-            services.Configure<ApplicationSettings>(_configuration.GetSection(nameof(ApplicationSettings)));
-            services.AddSingleton<IApplicationSettings>(sp => sp.GetRequiredService<IOptions<ApplicationSettings>>().Value);
+            // Mail.
+            services.Configure<MailSettings>(_configuration.GetSection(nameof(MailSettings)));
+            services.AddSingleton<IMailSettings>(sp => sp.GetRequiredService<IOptions<MailSettings>>().Value);
 
             return services;
         }

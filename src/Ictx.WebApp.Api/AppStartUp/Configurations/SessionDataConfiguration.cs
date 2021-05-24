@@ -1,5 +1,5 @@
 ﻿using Ictx.WebApp.Api.Services;
-using Ictx.WebApp.Core.Models;
+using Ictx.WebApp.Application.Models;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations

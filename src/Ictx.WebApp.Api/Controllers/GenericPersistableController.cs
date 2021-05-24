@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Application.BO;
+using Ictx.WebApp.Application.Models;
 using Ictx.WebApp.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ictx.WebApp.Api.Controllers
@@ -19,42 +21,42 @@ namespace Ictx.WebApp.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<PageResultDto<TEntityDto>> Get([FromQuery] Parameters paginationModel)
+        public async virtual Task<PageResultDto<TEntityDto>> Get([FromQuery] Parameters paginationModel, CancellationToken cancellationToken = default)
         {
-            var list = await _baseBO.ReadManyAsync(paginationModel);
+            var list = await _baseBO.ReadManyAsync(paginationModel, cancellationToken);
             var res = _mapper.Map<PageResultDto<TEntityDto>>(list);
 
             return res;
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<TEntityDto>> GetById(Key id)
+        public async virtual Task<ActionResult<TEntityDto>> GetById(Key id, CancellationToken cancellationToken = default)
         {
-            var result = await this._baseBO.ReadAsync(id);
+            var result = await this._baseBO.ReadAsync(id, cancellationToken);
             return ApiResponse<TEntity, TEntityDto>(result);
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult<bool>> Delete(Key id)
+        public async virtual Task<ActionResult<bool>> Delete(Key id, CancellationToken cancellationToken = default)
         {
-            var result = await this._baseBO.DeleteAsync(id);
-            return ApiResponse<bool, bool>(result);
+            var result = await this._baseBO.DeleteAsync(id, cancellationToken);
+            return ApiResponse(result);
         }
 
         [HttpPost]
-        public async Task<ActionResult<TEntityDto>> Post([FromBody] TEntityDto model)
+        public async virtual Task<ActionResult<TEntityDto>> Post([FromBody] TEntityDto model, CancellationToken cancellationToken = default)
         {
             var objToInsert = _mapper.Map<TEntity>(model);
-            var result = await this._baseBO.InsertAsync(objToInsert);
+            var result = await this._baseBO.InsertAsync(objToInsert, cancellationToken);
 
             return ApiResponse<TEntity, TEntityDto>(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<TEntityDto>> Put(Key id, [FromBody] TEntityDto model)
+        public async virtual Task<ActionResult<TEntityDto>> Put(Key id, [FromBody] TEntityDto model, CancellationToken cancellationToken = default)
         {
             var objToUpdate = _mapper.Map<TEntity>(model);
-            var result = await this._baseBO.SaveAsync(id, objToUpdate);
+            var result = await this._baseBO.SaveAsync(id, objToUpdate, cancellationToken);
 
             return ApiResponse<TEntity, TEntityDto>(result);
         }

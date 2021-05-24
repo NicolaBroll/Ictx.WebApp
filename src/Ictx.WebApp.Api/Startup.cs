@@ -50,6 +50,9 @@ namespace Ictx.WebApp.Api
 
             // MVC.
             services.ConfigureMvc();
+
+            // Razor pages per il render della mail.
+            services.AddRazorPages();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)

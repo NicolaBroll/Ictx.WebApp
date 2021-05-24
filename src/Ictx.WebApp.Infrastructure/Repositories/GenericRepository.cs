@@ -1,27 +1,15 @@
-﻿using Ictx.WebApp.Core.Models;
+﻿using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Ictx.WebApp.Infrastructure.Repositories
 {
-    public interface IGenericRepository<T> where T : class
-    {
-        Task<bool> AnyAsync(Expression<Func<T, bool>> filter = null);
-        void Delete(object id);
-        void Delete(T entityToDelete);
-        Task InsertAsync(T entity);
-        Task InsertManyAsync(IEnumerable<T> entity);
-        IQueryable<T> QueryMany(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "");
-        Task<T> ReadAsync(object id);
-        Task<IEnumerable<T>> ReadManyAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "");
-        Task<PageResult<T>> ReadManyPaginatedAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "", PaginationModel pagination = null);
-        void Update(T entityToUpdate);
-    }
-
     public class GenericRepository<T, D> : IGenericRepository<T> where T : class where D : DbContext
     {
         internal D _context;
@@ -33,14 +21,14 @@ namespace Ictx.WebApp.Infrastructure.Repositories
             this._dbSet = context.Set<T>();
         }
 
-        public async virtual Task<bool> AnyAsync(Expression<Func<T, bool>> filter = null)
+        public async virtual Task<bool> AnyAsync(Expression<Func<T, bool>> filter = null, CancellationToken cancellationToken = default)
         {
             IQueryable<T> query = _dbSet;
 
             if (filter != null)
-                return await query.AnyAsync(filter);
+                return await query.AnyAsync(filter, cancellationToken);
 
-            return await query.AnyAsync();
+            return await query.AnyAsync(cancellationToken);
         }
 
         public virtual IQueryable<T> QueryMany(
@@ -65,18 +53,20 @@ namespace Ictx.WebApp.Infrastructure.Repositories
         public async virtual Task<IEnumerable<T>> ReadManyAsync(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
-            string includeProperties = "")
+            string includeProperties = "",
+            CancellationToken cancellationToken = default)
         {
             IQueryable<T> query = QueryMany(filter, orderBy, includeProperties);
 
-            return await query.ToListAsync();
+            return await query.ToListAsync(cancellationToken: cancellationToken);
         }
 
         public async virtual Task<PageResult<T>> ReadManyPaginatedAsync(
             Expression<Func<T, bool>> filter = null,
             Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null,
             string includeProperties = "",
-            PaginationModel pagination = null)
+            PaginationModel pagination = null,
+            CancellationToken cancellationToken = default)
         {
             IQueryable<T> query = QueryMany(filter, orderBy, includeProperties);
 
@@ -87,28 +77,28 @@ namespace Ictx.WebApp.Infrastructure.Repositories
 
             // Pagination.
             var count = query.Count();
-            var list = await query.Skip((pagination.Page - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync();
+            var list = await query.Skip((pagination.Page - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync(cancellationToken: cancellationToken);
 
             return new PageResult<T>(list, count);            
         }
 
-        public async virtual Task<T> ReadAsync(object id)
+        public async virtual Task<T> ReadAsync(object id, CancellationToken cancellationToken = default)
         {
-            return await _dbSet.FindAsync(id);
+            return await _dbSet.FindAsync(new object[] { id }, cancellationToken: cancellationToken);
         }
 
-        public async virtual Task InsertAsync(T entity)
+        public async virtual Task InsertAsync(T entity, CancellationToken cancellationToken = default)
         {
-            await _dbSet.AddAsync(entity);
+            await _dbSet.AddAsync(entity, cancellationToken);
         }
-        public async virtual Task InsertManyAsync(IEnumerable<T> entity)
+        public async virtual Task InsertManyAsync(IEnumerable<T> entity, CancellationToken cancellationToken = default)
         {
-            await _dbSet.AddRangeAsync(entity);
+            await _dbSet.AddRangeAsync(entity, cancellationToken);
         }
 
-        public virtual void Delete(object id)
+        public async virtual Task Delete(object id, CancellationToken cancellationToken = default)
         {
-            T entityToDelete = _dbSet.Find(id);
+            T entityToDelete = await _dbSet.FindAsync(id, cancellationToken);
             Delete(entityToDelete);
         }
         public virtual void Delete(T entityToDelete)

@@ -1,7 +1,4 @@
 ﻿using System;
-using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using Ictx.WebApp.Core.Models;
 using Newtonsoft.Json;
 
 namespace Ictx.WebApp.Api.Models
@@ -12,29 +9,18 @@ namespace Ictx.WebApp.Api.Models
         public int Id { get; set; }
 
         [JsonProperty("codiceFiscale")]
-        [DisplayName("Codice fiscale")]
-        [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
-        [StringLength(16, MinimumLength = 16, ErrorMessage = "Il campo {0} dev'essere di 16 caratteri. ")]
         public string CodiceFiscale { get; set; }
 
-        [JsonProperty("cognome")]
-        [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
-        [StringLength(64, ErrorMessage = "Il campo {0} non può superare i {1} caratteri. ")]
+        [JsonProperty("cognome")]    
         public string Cognome { get; set; }
 
-        [JsonProperty("nome")]
-        [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
-        [StringLength(64, ErrorMessage = "Il campo {0} non può superare i {1} caratteri. ")]
+        [JsonProperty("nome")]       
         public string Nome { get; set; }
 
-        [JsonProperty("sesso")]
-        [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
-        [EnumDataType(typeof(Sesso), ErrorMessage = "Il valore inserito non è valido per il campo {0}.")]
+        [JsonProperty("sesso")]      
         public string Sesso { get; set; }
 
-        [JsonProperty("dataNascita")]
-        [DisplayName("Data nascita")]
-        [Required(ErrorMessage = "Il campo {0} è obbligatorio.")]
+        [JsonProperty("dataNascita")]        
         public DateTime DataNascita { get; set; }
 
         public DipendenteDto()

@@ -1,7 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Core.Exceptions.Dipendente;
+using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,28 +19,50 @@ namespace Ictx.WebApp.Api.Controllers
             this._mapper = mapper;
         }
 
-        protected ActionResult<R> ApiResponse<T, R>(OperationResult<T> dipendenteResult)
+        protected ActionResult<R> ApiResponse<T, R>(OperationResult<T> result)
         {
             // Success.
-            if (dipendenteResult.IsSuccess)
+            if (result.IsSuccess)
             {
-                return Ok(_mapper.Map<R>(dipendenteResult.ResultData));
+                return Ok(_mapper.Map<R>(result.ResultData));
             }
-
-            var errorMessage = new ErrorResponseDto(dipendenteResult.Exception.Message);
 
             // Fail.
-            if (dipendenteResult.Exception is BadRequestException) 
+            return FailResponse(result.Exception);
+        }
+
+        protected ActionResult<T> ApiResponse<T>(OperationResult<T> result)
+        {
+            // Success.
+            if (result.IsSuccess)
             {
-                return BadRequest(errorMessage);
+                return Ok(result.ResultData);
             }
 
-            if (dipendenteResult.Exception is NotFoundException) 
-            {
-                return NotFound(errorMessage);
+            // Fail.
+            return FailResponse(result.Exception);
+        }
+
+        private ActionResult FailResponse(Exception ex)
+        {
+
+            if (ex is BadRequestException)
+            {  
+                var badRequestException = (BadRequestException)ex;
+                return BadRequest(new ErrorResponseDto(ex.Message, badRequestException.Errors));
             }
 
-            return StatusCode((int)HttpStatusCode.InternalServerError, errorMessage);
+            if (ex is NotFoundException)
+            {
+                return NotFound(new ErrorResponseDto(ex.Message));
+            }
+
+            if (ex is TaskCanceledException)
+            {
+                return StatusCode(499, new ErrorResponseDto(ex.Message));
+            }
+
+            return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponseDto(ex.Message));
         }
     }
 }
