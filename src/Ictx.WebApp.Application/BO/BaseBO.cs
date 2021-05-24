@@ -4,8 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
-using Ictx.WebApp.Core.Models;
 using FluentValidation;
+using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 
 namespace Ictx.WebApp.Application.BO
