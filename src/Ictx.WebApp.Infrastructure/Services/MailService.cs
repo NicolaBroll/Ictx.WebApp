@@ -36,6 +36,11 @@ namespace Ictx.WebApp.Infrastructure.Services
 
                     foreach (var mail in mails)
                     {
+                        if (cancellationToken.IsCancellationRequested) 
+                        {
+                            break;
+                        }
+
                         await SendEmail(mail, client, cancellationToken);
                     }
 
