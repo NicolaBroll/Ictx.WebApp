@@ -17,7 +17,7 @@ namespace Ictx.WebApp.Application.BO
 
         public BaseBO(ILogger logger, AbstractValidator<T> validator)
         {
-            this._logger = logger;
+            this._logger    = logger;
             this._validator = validator;
         }
 
