@@ -28,7 +28,7 @@ namespace Ictx.WebApp.Core.Entities
             set => this._nome = value.ToUpper();
         }
 
-        public Sesso Sesso { get; set; }
+        public string Sesso { get; set; }
         public DateTime DataNascita { get; set; }
         public bool IsDeleted { get; set; }
 
@@ -40,7 +40,7 @@ namespace Ictx.WebApp.Core.Entities
         public Dipendente()
         { }
 
-        public Dipendente(string codiceFiscale, string cognome, string nome, Sesso sesso, DateTime dataNascita)
+        public Dipendente(string codiceFiscale, string cognome, string nome, string sesso, DateTime dataNascita)
         {
             this.CodiceFiscale = codiceFiscale;
             this.Cognome = cognome;

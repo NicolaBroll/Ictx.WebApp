@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ictx.WebApp.Application.Validators;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions.Dipendente;
 using Ictx.WebApp.Core.Interfaces;
@@ -20,26 +21,12 @@ namespace Ictx.WebApp.Application.BO
             IRazorViewToStringRenderer razorViewToStringRenderer,
             IAppUnitOfWork appUnitOfWork,
             IMailService mailService,
-            ISessionData sessionData): base(logger)
+            ISessionData sessionData): base(logger, new DipendenteValidator())
         {
             this._razorViewToStringRenderer = razorViewToStringRenderer;
             this._appUnitOfWork             = appUnitOfWork;
             this._mailService               = mailService;
             this._sessionData               = sessionData;
-        }
-
-        /// <summary>
-        /// Validazione model.
-        /// </summary>
-        /// <param name="value">Modello contenente i dati del nuovo dipendente.</param>
-        /// <returns>Ritorna un OperationResult<Dipendente> se il model è valido.
-        /// Se il model non è valido, ritorna BadRequestException.
-        /// </returns>
-        protected override OperationResult<Dipendente> ValidationView(Dipendente value)
-        {
-            // TODO: Validazione.
-            // Ritorna dipendente sempre valido.
-            return new OperationResult<Dipendente>(value);
         }
 
         /// <summary>

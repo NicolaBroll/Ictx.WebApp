@@ -44,24 +44,24 @@ namespace Ictx.WebApp.Api.Controllers
 
         private ActionResult FailResponse(Exception ex)
         {
-            var errorMessage = new ErrorResponseDto(ex.Message);
 
             if (ex is BadRequestException)
-            {
-                return BadRequest(errorMessage);
+            {  
+                var badRequestException = (BadRequestException)ex;
+                return BadRequest(new ErrorResponseDto(ex.Message, badRequestException.Errors));
             }
 
             if (ex is NotFoundException)
             {
-                return NotFound(errorMessage);
+                return NotFound(new ErrorResponseDto(ex.Message));
             }
 
             if (ex is TaskCanceledException)
             {
-                return StatusCode(499, errorMessage);
+                return StatusCode(499, new ErrorResponseDto(ex.Message));
             }
 
-            return StatusCode((int)HttpStatusCode.InternalServerError, errorMessage);
+            return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponseDto(ex.Message));
         }
     }
 }

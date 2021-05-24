@@ -1,5 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace Ictx.WebApp.Api.Models
 {
@@ -19,10 +20,14 @@ namespace Ictx.WebApp.Api.Models
             this.Message = message;
         }
 
-        public ErrorResponseDto(Dictionary<string, IEnumerable<string>> errors)
+        public ErrorResponseDto(string message, Dictionary<string, IEnumerable<string>> errors)
         {
-            this.Message = "Verificare i dati e riprovare.";
-            this.Errors = errors;
+            this.Message = message;
+
+            if (errors.Any()) 
+            {
+                this.Errors = errors;
+            }
         }
     }
 

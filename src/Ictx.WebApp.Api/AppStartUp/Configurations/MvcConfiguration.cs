@@ -8,7 +8,6 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Ictx.WebApp.Api.Common.Swagger;
 using Ictx.WebApp.Api.Helper;
-using Ictx.WebApp.Api.Common;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {
@@ -35,15 +34,9 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
                                   });
             });
 
-            // Filter.
-            services.AddControllers(options =>
-            {
-                options.Filters.Add(typeof(ValidateModelControllerFilterr));
-            }
-            ).AddNewtonsoftJson(options =>
-            {
-                options.SerializerSettings.ContractResolver = new DefaultContractResolver();
-            });
+            services
+                .AddControllers()
+                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             // Api versioning.
             services.AddApiVersioning(

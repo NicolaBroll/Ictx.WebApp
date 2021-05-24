@@ -5,16 +5,20 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Core.Models;
+using FluentValidation;
+using Ictx.WebApp.Core.Exceptions.Dipendente;
 
 namespace Ictx.WebApp.Application.BO
 {
     public abstract class BaseBO<T, K, Q> where Q : PaginationModel
     {
-        private readonly ILogger _logger;
+        private readonly ILogger                _logger;
+        private readonly AbstractValidator<T>   _validator;
 
-        public BaseBO(ILogger logger)
+        public BaseBO(ILogger logger, AbstractValidator<T> validator)
         {
             this._logger = logger;
+            this._validator = validator;
         }
 
         // Read many.
@@ -162,7 +166,21 @@ namespace Ictx.WebApp.Application.BO
             return ValidationView(value);
         }
 
-        protected abstract OperationResult<T> ValidationView(T value);
+        protected virtual OperationResult<T> ValidationView(T value) 
+        {
+            var validationResult = this._validator.Validate(value);
+
+            if (validationResult.IsValid)
+            {
+                return new OperationResult<T>(value);
+            }
+
+            var dictionaryErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName)
+                .ToDictionary(k => k.Key, v => v.Select(x => x.ErrorMessage));
+
+            return new OperationResult<T>(new BadRequestException(errors: dictionaryErrors));
+        }
 
         private string GetBoName() => String.Join(' ', this._logger.GetType().GetGenericArguments().Select(x => x.Name)); 
     }
