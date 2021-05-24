@@ -6,6 +6,7 @@ using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Application.BO;
+using Ictx.WebApp.Application.Models;
 
 namespace Ictx.WebApp.Api.Controllers.V1
 {

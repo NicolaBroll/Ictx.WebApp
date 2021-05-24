@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ictx.WebApp.Core.Models
+namespace Ictx.WebApp.Application.Models
 {
     public class OperationResult<T>
     {

@@ -2,9 +2,10 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Ictx.WebApp.Application.AppUnitOfWork;
+using Ictx.WebApp.Application.Repositories;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Entities.Base;
-using Ictx.WebApp.Core.Interfaces;
 using Ictx.WebApp.Infrastructure.Data;
 using Ictx.WebApp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;

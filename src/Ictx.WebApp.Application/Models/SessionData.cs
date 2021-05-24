@@ -1,4 +1,4 @@
-﻿namespace Ictx.WebApp.Core.Models
+﻿namespace Ictx.WebApp.Application.Models
 {
     public interface ISessionData
     {

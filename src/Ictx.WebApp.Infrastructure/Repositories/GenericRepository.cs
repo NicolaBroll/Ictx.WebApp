@@ -1,5 +1,5 @@
-﻿using Ictx.WebApp.Core.Interfaces;
-using Ictx.WebApp.Core.Models;
+﻿using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Application.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

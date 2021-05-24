@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ictx.WebApp.Core.Models
+namespace Ictx.WebApp.Application.Models
 {
     /// <summary>
     /// Rappresenta l'oggetto restituito da una query che utilizza la paginazione. Contiene l'elenco degli oggetti letti dalla query

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ictx.WebApp.Core.Exceptions.Dipendente
+namespace Ictx.WebApp.Core.Exceptions
 {   
     public class BadRequestException : Exception
     {  

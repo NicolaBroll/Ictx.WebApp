@@ -1,32 +1,35 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Ictx.WebApp.Application.AppUnitOfWork;
+using Ictx.WebApp.Application.Services;
 using Ictx.WebApp.Application.Validators;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.Exceptions.Dipendente;
-using Ictx.WebApp.Core.Interfaces;
+using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Core.Models;
-using Microsoft.Extensions.Logging;
+using Ictx.WebApp.Templates.Mail;
+using Ictx.WebApp.Application.Models;
 
 namespace Ictx.WebApp.Application.BO
 {
     public class DipendenteBO : BaseBO<Dipendente, int, PaginationModel>
     {
-        private readonly IRazorViewToStringRenderer _razorViewToStringRenderer;
-        private readonly IAppUnitOfWork             _appUnitOfWork;
-        private readonly IMailService               _mailService;
-        private readonly ISessionData               _sessionData;
+        private readonly IRazorViewService  _razorViewService;
+        private readonly IAppUnitOfWork     _appUnitOfWork;
+        private readonly IMailService       _mailService;
+        private readonly ISessionData       _sessionData;
 
         public DipendenteBO(ILogger<DipendenteBO> logger,
-            IRazorViewToStringRenderer razorViewToStringRenderer,
+            IRazorViewService razorViewService,
             IAppUnitOfWork appUnitOfWork,
             IMailService mailService,
             ISessionData sessionData): base(logger, new DipendenteValidator())
         {
-            this._razorViewToStringRenderer = razorViewToStringRenderer;
-            this._appUnitOfWork             = appUnitOfWork;
-            this._mailService               = mailService;
-            this._sessionData               = sessionData;
+            this._razorViewService  = razorViewService;
+            this._appUnitOfWork     = appUnitOfWork;
+            this._mailService       = mailService;
+            this._sessionData       = sessionData;
         }
 
         /// <summary>
@@ -73,7 +76,7 @@ namespace Ictx.WebApp.Application.BO
                 CodiceFiscale = dipendente.CodiceFiscale
             };
 
-            string body = await _razorViewToStringRenderer.RenderViewToStringAsync("/Views/Emails/Prova.cshtml", dipendenteEmailTemplate);
+            string body = await _razorViewService.RenderViewToStringAsync("/Views/Emails/Prova.cshtml", dipendenteEmailTemplate);
 
             var mail = new MailModel
             {

@@ -1,4 +1,5 @@
 ﻿using Ictx.WebApp.Api.Common;
+using Ictx.WebApp.Application.Models;
 using Ictx.WebApp.Core.Models;
 using Microsoft.AspNetCore.Http;
 

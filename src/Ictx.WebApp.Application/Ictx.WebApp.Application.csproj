@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>net5.0</TargetFramework>
   </PropertyGroup>
 
   <ItemGroup>
@@ -11,6 +11,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Ictx.WebApp.Core\Ictx.WebApp.Core.csproj" />
+    <ProjectReference Include="..\Ictx.WebApp.Templates.Mail\Ictx.WebApp.Templates.Mail.csproj" />
   </ItemGroup>
 
 </Project>

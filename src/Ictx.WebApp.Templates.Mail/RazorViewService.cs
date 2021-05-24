@@ -1,5 +1,4 @@
-﻿using Ictx.WebApp.Core.Interfaces;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -15,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace Ictx.WebApp.Templates.Mail
 {
-    public class RazorViewToStringRenderer : IRazorViewToStringRenderer
+    public class RazorViewService : IRazorViewService
     {
         private IRazorViewEngine _viewEngine;
         private ITempDataProvider _tempDataProvider;
         private IServiceProvider _serviceProvider;
 
-        public RazorViewToStringRenderer(
+        public RazorViewService(
             IRazorViewEngine viewEngine,
             ITempDataProvider tempDataProvider,
             IServiceProvider serviceProvider)

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ictx.WebApp.Core.Exceptions.Dipendente
+namespace Ictx.WebApp.Core.Exceptions
 {
     public class NotFoundException: Exception
     {

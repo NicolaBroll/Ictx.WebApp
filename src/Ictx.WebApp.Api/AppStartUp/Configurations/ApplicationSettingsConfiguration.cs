@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Ictx.WebApp.Application.Common;
+using Ictx.WebApp.Infrastructure.Common;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {

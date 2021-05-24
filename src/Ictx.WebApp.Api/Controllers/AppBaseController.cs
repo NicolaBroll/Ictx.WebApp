@@ -3,7 +3,8 @@ using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Core.Exceptions.Dipendente;
+using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,9 +1,10 @@
-﻿using Ictx.WebApp.Core.Entities;
-using System;
+﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Ictx.WebApp.Application.Repositories;
+using Ictx.WebApp.Core.Entities;
 
-namespace Ictx.WebApp.Core.Interfaces
+namespace Ictx.WebApp.Application.AppUnitOfWork
 {
     public interface IAppUnitOfWork : IDisposable
     {

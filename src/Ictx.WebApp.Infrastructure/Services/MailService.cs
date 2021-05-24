@@ -1,14 +1,14 @@
-﻿using MailKit.Net.Smtp;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
+using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
-using System.Collections.Generic;
-using Ictx.WebApp.Application.Common;
-using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.Interfaces;
-using System.Threading.Tasks;
-using System;
-using Microsoft.Extensions.Logging;
-using System.Threading;
+using Ictx.WebApp.Application.Services;
+using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Infrastructure.Common;
 
 namespace Ictx.WebApp.Infrastructure.Services
 {

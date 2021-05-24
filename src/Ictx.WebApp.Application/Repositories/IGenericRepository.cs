@@ -4,9 +4,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Collections.Generic;
-using Ictx.WebApp.Core.Models;
+using Ictx.WebApp.Application.Models;
 
-namespace Ictx.WebApp.Core.Interfaces
+namespace Ictx.WebApp.Application.Repositories
 {
     public interface IGenericRepository<T> where T : class
     {

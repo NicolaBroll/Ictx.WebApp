@@ -1,7 +1,7 @@
-﻿using Ictx.WebApp.Core.Interfaces;
+﻿using Ictx.WebApp.Application.Services;
 using System;
 
-namespace Ictx.WebApp.Infrastructure.Application
+namespace Ictx.WebApp.Infrastructure.Services
 {
     public class DateTimeService : IDateTimeService
     {
