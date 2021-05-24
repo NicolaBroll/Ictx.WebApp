@@ -17,6 +17,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             // Services.
             services.TryAddSingleton<IDateTimeService, DateTimeService>();
             services.TryAddScoped<DipendenteBO>();
+            services.TryAddScoped<MailBO>();
             services.AddScoped<IRazorViewService, RazorViewService>();
             services.AddScoped<IMailService, MailService>();
 

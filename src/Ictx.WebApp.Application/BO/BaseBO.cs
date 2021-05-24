@@ -168,6 +168,11 @@ namespace Ictx.WebApp.Application.BO
 
         protected virtual OperationResult<T> ValidationView(T value) 
         {
+            if (this._validator is null) 
+            {
+                return new OperationResult<T>(value);
+            }
+
             var validationResult = this._validator.Validate(value);
 
             if (validationResult.IsValid)

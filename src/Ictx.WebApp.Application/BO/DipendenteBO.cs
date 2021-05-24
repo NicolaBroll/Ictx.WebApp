@@ -62,33 +62,6 @@ namespace Ictx.WebApp.Application.BO
                 return new OperationResult<Dipendente>(new NotFoundException($"Dipendente con id: {key} non trovato."));
             }
 
-            var utente = new Utente
-            {
-                Nome = "Nicola",
-                Cognome = "Broll",
-                Email = "nbroll@gmail.com"
-            };
-
-            var dipendenteEmailTemplate = new DipendenteEmailTemplate
-            {
-                Nome = dipendente.Nome,
-                Cognome = dipendente.Cognome,
-                CodiceFiscale = dipendente.CodiceFiscale
-            };
-
-            string body = await _razorViewService.RenderViewToStringAsync("/Views/Emails/Prova.cshtml", dipendenteEmailTemplate);
-
-            var mail = new MailModel
-            {
-                Nome = utente.Nome,
-                Cognome = utente.Cognome,
-                Mail = utente.Email,
-                Subject = "Prova",
-                Body = body
-            };
-
-            await this._mailService.SendEmail(mail);
-
             return new OperationResult<Dipendente>(dipendente);
         }
 
