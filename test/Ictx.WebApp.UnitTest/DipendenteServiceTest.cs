@@ -73,6 +73,39 @@ namespace Ictx.WebApp.UnitTest
             responseResult.Exception.Should().BeOfType(typeof(NotFoundException));
         }
 
+        [Fact]
+        public async Task DeleteAsync_ShouldReturnTrue_WhenDipendenteExists()
+        {
+            // Arrange.
+            var dipendente = this._listaDipendentiFake.First();
+            dipendente.Id = 987;
+
+            this._dipendenteRepository.Setup(x => x.ReadAsync(dipendente.Id, new CancellationToken())).ReturnsAsync(dipendente);
+            this._appUnitOfWork.Setup(x => x.DipendenteRepository).Returns(this._dipendenteRepository.Object);
+
+            // Act.
+            var response = await this._sut.DeleteAsync(dipendente.Id);
+
+            // Assert.
+            response.IsSuccess.Should().BeTrue();
+            response.ResultData.Should().BeTrue();
+        }
+
+        [Fact]
+        public async Task DeleteAsync_ShouldReturnNotFoundException_WhenDipendenteNotExists()
+        {
+            // Arrange.
+            this._dipendenteRepository.Setup(x => x.ReadAsync(It.IsAny<int>(), new CancellationToken())).ReturnsAsync(() => null);
+            this._appUnitOfWork.Setup(x => x.DipendenteRepository).Returns(this._dipendenteRepository.Object);
+
+            // Act.
+            var responseResult = await this._sut.DeleteAsync(0);
+
+            // Assert.
+            responseResult.IsSuccess.Should().BeFalse();
+            responseResult.Exception.Should().BeOfType(typeof(NotFoundException));
+        }
+
         #region Utils
 
         private static List<Dipendente> GetListaDipendentiFake()
