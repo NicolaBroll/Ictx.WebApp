@@ -14,12 +14,10 @@ namespace Ictx.WebApp.Api.Controllers.V1
     [Route("api/v{version:apiVersion}/[controller]")]
     public class MailController : AppBaseController
     {
-        private readonly IMapper _mapper;
         private readonly MailBO _mailBO;
 
         public MailController(IMapper mapper, MailBO mailBO) : base(mapper)
         {
-            this._mapper = mapper;
             this._mailBO = mailBO;
         }
 
@@ -34,7 +32,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         {
             var result = await this._mailBO.InsertAsync(model);
 
-            return ApiResponse<DipendenteEmailTemplate>(result);
+            return ApiResponse(result);
         }
     }
 }
