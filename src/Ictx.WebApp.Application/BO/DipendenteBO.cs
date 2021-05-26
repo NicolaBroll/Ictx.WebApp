@@ -3,33 +3,20 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Application.AppUnitOfWork;
-using Ictx.WebApp.Application.Services;
 using Ictx.WebApp.Application.Validators;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions;
-using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Templates.Mail;
 using Ictx.WebApp.Application.Models;
 
 namespace Ictx.WebApp.Application.BO
 {
     public class DipendenteBO : BaseBO<Dipendente, int, PaginationModel>
     {
-        private readonly IRazorViewService  _razorViewService;
-        private readonly IAppUnitOfWork     _appUnitOfWork;
-        private readonly IMailService       _mailService;
-        private readonly ISessionData       _sessionData;
+        private readonly IAppUnitOfWork _appUnitOfWork;
 
-        public DipendenteBO(ILogger<DipendenteBO> logger,
-            IRazorViewService razorViewService,
-            IAppUnitOfWork appUnitOfWork,
-            IMailService mailService,
-            ISessionData sessionData): base(logger, new DipendenteValidator())
+        public DipendenteBO(ILogger<DipendenteBO> logger, IAppUnitOfWork appUnitOfWork): base(logger, new DipendenteValidator())
         {
-            this._razorViewService  = razorViewService;
-            this._appUnitOfWork     = appUnitOfWork;
-            this._mailService       = mailService;
-            this._sessionData       = sessionData;
+            this._appUnitOfWork = appUnitOfWork;
         }
 
         /// <summary>
