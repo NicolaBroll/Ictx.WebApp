@@ -29,8 +29,8 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
                                   builder =>
                                   {
                                       builder.AllowAnyOrigin()
-                                                          .AllowAnyHeader()
-                                                          .AllowAnyMethod();
+                                            .AllowAnyHeader()
+                                            .AllowAnyMethod();
                                   });
             });
 

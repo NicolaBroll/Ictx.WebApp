@@ -12,6 +12,7 @@ using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
 using Ictx.WebApp.Infrastructure.Data;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Ictx.WebApp.Api
 {
@@ -53,6 +54,9 @@ namespace Ictx.WebApp.Api
 
             // Razor pages per il render della mail.
             services.AddRazorPages();
+
+            // Authentication.
+            services.ConfigureAuthentication(this._configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
@@ -70,6 +74,15 @@ namespace Ictx.WebApp.Api
                     .ToList()
                     .ForEach(description => options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant())));
             }
+
+            app.UseRouting();
+
+            // Cors.
+            app.UseCors(ApiHelper.AnyCors);
+
+            // Auth.
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             // Health checks.
             app.UseHealthChecks("/health", new HealthCheckOptions()
@@ -93,11 +106,6 @@ namespace Ictx.WebApp.Api
                     await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
                 }
             });
-
-            app.UseRouting();
-
-            // Cors.
-            app.UseCors(ApiHelper.AnyCors);
 
             app.UseEndpoints(endpoints =>
             {

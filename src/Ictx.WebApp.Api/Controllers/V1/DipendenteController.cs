@@ -6,10 +6,12 @@ using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Application.BO;
 using Ictx.WebApp.Application.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Ictx.WebApp.Api.Controllers.V1
 {
-    [ApiController] 
+    [ApiController]
+    [Authorize]
     [ApiVersion("1.0")]
     [Produces("application/json")]
     [Route("api/v{version:apiVersion}/[controller]")]
@@ -32,6 +34,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// <returns></returns>
         [HttpGet("")]
         [ProducesResponseType(typeof(PageResultDto<DipendenteDto>), (int)HttpStatusCode.OK)]
+        [Authorize("Api1_r")]
         public async Task<PageResultDto<DipendenteDto>> Get([FromQuery] PaginationModel paginationModel)
         {
             var list = await _dipendenteBO.ReadManyAsync(paginationModel);
