@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Ictx.WebApp.Api.Common;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 
@@ -8,19 +9,20 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
     {
         public static IServiceCollection ConfigureAuthentication(this IServiceCollection services, IConfiguration configuration)
         {
+            var settings = new AuthSettings();
+            configuration.GetSection(nameof(AuthSettings)).Bind(settings);
+
             services.AddAuthentication("Bearer")
                 .AddJwtBearer("Bearer", options =>
                 {
-                    options.Authority = "https://localhost:6001";
-                    options.Audience = "Api_1";
+                    // Base-address identityserver.
+                    options.Authority = settings.Authority;
 
-                    options.TokenValidationParameters = new TokenValidationParameters
-                    {
-                        ValidateAudience = true,
-                        ValidAudience = "Api_1",
-                        ValidateIssuer = true,
-                        ValidIssuer = "https://localhost:6001"
-                    };
+                    // Audiance.
+                    options.Audience = settings.Audience;
+
+                    // IdentityServer emits a typ header by default, recommended extra check
+                    options.TokenValidationParameters.ValidTypes = new[] { "at+jwt" };
                 });
 
             services.AddAuthorization(options =>

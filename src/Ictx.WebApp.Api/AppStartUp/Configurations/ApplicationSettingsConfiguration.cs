@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Ictx.WebApp.Infrastructure.Common;
+using Ictx.WebApp.Api.Common;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {
@@ -13,6 +14,10 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             // Mail.
             services.Configure<MailSettings>(_configuration.GetSection(nameof(MailSettings)));
             services.AddSingleton<IMailSettings>(sp => sp.GetRequiredService<IOptions<MailSettings>>().Value);
+
+            // Auth.
+            services.Configure<AuthSettings>(_configuration.GetSection(nameof(AuthSettings)));
+            services.AddSingleton<IAuthSettings>(sp => sp.GetRequiredService<IOptions<AuthSettings>>().Value);
 
             return services;
         }

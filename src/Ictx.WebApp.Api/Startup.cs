@@ -12,7 +12,6 @@ using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
 using Ictx.WebApp.Infrastructure.Data;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Ictx.WebApp.Api
 {
