@@ -7,9 +7,9 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace Ictx.WebApp.Infrastructure.AppStartUp.Configurations
 {
-    public static class ServicesConfiguration
+    public static class InfrastructureServicesConfiguration
     {
-        public static IServiceCollection ConfigureServices(this IServiceCollection services)
+        public static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
         {
             // Services.
             services.TryAddSingleton<IDateTimeService, DateTimeService>();

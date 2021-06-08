@@ -15,7 +15,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             services.TryAddScoped<MailBO>();
 
             // Configuro i servizi di infrastruttura.
-            services.ConfigureServices();
+            services.ConfigureInfrastructureServices();
 
             return services;
         }
