@@ -4,17 +4,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using Ictx.WebApp.Infrastructure.Data;
+using Ictx.WebApp.Infrastructure.AppStartUp.Configurations;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {
-    public static class AppDbContextConfiguration
+    public static class DbContextConfiguration
     {
-        /// <summary>Configura la Dependency Injection aggiungendo la configurazione letta dall'appsettings.json.</summary>
-        public static IServiceCollection ConfigureAppDbContext(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
+        public static IServiceCollection ConfigureDbContext(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment env)
         {
-            // DB context.
-            services.AddDbContext<AppDbContext>(options => {
+            // App db context.
+            services.ConfigureAppDbContext(options => {
                 options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(typeof(Startup).Assembly.FullName));
 
                 if (env.IsDevelopment())

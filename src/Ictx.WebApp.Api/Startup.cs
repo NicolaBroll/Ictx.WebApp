@@ -12,6 +12,7 @@ using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
 using Ictx.WebApp.Infrastructure.Data;
+using Ictx.WebApp.Infrastructure.AppStartUp.Configurations;
 
 namespace Ictx.WebApp.Api
 {
@@ -34,7 +35,7 @@ namespace Ictx.WebApp.Api
             services.ConfigureApplicationSettings(this._configuration);
 
             // AppDbContext.
-            services.ConfigureAppDbContext(this._configuration, this._env);
+            services.ConfigureDbContext(this._configuration, this._env);
 
             // Configuro i servizi consumati dall'app.
             services.ConfigureApplicationServices();
@@ -51,11 +52,11 @@ namespace Ictx.WebApp.Api
             // MVC.
             services.ConfigureMvc();
 
-            // Razor pages per il render della mail.
-            services.AddRazorPages();
-
             // Authentication.
             services.ConfigureAuthentication(this._configuration);
+
+            // Email.
+            services.ConfigureMail(this._configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
