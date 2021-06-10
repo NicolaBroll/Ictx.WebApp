@@ -15,7 +15,7 @@ namespace Ictx.WebApp.Infrastructure.Repositories
         public async Task<Operation> GetNextOperation()
         {
             var nextOperation = await QueryMany(
-                filter: x => !x.Started && !x.Errore,
+                filter: x => !x.Started && !x.Error,
                 orderBy: x => x.OrderBy(order => order.Inserted)).FirstOrDefaultAsync();
 
             return nextOperation;

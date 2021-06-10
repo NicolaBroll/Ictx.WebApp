@@ -7,8 +7,9 @@ namespace Ictx.WebApp.Core.Entities
     {   
         public BackgroundOperationType Tipo { get; set; }
         public string Data { get; set; }
+        public int Progress { get; set; }
         public bool Started { get; set; }
         public bool Completed { get; set; }
-        public bool Errore { get; set; }
+        public bool Error { get; set; }
     }
 }

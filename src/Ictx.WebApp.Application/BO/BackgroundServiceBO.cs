@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Ictx.WebApp.Application.UnitOfWork;
 using Ictx.WebApp.Application.Services;
 using Ictx.WebApp.Core.Models;
+using System.Collections.Generic;
 
 namespace Ictx.WebApp.Application.BO
 {
@@ -69,22 +70,37 @@ namespace Ictx.WebApp.Application.BO
 
         private async Task SendMail(CancellationToken cancellationToken, Operation operazione)
         {
-            var mail = JsonConvert.DeserializeObject<MailModel>(operazione.Data);
-            this._logger.LogInformation($"Sending mail to: {mail.Mail}");
+            var mails = JsonConvert.DeserializeObject<List<MailModel>>(operazione.Data);
+            this._logger.LogInformation($"Sending mails");
 
-            await this._mailService.SendEmail(mail, cancellationToken);
+            await this._mailService.SendEmail(mails, cancellationToken);
         }
 
         private async Task FakeOperation(CancellationToken cancellationToken, Operation operazione)
         {
             this._logger.LogInformation($"Fake operation: {operazione.Data}");
 
+            for(var i = 1; i <= 10; i++) 
+            {
+                await Task.Delay(1000 * 10);
+                await SetProgress(operazione, i * 10);
+            }
+
             await CompleteOperazione(operazione);
+        }
+
+        private async Task SetProgress(Operation operazione, int progress)
+        {
+            operazione.Progress = progress;
+
+            this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
+            await this._backgroundServiceUnitOfWork.SaveAsync();
         }
 
         private async Task CompleteOperazione(Operation operazione)
         {
             operazione.Completed = true;
+            operazione.Progress = 100;
 
             this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
             await this._backgroundServiceUnitOfWork.SaveAsync();
@@ -92,7 +108,7 @@ namespace Ictx.WebApp.Application.BO
 
         private async Task ImpostaErroreOperazione(Operation operazione)
         {
-            operazione.Errore = true;
+            operazione.Error = true;
 
             this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
             await this._backgroundServiceUnitOfWork.SaveAsync();
@@ -122,7 +138,19 @@ namespace Ictx.WebApp.Application.BO
             return operazione;
         }
 
-        public static Operation CreateOperation<T>(T data, BackgroundOperationType tipo, Guid utenteIdRequest)
+        public async Task CreateOperationMail(List<MailModel> mails, Guid utenteIdRequest)
+        {
+            var operation = CreateOperation(mails, BackgroundOperationType.Mail, utenteIdRequest);
+
+            await InsertAsync(operation); 
+        }
+
+        public async Task CreateOperationMail(MailModel mails, Guid utenteIdRequest)
+        {
+            await CreateOperationMail(new List<MailModel>() { mails }, utenteIdRequest);
+        }
+
+        private Operation CreateOperation<T>(T data, BackgroundOperationType tipo, Guid utenteIdRequest)
         {
             return new Operation
             {
