@@ -6,7 +6,7 @@ namespace Ictx.WebApp.Application.Repositories
 {
     public interface IOperationRepository : IGenericRepository<Operation>
     {
-        Task<Operation> GetNextOperation(BackgroundOperationType type);
+        Task<Operation> GetNextOperation();
 
     }
 }

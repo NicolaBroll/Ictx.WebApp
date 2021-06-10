@@ -2,6 +2,7 @@
 {   
     public enum BackgroundOperationType
     {
-        Mail
+        Mail,
+        Fake
     }
 }

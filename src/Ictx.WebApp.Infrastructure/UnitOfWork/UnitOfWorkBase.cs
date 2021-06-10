@@ -67,26 +67,33 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             return this._context;
         }
 
-        public void BeginTransaction()
+        public async Task BeginTransactionAsync()
         {
             if (this._transaction != null) 
             {
-                DisposeTransaction();
+                await DisposeTransactionAsync();
             }
 
-            this._transaction = this._context.Database.BeginTransaction(IsolationLevel.RepeatableRead);
+            this._transaction = await this._context.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead);
         }
 
-        public void CommitTransaction()
+        public async Task CommitTransactionAsync(bool dispose)
         {
-            this._transaction.Commit();
-            DisposeTransaction();
+            await this._transaction.CommitAsync();
+
+            if (dispose) 
+            {
+                await DisposeTransactionAsync();
+            }
         }
 
-        private void DisposeTransaction()
+        public async Task DisposeTransactionAsync()
         {
-            this._transaction.Dispose();
-            this._transaction = null;
+            if(this._transaction != null) 
+            {
+                await this._transaction.DisposeAsync();
+                this._transaction = null;
+            }
         }
 
         //public override bool Equals(object obj)

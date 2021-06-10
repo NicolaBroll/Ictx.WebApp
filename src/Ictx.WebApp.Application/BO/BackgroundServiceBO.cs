@@ -6,11 +6,8 @@ using System.Threading;
 using System;
 using Newtonsoft.Json;
 using Ictx.WebApp.Application.UnitOfWork;
-using System.Linq;
-using System.Collections.Generic;
 using Ictx.WebApp.Application.Services;
 using Ictx.WebApp.Core.Models;
-using System.Transactions;
 
 namespace Ictx.WebApp.Application.BO
 {
@@ -37,76 +34,92 @@ namespace Ictx.WebApp.Application.BO
             return new OperationResult<Operation>(value);
         }
 
-        protected override async Task<IEnumerable<Operation>> ReadManyViewsAsync(PaginationModel filter, CancellationToken cancellationToken)
-        {
-            var operations = await this._backgroundServiceUnitOfWork.OperationRepository.ReadManyAsync(
-                filter: x => !x.Started,
-                orderBy: x => x.OrderBy(o => o.Inserted));
-
-            return operations;
-        }
-
         public async Task DoWork(CancellationToken cancellationToken)
         {
-            var operations = await ReadManyViewsAsync(null, cancellationToken);
-            
-            this._logger.LogInformation($"Working... Found {operations.Count()} operations");
+            var operazione = await GetAndStartNextOperazione(cancellationToken);
 
-            // Se non ci saono operazioni, esco.
-            if (!operations.Any()) 
+            if (operazione is null)
             {
                 return;
             }
 
-            var taskList = new List<Task>();
-            var mailOperations = operations.Where(x => x.Tipo == BackgroundOperationType.Mail).ToList();
+            try
+            {     
+                switch (operazione.Tipo) 
+                {
+                    case BackgroundOperationType.Mail:
+                        await SendMail(cancellationToken, operazione);
+                        break;
 
-            if (mailOperations.Any()) 
+                    case BackgroundOperationType.Fake:
+                        await FakeOperation(cancellationToken, operazione);
+                        break;
+                }
+
+                await CompleteOperazione(operazione);
+            }
+            catch (Exception e)
             {
-                // Invio le mail.
-                await SendMail(cancellationToken);
+                await ImpostaErroreOperazione(operazione);
+                this._logger.LogError(e, $"BackgroundServiceBO.DoWork Errore durante l'esecuzione dell'operazione con id {operazione.Id}");
             }
 
-            //Task.WaitAll(taskList.ToArray());
+            await DoWork(cancellationToken);
         }
 
-        private async Task SendMail(CancellationToken cancellationToken)
+        private async Task SendMail(CancellationToken cancellationToken, Operation operazione)
         {
-            this._backgroundServiceUnitOfWork.BeginTransaction();
+            var mail = JsonConvert.DeserializeObject<MailModel>(operazione.Data);
+            this._logger.LogInformation($"Sending mail to: {mail.Mail}");
 
-            var operazione = await this._backgroundServiceUnitOfWork.OperationRepository.GetNextOperation(BackgroundOperationType.Mail);
+            await this._mailService.SendEmail(mail, cancellationToken);
+        }
 
-            if (cancellationToken.IsCancellationRequested || operazione is null)
+        private async Task FakeOperation(CancellationToken cancellationToken, Operation operazione)
+        {
+            this._logger.LogInformation($"Fake operation: {operazione.Data}");
+
+            await CompleteOperazione(operazione);
+        }
+
+        private async Task CompleteOperazione(Operation operazione)
+        {
+            operazione.Completed = true;
+
+            this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
+            await this._backgroundServiceUnitOfWork.SaveAsync();
+        }
+
+        private async Task ImpostaErroreOperazione(Operation operazione)
+        {
+            operazione.Errore = true;
+
+            this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
+            await this._backgroundServiceUnitOfWork.SaveAsync();
+        }
+
+        private async Task<Operation> GetAndStartNextOperazione(CancellationToken cancellationToken)
+        {
+            // Inizia la transaction.
+            await this._backgroundServiceUnitOfWork.BeginTransactionAsync();
+
+            var operazione = await this._backgroundServiceUnitOfWork.OperationRepository.GetNextOperation();
+
+            if (cancellationToken.IsCancellationRequested || operazione is null || operazione.Started)
             {
-                return;
+                return null;
             }
 
+            // Avvio l'operazione.
             operazione.Started = true;
 
             this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
             await this._backgroundServiceUnitOfWork.SaveAsync();
 
-            this._backgroundServiceUnitOfWork.CommitTransaction();
+            // Committo e chiudo la transaction.
+            await this._backgroundServiceUnitOfWork.CommitTransactionAsync(true);
 
-            try
-            {
-                var mail = JsonConvert.DeserializeObject<MailModel>(operazione.Data);
-                this._logger.LogInformation($"Sending mail to: {mail.Mail}");
-
-                await this._mailService.SendEmail(mail, cancellationToken);
-
-                operazione.Completed = true;
-
-                this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
-                await this._backgroundServiceUnitOfWork.SaveAsync();
-            }
-            catch (Exception e)
-            {
-                this._logger.LogError(e, "BackgroundServiceBO.SendMail Errore durante l'invio della mail.");
-            }  
-
-            // Prossima operazione.
-            await SendMail(cancellationToken);
+            return operazione;
         }
 
         public static Operation CreateOperation<T>(T data, BackgroundOperationType tipo, Guid utenteIdRequest)

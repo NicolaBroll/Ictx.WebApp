@@ -1,6 +1,5 @@
 ﻿using Ictx.WebApp.Application.Repositories;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Infrastructure.Data.BackgroundService;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
@@ -11,14 +10,12 @@ namespace Ictx.WebApp.Infrastructure.Repositories
     public class OperationRepository: GenericRepository<Operation, BackgroundServiceDbContext>, IOperationRepository
     {
         public OperationRepository(BackgroundServiceDbContext backgroundServiceDbContext) : base(backgroundServiceDbContext)
-        {
+        { }
 
-        }
-
-        public async Task<Operation> GetNextOperation(BackgroundOperationType type)
+        public async Task<Operation> GetNextOperation()
         {
             var nextOperation = await QueryMany(
-                filter: x => x.Tipo == type && !x.Started,
+                filter: x => !x.Started && !x.Errore,
                 orderBy: x => x.OrderBy(order => order.Inserted)).FirstOrDefaultAsync();
 
             return nextOperation;

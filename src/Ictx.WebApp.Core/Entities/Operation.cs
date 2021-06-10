@@ -9,5 +9,6 @@ namespace Ictx.WebApp.Core.Entities
         public string Data { get; set; }
         public bool Started { get; set; }
         public bool Completed { get; set; }
+        public bool Errore { get; set; }
     }
 }
