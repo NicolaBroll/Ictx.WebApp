@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Data;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ictx.WebApp.Application.UnitOfWork;
 using Ictx.WebApp.Core.Entities.Base;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
@@ -40,6 +42,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
         }
 
         private bool _disposed = false;
+        private IDbContextTransaction _transaction;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -62,6 +65,28 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
         public TDbContext GetAppDbContext()
         {
             return this._context;
+        }
+
+        public void BeginTransaction()
+        {
+            if (this._transaction != null) 
+            {
+                DisposeTransaction();
+            }
+
+            this._transaction = this._context.Database.BeginTransaction(IsolationLevel.RepeatableRead);
+        }
+
+        public void CommitTransaction()
+        {
+            this._transaction.Commit();
+            DisposeTransaction();
+        }
+
+        private void DisposeTransaction()
+        {
+            this._transaction.Dispose();
+            this._transaction = null;
         }
 
         //public override bool Equals(object obj)

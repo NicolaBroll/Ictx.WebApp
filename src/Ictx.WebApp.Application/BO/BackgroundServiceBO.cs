@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Ictx.WebApp.Application.Services;
 using Ictx.WebApp.Core.Models;
+using System.Transactions;
 
 namespace Ictx.WebApp.Application.BO
 {
@@ -40,7 +41,7 @@ namespace Ictx.WebApp.Application.BO
         {
             var operations = await this._backgroundServiceUnitOfWork.OperationRepository.ReadManyAsync(
                 filter: x => !x.Started,
-                orderBy: x => x.OrderBy(x => x.Inserted));
+                orderBy: x => x.OrderBy(o => o.Inserted));
 
             return operations;
         }
@@ -63,33 +64,49 @@ namespace Ictx.WebApp.Application.BO
             if (mailOperations.Any()) 
             {
                 // Invio le mail.
-                taskList.Add(SendMail(mailOperations, cancellationToken));
+                await SendMail(cancellationToken);
             }
 
-            Task.WaitAll(taskList.ToArray());
+            //Task.WaitAll(taskList.ToArray());
         }
 
-        private async Task SendMail(List<Operation> mailOperations, CancellationToken cancellationToken)
+        private async Task SendMail(CancellationToken cancellationToken)
         {
-            foreach (var mailOperation in mailOperations)
+            this._backgroundServiceUnitOfWork.BeginTransaction();
+
+            var operazione = await this._backgroundServiceUnitOfWork.OperationRepository.GetNextOperation(BackgroundOperationType.Mail);
+
+            if (cancellationToken.IsCancellationRequested || operazione is null)
             {
-                if (cancellationToken.IsCancellationRequested) 
-                {
-                    break;
-                }
-
-                try
-                {
-                    var mail = JsonConvert.DeserializeObject<MailModel>(mailOperation.Data);
-                    this._logger.LogInformation($"Sending mail to: {mail.Mail}");
-
-                    await this._mailService.SendEmail(mail, cancellationToken);
-                }
-                catch (Exception e)
-                {
-                    this._logger.LogError(e, "BackgroundServiceBO.SendMail Errore durante l'invio della mail.");
-                }
+                return;
             }
+
+            operazione.Started = true;
+
+            this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
+            await this._backgroundServiceUnitOfWork.SaveAsync();
+
+            this._backgroundServiceUnitOfWork.CommitTransaction();
+
+            try
+            {
+                var mail = JsonConvert.DeserializeObject<MailModel>(operazione.Data);
+                this._logger.LogInformation($"Sending mail to: {mail.Mail}");
+
+                await this._mailService.SendEmail(mail, cancellationToken);
+
+                operazione.Completed = true;
+
+                this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
+                await this._backgroundServiceUnitOfWork.SaveAsync();
+            }
+            catch (Exception e)
+            {
+                this._logger.LogError(e, "BackgroundServiceBO.SendMail Errore durante l'invio della mail.");
+            }  
+
+            // Prossima operazione.
+            await SendMail(cancellationToken);
         }
 
         public static Operation CreateOperation<T>(T data, BackgroundOperationType tipo, Guid utenteIdRequest)

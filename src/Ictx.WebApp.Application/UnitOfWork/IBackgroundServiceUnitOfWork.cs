@@ -5,6 +5,6 @@ namespace Ictx.WebApp.Application.UnitOfWork
 {
     public interface IBackgroundServiceUnitOfWork : IUnitOfWorkBase
     {
-        IGenericRepository<Operation> OperationRepository { get; }
+        IOperationRepository OperationRepository { get; }
     }
 }
