@@ -13,6 +13,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             // Services.
             services.TryAddScoped<DipendenteBO>();
             services.TryAddScoped<MailBO>();
+            services.TryAddScoped<BackgroundServiceBO>();            
 
             // Configuro i servizi di infrastruttura.
             services.ConfigureInfrastructureServices();

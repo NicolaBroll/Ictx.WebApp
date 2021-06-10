@@ -2,11 +2,11 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Ictx.WebApp.Application.AppUnitOfWork;
 using Ictx.WebApp.Application.Validators;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Application.AppUnitOfWork;
 
 namespace Ictx.WebApp.Application.BO
 {
@@ -14,7 +14,7 @@ namespace Ictx.WebApp.Application.BO
     {
         private readonly IAppUnitOfWork _appUnitOfWork;
 
-        public DipendenteBO(ILogger<DipendenteBO> logger, IAppUnitOfWork appUnitOfWork): base(logger, new DipendenteValidator())
+        public DipendenteBO(ILogger<DipendenteBO> logger, IAppUnitOfWork appUnitOfWork) : base(logger, new DipendenteValidator())
         {
             this._appUnitOfWork = appUnitOfWork;
         }
@@ -70,8 +70,7 @@ namespace Ictx.WebApp.Application.BO
                 DataNascita = value.DataNascita
             };
 
-            await this._appUnitOfWork.DipendenteRepository.InsertAsync(objToInsert, cancellationToken);
-            await this._appUnitOfWork.SaveAsync(cancellationToken);
+            await this._appUnitOfWork.DipendenteRepository.InsertAndSaveAsync(objToInsert, cancellationToken);
 
             return new OperationResult<Dipendente>(objToInsert);
         }
@@ -100,8 +99,7 @@ namespace Ictx.WebApp.Application.BO
             objToUpdate.Sesso = value.Sesso;
             objToUpdate.DataNascita = value.DataNascita;
 
-            this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
-            await this._appUnitOfWork.SaveAsync(cancellationToken);
+            await this._appUnitOfWork.DipendenteRepository.UpdateAndSaveAsync(objToUpdate);
 
             return new OperationResult<Dipendente>(objToUpdate);
         }
@@ -123,8 +121,7 @@ namespace Ictx.WebApp.Application.BO
 
             objToDelete.IsDeleted = true;
 
-            this._appUnitOfWork.DipendenteRepository.Update(objToDelete);
-            await this._appUnitOfWork.SaveAsync(cancellationToken);
+            await this._appUnitOfWork.DipendenteRepository.UpdateAndSaveAsync(objToDelete);
 
             return new OperationResult<bool>(true);
         }

@@ -14,11 +14,14 @@ namespace Ictx.WebApp.Application.Repositories
         Task Delete(object id, CancellationToken cancellationToken = default);
         void Delete(T entityToDelete);
         Task InsertAsync(T entity, CancellationToken cancellationToken = default);
+        Task InsertAndSaveAsync(T entity, CancellationToken cancellationToken);
         Task InsertManyAsync(IEnumerable<T> entity, CancellationToken cancellationToken = default);
         IQueryable<T> QueryMany(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "");
         Task<T> ReadAsync(object id, CancellationToken cancellationToken = default);
         Task<IEnumerable<T>> ReadManyAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "", CancellationToken cancellationToken = default);
         Task<PageResult<T>> ReadManyPaginatedAsync(Expression<Func<T, bool>> filter = null, Func<IQueryable<T>, IOrderedQueryable<T>> orderBy = null, string includeProperties = "", PaginationModel pagination = null, CancellationToken cancellationToken = default);
         void Update(T entityToUpdate);
+        Task UpdateAndSaveAsync(T entityToUpdate);
+
     }
 }

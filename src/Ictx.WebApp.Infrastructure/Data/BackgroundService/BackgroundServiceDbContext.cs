@@ -2,13 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
-namespace Ictx.WebApp.Infrastructure.Data
+namespace Ictx.WebApp.Infrastructure.Data.BackgroundService
 {
-    public class AppDbContext : DbContext
-    { 
-        public DbSet<Dipendente> Dipendente { get; set; }
-       
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+    public class BackgroundServiceDbContext : DbContext
+    {
+        public DbSet<Operation> Operation { get; set; }
+
+        public BackgroundServiceDbContext(DbContextOptions<BackgroundServiceDbContext> options) : base(options)
         { }
 
         protected override void OnModelCreating(ModelBuilder builder)

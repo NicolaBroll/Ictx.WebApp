@@ -14,6 +14,10 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             services.Configure<AuthSettings>(_configuration.GetSection(nameof(AuthSettings)));
             services.AddSingleton<IAuthSettings>(sp => sp.GetRequiredService<IOptions<AuthSettings>>().Value);
 
+            // Application settings.
+            services.Configure<ApplicationSettings>(_configuration.GetSection(nameof(ApplicationSettings)));
+            services.AddSingleton<IApplicationSettings>(sp => sp.GetRequiredService<IOptions<ApplicationSettings>>().Value);
+
             return services;
         }
     }

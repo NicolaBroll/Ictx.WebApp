@@ -4,6 +4,8 @@ using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Application.AppUnitOfWork;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Ictx.WebApp.Application.Repositories;
+using Ictx.WebApp.Infrastructure.Repositories;
 
 namespace Ictx.WebApp.Infrastructure.AppStartUp.Configurations
 {
@@ -16,6 +18,9 @@ namespace Ictx.WebApp.Infrastructure.AppStartUp.Configurations
 
             // Unit of work.
             services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();
+
+            // Repository.
+            services.TryAddScoped<IDipendenteRepository, DipendenteRepository>();
 
             return services;
         }

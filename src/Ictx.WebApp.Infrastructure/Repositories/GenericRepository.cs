@@ -91,6 +91,11 @@ namespace Ictx.WebApp.Infrastructure.Repositories
         {
             await _dbSet.AddAsync(entity, cancellationToken);
         }
+        public async virtual Task InsertAndSaveAsync(T entity, CancellationToken cancellationToken = default)
+        {
+            await _dbSet.AddAsync(entity, cancellationToken);
+            await _context.SaveChangesAsync();
+        }
         public async virtual Task InsertManyAsync(IEnumerable<T> entity, CancellationToken cancellationToken = default)
         {
             await _dbSet.AddRangeAsync(entity, cancellationToken);
@@ -113,6 +118,14 @@ namespace Ictx.WebApp.Infrastructure.Repositories
         {
             _dbSet.Attach(entityToUpdate);
             _context.Entry(entityToUpdate).State = EntityState.Modified;
+        }
+
+        public virtual async Task UpdateAndSaveAsync(T entityToUpdate)
+        {
+            _dbSet.Attach(entityToUpdate);
+            _context.Entry(entityToUpdate).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
         }
     }
 }

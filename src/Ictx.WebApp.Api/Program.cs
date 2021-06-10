@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Ictx.WebApp.Infrastructure.Data.App;
+using Ictx.WebApp.Infrastructure.Data.BackgroundService;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -17,19 +19,10 @@ namespace Ictx.WebApp.Api
             using (var scope = host.Services.CreateScope())
             {    
                 var services = scope.ServiceProvider;
-
-                try
-                {
-                    // var appUnitOfWork = services.GetRequiredService<IAppUnitOfWork>();
-
-                    // Seed database.
-                    // appUnitOfWork.GetAppDbContext().Database.EnsureCreated();
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred seeding the DB.");
-                }
+                var logger = services.GetRequiredService<ILogger<Program>>();
+     
+                // Seed database.
+                SeedDatabase(services, logger); 
             }
 
             await host.RunAsync();
@@ -43,6 +36,22 @@ namespace Ictx.WebApp.Api
                     {
                         webBuilder.UseStartup<Startup>();
                     });
+        }
+
+        private static void SeedDatabase(IServiceProvider services, ILogger<Program> logger)
+        {
+            try
+            {
+                var backgroundServiceDbContext = services.GetRequiredService<BackgroundServiceDbContext>();
+                var appDbContext = services.GetRequiredService<AppDbContext>();
+
+                backgroundServiceDbContext.Database.EnsureCreated();
+                appDbContext.Database.EnsureCreated();            
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "An error occurred seeding the DB.");
+            }
         }
     }
 }

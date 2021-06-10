@@ -19,7 +19,17 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
                 if (env.IsDevelopment())
                 {
                     options.LogTo(Log.Debug);
-                }            
+                }
+            });
+
+            // BackgroundService db context.
+            services.ConfigureBackgroundServiceDbContext(options => {
+                options.UseSqlServer(configuration.GetConnectionString("BackgroundServiceConnection"), b => b.MigrationsAssembly(typeof(Startup).Assembly.FullName));
+
+                if (env.IsDevelopment())
+                {
+                    options.LogTo(Log.Debug);
+                }
             });
 
             return services;
