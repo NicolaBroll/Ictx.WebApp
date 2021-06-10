@@ -6,7 +6,7 @@ using Ictx.WebApp.Application.Validators;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Application.Models;
-using Ictx.WebApp.Application.AppUnitOfWork;
+using Ictx.WebApp.Application.UnitOfWork;
 
 namespace Ictx.WebApp.Application.BO
 {
@@ -24,7 +24,7 @@ namespace Ictx.WebApp.Application.BO
         /// </summary>
         /// <param name="filter">Parametri di paginazione</param>
         /// <returns>Ritorna unoggetto contenente la lista di dipendenti paginata e il totalcount dei record su DB</returns>
-        protected override async Task<PageResult<Dipendente>> ReadManyViewsAsync(PaginationModel filter, CancellationToken cancellationToken)
+        protected override async Task<PageResult<Dipendente>> ReadManyPaginatedViewsAsync(PaginationModel filter, CancellationToken cancellationToken)
         {
             var result = await this._appUnitOfWork.DipendenteRepository.ReadManyPaginatedAsync(
                 pagination: filter,

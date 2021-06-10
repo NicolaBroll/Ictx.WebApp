@@ -23,7 +23,7 @@ namespace Ictx.WebApp.Api.Controllers
         [HttpGet]
         public async virtual Task<PageResultDto<TEntityDto>> Get([FromQuery] Parameters paginationModel, CancellationToken cancellationToken = default)
         {
-            var list = await _baseBO.ReadManyAsync(paginationModel, cancellationToken);
+            var list = await _baseBO.ReadManyPaginatedAsync(paginationModel, cancellationToken);
             var res = _mapper.Map<PageResultDto<TEntityDto>>(list);
 
             return res;

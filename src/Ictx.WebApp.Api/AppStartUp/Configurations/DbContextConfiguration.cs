@@ -26,10 +26,10 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             services.ConfigureBackgroundServiceDbContext(options => {
                 options.UseSqlServer(configuration.GetConnectionString("BackgroundServiceConnection"), b => b.MigrationsAssembly(typeof(Startup).Assembly.FullName));
 
-                if (env.IsDevelopment())
-                {
-                    options.LogTo(Log.Debug);
-                }
+                //if (env.IsDevelopment())
+                //{
+                //    options.LogTo(Log.Debug);
+                //}
             });
 
             return services;

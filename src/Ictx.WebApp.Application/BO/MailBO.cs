@@ -47,7 +47,7 @@ namespace Ictx.WebApp.Application.BO
                 Body = body
             };
 
-            var operation = BackgroundServiceBO.CreateOperation(mail, utenteIdRequest);
+            var operation = BackgroundServiceBO.CreateOperation(mail, BackgroundOperationType.Mail, utenteIdRequest);
 
             await this._backgroundServiceBO.InsertAsync(operation, cancellationToken);
 

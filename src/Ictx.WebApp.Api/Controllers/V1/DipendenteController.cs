@@ -37,7 +37,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [Authorize("Api1_r")]
         public async Task<PageResultDto<DipendenteDto>> Get([FromQuery] PaginationModel paginationModel)
         {
-            var list = await _dipendenteBO.ReadManyAsync(paginationModel);
+            var list = await _dipendenteBO.ReadManyPaginatedAsync(paginationModel);
             var res = _mapper.Map<PageResultDto<DipendenteDto>>(list);
 
             return res;

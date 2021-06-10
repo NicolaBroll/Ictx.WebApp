@@ -17,12 +17,12 @@ namespace Ictx.WebApp.Api
             var host = CreateHostBuilder(args).Build();
 
             using (var scope = host.Services.CreateScope())
-            {    
+            {
                 var services = scope.ServiceProvider;
                 var logger = services.GetRequiredService<ILogger<Program>>();
-     
+
                 // Seed database.
-                SeedDatabase(services, logger); 
+                SeedDatabase(services, logger);
             }
 
             await host.RunAsync();

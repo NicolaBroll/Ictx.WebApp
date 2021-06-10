@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Ictx.WebApp.Application.Services;
 using Ictx.WebApp.Infrastructure.Services;
-using Ictx.WebApp.Application.AppUnitOfWork;
+using Ictx.WebApp.Application.UnitOfWork;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
