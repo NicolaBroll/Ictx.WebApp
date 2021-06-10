@@ -6,39 +6,22 @@ using Ictx.WebApp.Application.AppUnitOfWork;
 using Ictx.WebApp.Application.Repositories;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Entities.Base;
-using Ictx.WebApp.Infrastructure.Data.App;
 using Ictx.WebApp.Infrastructure.Data.BackgroundService;
 using Ictx.WebApp.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
-    public class AppUnitOfWork : IAppUnitOfWork
+    public class BackgroundServiceUnitOfWork : IBackgroundServiceUnitOfWork
     {
-        private readonly AppDbContext _appDbContext;
-        private readonly BackgroundServiceDbContext _backgroundServiceDbContext;
+        private readonly BackgroundServiceDbContext _context;
 
         // Repository.
-        private IGenericRepository<Dipendente> _dipendenteRepository;
         private IGenericRepository<Operation> _operationRepository;
 
-        public AppUnitOfWork(AppDbContext appDbContext, BackgroundServiceDbContext backgroundServiceDbContext)
+        public BackgroundServiceUnitOfWork(BackgroundServiceDbContext backgroundServiceDbContext)
         {
-            this._appDbContext = appDbContext;
-            this._backgroundServiceDbContext = backgroundServiceDbContext;
-        }
-
-        public IGenericRepository<Dipendente> DipendenteRepository
-        {
-            get
-            {
-                if (this._dipendenteRepository == null)
-                {
-                    this._dipendenteRepository = new GenericRepository<Dipendente, AppDbContext>(this._appDbContext);
-                }
-
-                return this._dipendenteRepository;
-            }
+            this._context = backgroundServiceDbContext;
         }
 
         public IGenericRepository<Operation> OperationRepository
@@ -47,7 +30,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             {
                 if (this._operationRepository == null)
                 {
-                    this._operationRepository = new GenericRepository<Operation, BackgroundServiceDbContext>(this._backgroundServiceDbContext);
+                    this._operationRepository = new GenericRepository<Operation, BackgroundServiceDbContext>(this._context);
                 }
 
                 return this._operationRepository;
@@ -58,7 +41,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
         {
             var now = DateTime.Now;
 
-            var entries = this._appDbContext.ChangeTracker
+            var entries = this._context.ChangeTracker
                 .Entries()
                 .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
 
@@ -72,7 +55,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
                 }
             }
 
-            await _appDbContext.SaveChangesAsync(cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         private bool _disposed = false;
@@ -83,7 +66,7 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             {
                 if (disposing)
                 {
-                    _appDbContext.DisposeAsync();
+                    this._context.DisposeAsync();
                 }
             }
             this._disposed = true;
@@ -95,9 +78,9 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             GC.SuppressFinalize(this);
         }
 
-        public AppDbContext GetAppDbContext()
+        public BackgroundServiceDbContext GetContext()
         {
-            return this._appDbContext;
+            return this._context;
         }
 
         //public override bool Equals(object obj)

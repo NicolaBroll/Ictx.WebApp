@@ -22,25 +22,25 @@ namespace Ictx.WebApp.Api
             this._applicationSettings = applicationSettings;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
             this._logger.LogInformation("Work start with: {delay} delay", this._applicationSettings.ExecutionDelay);
 
-            while (!stoppingToken.IsCancellationRequested)
+            while (!cancellationToken.IsCancellationRequested)
             {
                 using (var scope = _services.CreateScope())
                 {
                     var gestoreElaborazioniService = scope.ServiceProvider.GetRequiredService<BackgroundServiceBO>();
-                    await gestoreElaborazioniService.DoWork();
+                    await gestoreElaborazioniService.DoWork(cancellationToken);
                 }
 
-                await Task.Delay(this._applicationSettings.ExecutionDelay * 1000, stoppingToken);
+                await Task.Delay(this._applicationSettings.ExecutionDelay * 1000, cancellationToken);
             }
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Stopping...");
+            this._logger.LogInformation("Stopping...");
             await base.StopAsync(stoppingToken);
         }
     }

@@ -12,23 +12,9 @@ namespace Ictx.WebApp.Infrastructure.Data.BackgroundService.Configuration
 
             builder.HasKey(ci => ci.Id);
 
-            //builder.Property(ci => ci.CodiceFiscale)
-            //    .IsRequired(true)
-            //    .HasColumnType("char(16)");
-
-            //builder.Property(ci => ci.Nome)
-            //    .IsRequired(true)
-            //    .HasMaxLength(64);
-
-            //builder.Property(ci => ci.Cognome)
-            //    .IsRequired(true)
-            //    .HasMaxLength(64);
-
-            //builder.Property(ci => ci.Sesso)
-            //    .IsRequired(true)
-            //    .HasColumnType("char(1)");
-
-            //builder.HasQueryFilter(x => !x.IsDeleted);
+            builder.Property(ci => ci.Data)
+                .IsRequired(true)
+                .HasColumnType("nvarchar(max)");
         }
     }
 }
