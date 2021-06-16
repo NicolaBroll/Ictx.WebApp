@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Data;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ictx.WebApp.Application.UnitOfWork;
-using Ictx.WebApp.Core.Entities.Base;
+using Ictx.WebApp.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
     public class UnitOfWorkBase<TDbContext> : IUnitOfWorkBase
-        where TDbContext: DbContext
+        where TDbContext: DbContextBase
     {
         protected readonly TDbContext _context;
     
@@ -22,27 +20,10 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
 
         public async Task SaveAsync(CancellationToken cancellationToken = default)
         {
-            var now = DateTime.Now;
-
-            var entries = this._context.ChangeTracker
-                .Entries()
-                .Where(e => e.Entity is BaseEntity && (e.State == EntityState.Added || e.State == EntityState.Modified));
-
-            foreach (var entityEntry in entries)
-            {
-                ((BaseEntity)entityEntry.Entity).Updated = now;
-
-                if (entityEntry.State == EntityState.Added)
-                {
-                    ((BaseEntity)entityEntry.Entity).Inserted = now;
-                }
-            }
-
             await _context.SaveChangesAsync(cancellationToken);
         }
 
         private bool _disposed = false;
-        private IDbContextTransaction _transaction;
 
         protected virtual void Dispose(bool disposing)
         {
@@ -67,38 +48,9 @@ namespace Ictx.WebApp.Infrastructure.UnitOfWork
             return this._context;
         }
 
-        public async Task BeginTransactionAsync()
+        public IDbConnection GetConnection()
         {
-            if (this._transaction != null) 
-            {
-                await DisposeTransactionAsync();
-            }
-
-            this._transaction = await this._context.Database.BeginTransactionAsync(IsolationLevel.RepeatableRead);
+            return this._context.Database.GetDbConnection();
         }
-
-        public async Task CommitTransactionAsync(bool dispose)
-        {
-            await this._transaction.CommitAsync();
-
-            if (dispose) 
-            {
-                await DisposeTransactionAsync();
-            }
-        }
-
-        public async Task DisposeTransactionAsync()
-        {
-            if(this._transaction != null) 
-            {
-                await this._transaction.DisposeAsync();
-                this._transaction = null;
-            }
-        }
-
-        //public override bool Equals(object obj)
-        //{
-        //    return obj is AppUnitOfWork work && EqualityComparer<AppDbContext>.Default.Equals(_context, work._context);
-        //}
     }
 }

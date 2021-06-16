@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Ictx.WebApp.Infrastructure.Data.App;
 using Ictx.WebApp.Infrastructure.Data.BackgroundService;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -45,8 +46,8 @@ namespace Ictx.WebApp.Api
                 var backgroundServiceDbContext = services.GetRequiredService<BackgroundServiceDbContext>();
                 var appDbContext = services.GetRequiredService<AppDbContext>();
 
-                backgroundServiceDbContext.Database.EnsureCreated();
-                appDbContext.Database.EnsureCreated();            
+                backgroundServiceDbContext.Database.Migrate();
+                appDbContext.Database.Migrate();
             }
             catch (Exception ex)
             {

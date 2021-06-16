@@ -9,6 +9,7 @@ using Ictx.WebApp.Application.UnitOfWork;
 using Ictx.WebApp.Application.Services;
 using Ictx.WebApp.Core.Models;
 using System.Collections.Generic;
+using System.Transactions;
 
 namespace Ictx.WebApp.Application.BO
 {
@@ -37,7 +38,7 @@ namespace Ictx.WebApp.Application.BO
 
         public async Task DoWork(CancellationToken cancellationToken)
         {
-            var operazione = await GetAndStartNextOperazione(cancellationToken);
+            var operazione = await this._backgroundServiceUnitOfWork.OperationRepository.GetAndStartNextOperazione(cancellationToken);
 
             if (operazione is null)
             {
@@ -82,7 +83,7 @@ namespace Ictx.WebApp.Application.BO
 
             for(var i = 1; i <= 10; i++) 
             {
-                await Task.Delay(1000 * 10);
+                await Task.Delay(1000 * 3);
                 await SetProgress(operazione, i * 10);
             }
 
@@ -112,30 +113,6 @@ namespace Ictx.WebApp.Application.BO
 
             this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
             await this._backgroundServiceUnitOfWork.SaveAsync();
-        }
-
-        private async Task<Operation> GetAndStartNextOperazione(CancellationToken cancellationToken)
-        {
-            // Inizia la transaction.
-            await this._backgroundServiceUnitOfWork.BeginTransactionAsync();
-
-            var operazione = await this._backgroundServiceUnitOfWork.OperationRepository.GetNextOperation();
-
-            if (cancellationToken.IsCancellationRequested || operazione is null || operazione.Started)
-            {
-                return null;
-            }
-
-            // Avvio l'operazione.
-            operazione.Started = true;
-
-            this._backgroundServiceUnitOfWork.OperationRepository.Update(operazione);
-            await this._backgroundServiceUnitOfWork.SaveAsync();
-
-            // Committo e chiudo la transaction.
-            await this._backgroundServiceUnitOfWork.CommitTransactionAsync(true);
-
-            return operazione;
         }
 
         public async Task CreateOperationMail(List<MailModel> mails, Guid utenteIdRequest)
