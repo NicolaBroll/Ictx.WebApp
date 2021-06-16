@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
-using Ictx.WebApp.Application.Services;
 using Ictx.WebApp.Templates.Mail;
 using Ictx.WebApp.Application.Models;
 using Ictx.WebApp.Core.Models;
@@ -10,13 +9,15 @@ namespace Ictx.WebApp.Application.BO
 {
     public class MailBO : BaseBO<DipendenteEmailTemplate, int, PaginationModel>
     {
-        private readonly IRazorViewService  _razorViewService;
-        private readonly IMailService       _mailService;
+        private readonly IRazorViewService      _razorViewService;
+        private readonly BackgroundServiceBO    _backgroundServiceBO;
 
-        public MailBO(ILogger<MailBO> logger, IRazorViewService razorViewService, IMailService mailService): base(logger, null)
+        public MailBO(ILogger<MailBO> logger,
+            IRazorViewService razorViewService,
+            BackgroundServiceBO backgroundServiceBO): base(logger, null)
         {
-            this._razorViewService  = razorViewService;
-            this._mailService       = mailService;
+            this._razorViewService      = razorViewService;
+            this._backgroundServiceBO   = backgroundServiceBO;
         }
 
         /// <summary>
@@ -25,8 +26,11 @@ namespace Ictx.WebApp.Application.BO
         /// <param name="value">Modello contenente i dati della nuova mail.</param>
         protected override async Task<OperationResult<DipendenteEmailTemplate>> InsertViewAsync(DipendenteEmailTemplate value, CancellationToken cancellationToken)
         {
+            var utenteIdRequest = System.Guid.NewGuid();
+
             var utente = new Utente
             {
+                Id = System.Guid.NewGuid(),
                 Nome = "Nicola",
                 Cognome = "Broll",
                 Email = "nbroll@gmail.com"
@@ -43,7 +47,7 @@ namespace Ictx.WebApp.Application.BO
                 Body = body
             };
 
-            await this._mailService.SendEmail(mail, cancellationToken);
+            await this._backgroundServiceBO.CreateOperationMail(mail, utenteIdRequest);
 
             return new OperationResult<DipendenteEmailTemplate>(value);
         }

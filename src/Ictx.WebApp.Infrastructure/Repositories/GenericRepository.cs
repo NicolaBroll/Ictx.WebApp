@@ -91,6 +91,7 @@ namespace Ictx.WebApp.Infrastructure.Repositories
         {
             await _dbSet.AddAsync(entity, cancellationToken);
         }
+ 
         public async virtual Task InsertManyAsync(IEnumerable<T> entity, CancellationToken cancellationToken = default)
         {
             await _dbSet.AddRangeAsync(entity, cancellationToken);

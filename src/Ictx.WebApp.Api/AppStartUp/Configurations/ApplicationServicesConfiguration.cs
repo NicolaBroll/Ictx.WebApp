@@ -1,11 +1,7 @@
-﻿using Ictx.WebApp.Templates.Mail;
-using Ictx.WebApp.Application.BO;
-using Ictx.WebApp.Infrastructure.Services;
-using Ictx.WebApp.Infrastructure.UnitOfWork;
+﻿using Ictx.WebApp.Application.BO;
+using Ictx.WebApp.Infrastructure.AppStartUp.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Ictx.WebApp.Application.Services;
-using Ictx.WebApp.Application.AppUnitOfWork;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {
@@ -15,14 +11,12 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
         public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
         {
             // Services.
-            services.TryAddSingleton<IDateTimeService, DateTimeService>();
             services.TryAddScoped<DipendenteBO>();
             services.TryAddScoped<MailBO>();
-            services.AddScoped<IRazorViewService, RazorViewService>();
-            services.AddScoped<IMailService, MailService>();
+            services.TryAddScoped<BackgroundServiceBO>();            
 
-            // Unit of work.
-            services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();
+            // Configuro i servizi di infrastruttura.
+            services.ConfigureInfrastructureServices();
 
             return services;
         }

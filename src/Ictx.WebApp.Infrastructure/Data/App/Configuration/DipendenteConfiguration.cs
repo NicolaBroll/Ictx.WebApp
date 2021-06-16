@@ -2,13 +2,13 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Ictx.WebApp.Infrastructure.Data.Configuration
+namespace Ictx.WebApp.Infrastructure.Data.App.Configuration
 {
     public class DipendenteConfiguration : IEntityTypeConfiguration<Dipendente>
     {
         public void Configure(EntityTypeBuilder<Dipendente> builder)
         {
-            builder.ToTable("Dipendente");
+            builder.ToTable(nameof(Dipendente));
 
             builder.HasKey(ci => ci.Id);
 

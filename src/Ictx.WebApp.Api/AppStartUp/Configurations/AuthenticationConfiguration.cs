@@ -1,7 +1,6 @@
 ﻿using Ictx.WebApp.Api.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations
 {

@@ -21,12 +21,12 @@ namespace Ictx.WebApp.Application.BO
             this._validator = validator;
         }
 
-        // Read many.
-        public async Task<PageResult<T>> ReadManyAsync(Q filter, CancellationToken cancellationToken = default)
+        // Read many paginated.
+        public async Task<PageResult<T>> ReadManyPaginatedAsync(Q filter, CancellationToken cancellationToken = default)
         {
             try
             {
-                return await ReadManyViewsAsync(filter, cancellationToken);
+                return await ReadManyPaginatedViewsAsync(filter, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -40,7 +40,27 @@ namespace Ictx.WebApp.Application.BO
             }
         }
 
-        protected virtual async Task<PageResult<T>> ReadManyViewsAsync(Q filter, CancellationToken cancellationToken)
+        // Read many.
+        protected virtual async Task<IEnumerable<T>> ReadManyViewsAsync(Q filter, CancellationToken cancellationToken)
+        {
+            return await Task.FromException<List<T>>(new NotImplementedException());
+        }
+
+        public async Task<IEnumerable<T>> ReadManydAsync(Q filter, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                return await ReadManyViewsAsync(filter, cancellationToken);
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogError(ex, $"{GetBoName()} ReadManyAsync filter: {filter}");
+
+                return new List<T>();
+            }
+        }
+
+        protected virtual async Task<PageResult<T>> ReadManyPaginatedViewsAsync(Q filter, CancellationToken cancellationToken)
         {
             return await Task.FromException<PageResult<T>>(new NotImplementedException());
         }

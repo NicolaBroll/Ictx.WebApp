@@ -3,8 +3,8 @@ using Ictx.WebApp.Core.Entities;
 
 namespace Ictx.WebApp.Application.UnitOfWork
 {
-    public interface IAppUnitOfWork : IUnitOfWorkBase
+    public interface IBackgroundServiceUnitOfWork : IUnitOfWorkBase
     {
-        IGenericRepository<Dipendente> DipendenteRepository { get; }
+        IOperationRepository OperationRepository { get; }
     }
 }
