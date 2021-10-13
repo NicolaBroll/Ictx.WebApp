@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Ictx.WebApp.Api;
-using Ictx.WebApp.Infrastructure.Data;
+using Ictx.WebApp.Infrastructure.Data.App;
 
 namespace Ictx.WebApp.IntegrationTest
 {
