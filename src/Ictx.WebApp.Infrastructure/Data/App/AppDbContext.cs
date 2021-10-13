@@ -1,7 +1,6 @@
 ﻿using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Data.App.Configuration;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection;
 
 namespace Ictx.WebApp.Infrastructure.Data.App
 {
