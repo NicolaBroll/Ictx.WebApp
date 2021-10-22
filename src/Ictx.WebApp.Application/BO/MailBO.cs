@@ -9,15 +9,11 @@ namespace Ictx.WebApp.Application.BO
 {
     public class MailBO : BaseBO<DipendenteEmailTemplate, int, PaginationModel>
     {
-        private readonly IRazorViewService      _razorViewService;
-        private readonly BackgroundServiceBO    _backgroundServiceBO;
+        private readonly IRazorViewService _razorViewService;
 
-        public MailBO(ILogger<MailBO> logger,
-            IRazorViewService razorViewService,
-            BackgroundServiceBO backgroundServiceBO): base(logger, null)
+        public MailBO(ILogger<MailBO> logger, IRazorViewService razorViewService): base(logger, null)
         {
-            this._razorViewService      = razorViewService;
-            this._backgroundServiceBO   = backgroundServiceBO;
+            this._razorViewService = razorViewService;
         }
 
         /// <summary>
@@ -47,7 +43,7 @@ namespace Ictx.WebApp.Application.BO
                 Body = body
             };
 
-            await this._backgroundServiceBO.CreateOperationMail(mail, utenteIdRequest);
+            //await this._backgroundServiceBO.CreateOperationMail(mail, utenteIdRequest);
 
             return new OperationResult<DipendenteEmailTemplate>(value);
         }

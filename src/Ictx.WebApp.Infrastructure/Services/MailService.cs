@@ -32,7 +32,7 @@ namespace Ictx.WebApp.Infrastructure.Services
                     // For demo-purposes, accept all SSL certificates
                     //client.ServerCertificateValidationCallback = (_, _, _, _) => true;
 
-                    await client.ConnectAsync(this._mailSettings.IpAddress, this._mailSettings.Port, this._mailSettings.UseSsl);
+                    await client.ConnectAsync(this._mailSettings.IpAddress, this._mailSettings.Port, this._mailSettings.UseSsl, cancellationToken);
 
                     foreach (var mail in mails)
                     {
@@ -44,7 +44,7 @@ namespace Ictx.WebApp.Infrastructure.Services
                         await SendEmail(mail, client, cancellationToken);
                     }
 
-                    await client.DisconnectAsync(true);
+                    await client.DisconnectAsync(true, cancellationToken);
                 };
             }
             catch (Exception e)

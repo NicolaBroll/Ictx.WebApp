@@ -2,7 +2,6 @@
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Application.BO;
 using Ictx.WebApp.Application.Models;
-using Ictx.WebApp.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
 using System.Threading.Tasks;

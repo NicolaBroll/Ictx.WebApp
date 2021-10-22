@@ -1,13 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
-using Ictx.WebApp.Infrastructure.Data.App;
-using Ictx.WebApp.Infrastructure.Data.BackgroundService;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
+using Ictx.WebApp.Infrastructure.Data.App;
 
 namespace Ictx.WebApp.Api
 {
@@ -19,11 +17,12 @@ namespace Ictx.WebApp.Api
 
             using (var scope = host.Services.CreateScope())
             {
-                var services = scope.ServiceProvider;
-                var logger = services.GetRequiredService<ILogger<Program>>();
+                var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
 
                 // Seed database.
-                SeedDatabase(services, logger);
+                var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+                appDbContext.Database.Migrate();
             }
 
             await host.RunAsync();
@@ -37,22 +36,6 @@ namespace Ictx.WebApp.Api
                     {
                         webBuilder.UseStartup<Startup>();
                     });
-        }
-
-        private static void SeedDatabase(IServiceProvider services, ILogger<Program> logger)
-        {
-            try
-            {
-                var backgroundServiceDbContext = services.GetRequiredService<BackgroundServiceDbContext>();
-                var appDbContext = services.GetRequiredService<AppDbContext>();
-
-                backgroundServiceDbContext.Database.Migrate();
-                appDbContext.Database.Migrate();
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex, "An error occurred seeding the DB.");
-            }
-        }
+        }       
     }
 }

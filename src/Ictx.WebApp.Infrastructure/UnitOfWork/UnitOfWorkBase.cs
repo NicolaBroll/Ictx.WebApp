@@ -2,12 +2,12 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Ictx.WebApp.Application.UnitOfWork;
-using Ictx.WebApp.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork
 {
     public class UnitOfWorkBase<TDbContext> : IUnitOfWorkBase
-        where TDbContext: DbContextBase
+        where TDbContext: DbContext
     {
         protected readonly TDbContext   _context;
         private bool                    _disposed = false;

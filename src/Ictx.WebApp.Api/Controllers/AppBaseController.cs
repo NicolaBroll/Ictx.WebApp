@@ -5,7 +5,6 @@ using AutoMapper;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Application.Models;
 using Ictx.WebApp.Core.Exceptions;
-using Ictx.WebApp.Core.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ictx.WebApp.Api.Controllers
@@ -46,10 +45,9 @@ namespace Ictx.WebApp.Api.Controllers
         private ActionResult FailResponse(Exception ex)
         {
 
-            if (ex is BadRequestException)
+            if (ex is BadRequestException bbb)
             {  
-                var badRequestException = (BadRequestException)ex;
-                return BadRequest(new ErrorResponseDto(ex.Message, badRequestException.Errors));
+                return BadRequest(new ErrorResponseDto(ex.Message, bbb.Errors));
             }
 
             if (ex is NotFoundException)

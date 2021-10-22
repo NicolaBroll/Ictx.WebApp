@@ -1,5 +1,4 @@
 ﻿using Ictx.WebApp.Application.BO;
-using Ictx.WebApp.Infrastructure.AppStartUp.Configurations;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
@@ -13,10 +12,6 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             // Services.
             services.TryAddScoped<DipendenteBO>();
             services.TryAddScoped<MailBO>();
-            services.TryAddScoped<BackgroundServiceBO>();            
-
-            // Configuro i servizi di infrastruttura.
-            services.ConfigureInfrastructureServices();
 
             return services;
         }

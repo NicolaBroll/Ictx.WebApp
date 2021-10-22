@@ -11,8 +11,8 @@ using Microsoft.Extensions.Hosting;
 using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
-using Ictx.WebApp.Infrastructure.AppStartUp.Configurations;
 using Ictx.WebApp.Infrastructure.Data.App;
+using Ictx.WebApp.Infrastructure.DependencyInjection;
 
 namespace Ictx.WebApp.Api
 {
@@ -34,9 +34,6 @@ namespace Ictx.WebApp.Api
             // Application settings.
             services.ConfigureApplicationSettings(this._configuration);
 
-            // AppDbContext.
-            services.ConfigureDbContext(this._configuration, this._env);
-
             // Configuro i servizi consumati dall'app.
             services.ConfigureApplicationServices();
 
@@ -55,11 +52,8 @@ namespace Ictx.WebApp.Api
             // Authentication.
             services.ConfigureAuthentication(this._configuration);
 
-            // Email.
-            services.ConfigureMail(this._configuration);
-
-            // Background service.
-            services.AddHostedService<Worker>();
+            // Infrastructure.
+            services.AddInfrastructure(this._configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IApiVersionDescriptionProvider provider)
