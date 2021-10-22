@@ -13,6 +13,7 @@ using Ictx.WebApp.Application.BO;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Application.UnitOfWork;
 using Ictx.WebApp.Application.Repositories;
+using Ictx.WebApp.Application.Models;
 
 namespace Ictx.WebApp.UnitTest
 {
@@ -20,6 +21,7 @@ namespace Ictx.WebApp.UnitTest
     {
         private readonly DipendenteBO _sut;
         private readonly Mock<ILogger<DipendenteBO>> _logger = new();
+        private readonly Mock<IUserData> _userData = new();
         private readonly Mock<IAppUnitOfWork> _appUnitOfWork = new ();
         private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new ();
 
@@ -27,7 +29,7 @@ namespace Ictx.WebApp.UnitTest
 
         public DipendenteServiceTest()
         {
-            this._sut = new DipendenteBO(this._logger.Object, this._appUnitOfWork.Object);
+            this._sut = new DipendenteBO(this._logger.Object, this._userData.Object, this._appUnitOfWork.Object);
             this._listaDipendentiFake = GetListaDipendentiFake();
         }
 
