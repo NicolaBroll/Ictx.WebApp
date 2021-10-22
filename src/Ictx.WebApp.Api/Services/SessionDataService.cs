@@ -13,7 +13,7 @@ namespace Ictx.WebApp.Api.Services
         }
 
         /// <summary>Legge i dati dalla sorgente corretta e li inserisce all'interno di un oggetto SessionData</summary>
-        public SessionData GetSessionData()
+        public UserData GetSessionData()
 		{
 			try
 			{
@@ -21,12 +21,12 @@ namespace Ictx.WebApp.Api.Services
 
 				if (claim != null)
                 {
-					return new SessionData(int.Parse(claim.Value));
+					return new UserData(int.Parse(claim.Value));
                 }
 			}
 			catch { }
 
-			return new SessionData(0);
+			return new UserData(0);
 		}
 	}
 }

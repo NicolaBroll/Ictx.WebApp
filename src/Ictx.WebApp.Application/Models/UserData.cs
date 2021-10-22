@@ -1,15 +1,15 @@
 ﻿namespace Ictx.WebApp.Application.Models
 {
-    public interface ISessionData
+    public interface IUserData
     {
         int UserId { get; }
     }
 
-    public class SessionData : ISessionData
+    public class UserData : IUserData
     {
         public int UserId { get; private set; }
 
-        public SessionData(int userId)
+        public UserData(int userId)
         {
             this.UserId = userId;
         }

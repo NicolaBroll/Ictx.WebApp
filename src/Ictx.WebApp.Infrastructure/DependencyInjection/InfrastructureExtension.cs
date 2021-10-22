@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Reflection;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -10,7 +11,6 @@ using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Application.UnitOfWork;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Ictx.WebApp.Infrastructure.Data.App;
-using System.Reflection;
 
 namespace Ictx.WebApp.Infrastructure.DependencyInjection
 {

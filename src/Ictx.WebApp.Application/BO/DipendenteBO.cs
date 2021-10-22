@@ -12,10 +12,12 @@ namespace Ictx.WebApp.Application.BO
 {
     public class DipendenteBO : BaseBO<Dipendente, int, PaginationModel>
     {
+        private readonly IUserData      _userData;
         private readonly IAppUnitOfWork _appUnitOfWork;
 
-        public DipendenteBO(ILogger<DipendenteBO> logger, IAppUnitOfWork appUnitOfWork) : base(logger, new DipendenteValidator())
+        public DipendenteBO(ILogger<DipendenteBO> logger, IUserData userData, IAppUnitOfWork appUnitOfWork) : base(logger, new DipendenteValidator())
         {
+            this._userData      = userData;
             this._appUnitOfWork = appUnitOfWork;
         }
 

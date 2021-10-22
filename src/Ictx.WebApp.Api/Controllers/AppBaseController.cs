@@ -44,10 +44,9 @@ namespace Ictx.WebApp.Api.Controllers
 
         private ActionResult FailResponse(Exception ex)
         {
-
-            if (ex is BadRequestException bbb)
+            if (ex is BadRequestException badRequestException)
             {  
-                return BadRequest(new ErrorResponseDto(ex.Message, bbb.Errors));
+                return BadRequest(new ErrorResponseDto(ex.Message, badRequestException.Errors));
             }
 
             if (ex is NotFoundException)

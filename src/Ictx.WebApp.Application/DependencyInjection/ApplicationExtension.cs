@@ -2,12 +2,11 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Ictx.WebApp.Api.AppStartUp.Configurations
+namespace Ictx.WebApp.Application.DependencyInjection
 {
-    public static class ApplicationServicesConfiguration
+    public static class ApplicationExtension
     {
-        /// <summary>Configura la Dependency Injection aggiungendo tutti i servizi che utilizza l'app.</summary>
-        public static IServiceCollection ConfigureApplicationServices(this IServiceCollection services)
+        public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             // Services.
             services.TryAddScoped<DipendenteBO>();

@@ -11,7 +11,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
 		{
 			services.AddScoped<SessionDataService>();
 
-			services.AddScoped<ISessionData, SessionData>(serviceProvider => {
+			services.AddScoped<IUserData, UserData>(serviceProvider => {
 				SessionDataService sessionDataService = serviceProvider.GetService<SessionDataService>();
 				return sessionDataService.GetSessionData();
 			});

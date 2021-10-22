@@ -38,6 +38,11 @@ namespace Ictx.WebApp.Application.BO
                     TotalCount = 0
                 };
             }
+        }    
+        
+        protected virtual async Task<PageResult<T>> ReadManyPaginatedViewsAsync(Q filter, CancellationToken cancellationToken)
+        {
+            return await Task.FromException<PageResult<T>>(new NotImplementedException());
         }
 
         // Read many.
@@ -58,11 +63,6 @@ namespace Ictx.WebApp.Application.BO
 
                 return new List<T>();
             }
-        }
-
-        protected virtual async Task<PageResult<T>> ReadManyPaginatedViewsAsync(Q filter, CancellationToken cancellationToken)
-        {
-            return await Task.FromException<PageResult<T>>(new NotImplementedException());
         }
 
 
