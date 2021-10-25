@@ -42,7 +42,13 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             services.AddApiVersioning(
                 options =>
                 {
-                    // reporting api versions will return the headers "api-supported-versions" and "api-deprecated-versions"
+                    // Specify the default API Version as 1.0
+                    options.DefaultApiVersion = new ApiVersion(1, 0);
+
+                    // If the client hasn't specified the API version in the request, use the default API version number
+                    options.AssumeDefaultVersionWhenUnspecified = true;
+
+                    // Advertise the API versions supported for the particular endpoint
                     options.ReportApiVersions = true;
                 });
 
