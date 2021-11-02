@@ -1,8 +1,6 @@
 ﻿using System.Reflection;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ictx.WebApp.Infrastructure.Common;
 using Ictx.WebApp.Templates.Mail;
@@ -11,25 +9,30 @@ using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Application.Contracts.UnitOfWork;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Ictx.WebApp.Infrastructure.Data.App;
+using System;
 
 namespace Ictx.WebApp.Infrastructure.DependencyInjection
 {
     public static class InfrastructureExtension
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
+        public static IServiceCollection AddInfrastructure(this IServiceCollection services, InfrastructureOptions infrastructureOptions)
         {
-            services.ConfigureMail(configuration);
+            if (infrastructureOptions is null)
+            {
+                throw new ArgumentNullException(nameof(infrastructureOptions));
+            }
+
+            services.ConfigureMail(infrastructureOptions.MailSettings);
             services.ConfigureInfrastructureServices();
-            services.ConfigureAppDbContext(configuration);
+            services.ConfigureAppDbContext(infrastructureOptions.ConnectionString);
 
             return services;
         }
 
-        private static IServiceCollection ConfigureMail(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection ConfigureMail(this IServiceCollection services, MailSettings mailSettings)
         {
             // Mail settings.
-            services.Configure<MailSettings>(configuration.GetSection(nameof(MailSettings)));
-            services.AddSingleton<IMailSettings>(sp => sp.GetRequiredService<IOptions<MailSettings>>().Value);
+            services.AddSingleton<IMailSettings>(sp => mailSettings);
 
             // Razor pages per il render della mail.
             services.AddRazorPages();
@@ -52,10 +55,10 @@ namespace Ictx.WebApp.Infrastructure.DependencyInjection
             return services;
         }
 
-        private static IServiceCollection ConfigureAppDbContext(this IServiceCollection services, IConfiguration configuration)
+        private static IServiceCollection ConfigureAppDbContext(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<AppDbContext>(options => {
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
+                options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
             });
 
             return services;

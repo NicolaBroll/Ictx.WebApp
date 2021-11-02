@@ -14,6 +14,7 @@ using Ictx.WebApp.Api.AppStartUp.Configurations;
 using Ictx.WebApp.Infrastructure.Data.App;
 using Ictx.WebApp.Infrastructure.DependencyInjection;
 using Ictx.WebApp.Application.DependencyInjection;
+using Ictx.WebApp.Infrastructure.Common;
 
 namespace Ictx.WebApp.Api
 {
@@ -53,7 +54,15 @@ namespace Ictx.WebApp.Api
             services.AddApplication();
 
             // Infrastructure.
-            services.AddInfrastructure(this._configuration);
+            var mailConfig = new MailSettings();
+            this._configuration.Bind(nameof(MailSettings), mailConfig);
+
+            services.AddInfrastructure(
+                InfrastructureOptionsBuilder
+                    .Configure()
+                    .ApplicationDatacontextConfigurationStage(this._configuration.GetConnectionString("DefaultConnection"))
+                    .MailConfigurationStage(mailConfig)
+            );
         }
 
         /// <summary>
