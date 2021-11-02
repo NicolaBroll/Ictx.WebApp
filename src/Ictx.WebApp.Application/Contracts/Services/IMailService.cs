@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ictx.WebApp.Application.Services
+namespace Ictx.WebApp.Application.Contracts.Services
 {
     public interface IMailService
     {

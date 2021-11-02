@@ -6,9 +6,9 @@ using Microsoft.Extensions.Options;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ictx.WebApp.Infrastructure.Common;
 using Ictx.WebApp.Templates.Mail;
-using Ictx.WebApp.Application.Services;
+using Ictx.WebApp.Application.Contracts.Services;
 using Ictx.WebApp.Infrastructure.Services;
-using Ictx.WebApp.Application.UnitOfWork;
+using Ictx.WebApp.Application.Contracts.UnitOfWork;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Ictx.WebApp.Infrastructure.Data.App;
 

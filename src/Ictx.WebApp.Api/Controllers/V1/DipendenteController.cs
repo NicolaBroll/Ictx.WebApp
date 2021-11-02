@@ -1,12 +1,13 @@
 ﻿using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Application.BO;
 using Ictx.WebApp.Application.Models;
-using Microsoft.AspNetCore.Authorization;
 
 namespace Ictx.WebApp.Api.Controllers.V1
 {
@@ -30,14 +31,18 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// Ritorna una lista di dipendenti paginata.
         /// </summary>
         /// <param name="paginationModel">Filtro per elementi di paginazione.</param>
+        /// <param name="cancellationToken"></param>
         /// <response code = "200">Ritorna la lista paginata di dipendenti.</response>
         /// <returns></returns>
         [HttpGet("")]
         [ProducesResponseType(typeof(PageResultDto<DipendenteDto>), (int)HttpStatusCode.OK)]
         [Authorize("Api1_r")]
-        public async Task<PageResultDto<DipendenteDto>> Get([FromQuery] PaginationModel paginationModel)
+        public async Task<PageResultDto<DipendenteDto>> Get([FromQuery] PaginationModel paginationModel, CancellationToken cancellationToken)
         {
-            var list = await _dipendenteBO.ReadManyPaginatedAsync(paginationModel);
+            var list = await _dipendenteBO.ReadManyPaginatedAsync(
+                paginationModel, 
+                cancellationToken);
+
             var res = _mapper.Map<PageResultDto<DipendenteDto>>(list);
 
             return res;
@@ -47,6 +52,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// Ritorna un singolo dipendente.
         /// </summary>
         /// <param name="id">Identificativo dipendente.</param>
+        /// <param name="cancellationToken"></param>
         /// <response code = "200">Ritorna un dipendente.</response>
         /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con
         /// l'identificativo richesto.</response>
@@ -54,9 +60,9 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [HttpGet("{id}")]
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<DipendenteDto>> GetById(int id)
+        public async Task<ActionResult<DipendenteDto>> GetById(int id, CancellationToken cancellationToken)
         {
-            var result = await this._dipendenteBO.ReadAsync(id);
+            var result = await this._dipendenteBO.ReadAsync(id, cancellationToken);
             return ApiResponse<Dipendente, DipendenteDto>(result);
         }
 
@@ -64,6 +70,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// Elimina un singolo dipendente.
         /// </summary>
         /// <param name="id">Identificativo dipendente.</param>
+        /// <param name="cancellationToken"></param>
         /// <response code = "200">Dipendente eliminato con successo.</response>
         /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con
         /// l'identificativo richesto.</response>
@@ -71,9 +78,9 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [HttpDelete("{id}")]
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<bool>> Delete(int id)
+        public async Task<ActionResult<bool>> Delete(int id, CancellationToken cancellationToken)
         {
-            var result = await this._dipendenteBO.DeleteAsync(id);
+            var result = await this._dipendenteBO.DeleteAsync(id, cancellationToken: cancellationToken);
             return ApiResponse<bool, bool>(result);
         }
 
@@ -81,16 +88,17 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// Crea un singolo dipendente.
         /// </summary>
         /// <param name="model">Dto rappresentante il dipendente.</param>
+        /// <param name="cancellationToken"></param>
         /// <response code = "200">Dipendente creato correttamente, ritorna l'oggetto creato.</response>
         /// <response code = "400">Errore validazione dto.</response>
         /// <returns></returns> 
         [HttpPost("")]
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model)
+        public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model, CancellationToken cancellationToken)
         {
             var objToInsert = _mapper.Map<Dipendente>(model);
-            var result = await this._dipendenteBO.InsertAsync(objToInsert);
+            var result = await this._dipendenteBO.InsertAsync(objToInsert, cancellationToken: cancellationToken);
 
             return ApiResponse<Dipendente, DipendenteDto>(result);
         }
@@ -100,6 +108,7 @@ namespace Ictx.WebApp.Api.Controllers.V1
         /// </summary>
         /// <param name="id">Identificativo dipendente.</param>
         /// <param name="model">Dto rappresentante il dipendente.</param>
+        /// <param name="cancellationToken"></param>
         /// <response code = "200">Dipendente modificato correttamente, ritorna l'oggetto modificato.</response>
         /// <response code = "400">Errore validazione.</response>
         /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente
@@ -109,10 +118,10 @@ namespace Ictx.WebApp.Api.Controllers.V1
         [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.BadRequest)]
         [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
-        public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model)
+        public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model, CancellationToken cancellationToken)
         {
             var objToUpdate = _mapper.Map<Dipendente>(model);
-            var result = await this._dipendenteBO.SaveAsync(id, objToUpdate);
+            var result = await this._dipendenteBO.SaveAsync(id, objToUpdate, cancellationToken: cancellationToken);
 
             return ApiResponse<Dipendente, DipendenteDto>(result);
         }

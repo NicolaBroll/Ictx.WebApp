@@ -10,26 +10,24 @@ using System.Collections.Generic;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Application.BO;
-using Microsoft.Extensions.Logging;
-using Ictx.WebApp.Application.UnitOfWork;
-using Ictx.WebApp.Application.Repositories;
-using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Application.Contracts.UnitOfWork;
+using Ictx.WebApp.Application.Contracts.Repositories;
 
 namespace Ictx.WebApp.UnitTest
 {
     public class DipendenteServiceTest
     {
         private readonly DipendenteBO _sut;
-        private readonly Mock<ILogger<DipendenteBO>> _logger = new();
-        private readonly Mock<IUserData> _userData = new();
         private readonly Mock<IAppUnitOfWork> _appUnitOfWork = new ();
         private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new ();
 
+        private readonly CancellationToken _cancellationToken;
         private readonly List<Dipendente> _listaDipendentiFake;
 
         public DipendenteServiceTest()
         {
-            this._sut = new DipendenteBO(this._logger.Object, this._userData.Object, this._appUnitOfWork.Object);
+            this._sut = new DipendenteBO(this._appUnitOfWork.Object);
+            this._cancellationToken = new CancellationToken();
             this._listaDipendentiFake = GetListaDipendentiFake();
         }
 
@@ -45,7 +43,7 @@ namespace Ictx.WebApp.UnitTest
             this._appUnitOfWork.Setup(x => x.DipendenteRepository).Returns(this._dipendenteRepository.Object);
 
             // Act.
-            var response = await this._sut.ReadAsync(dipendente.Id);
+            var response = await this._sut.ReadAsync(dipendente.Id, this._cancellationToken);
 
             // Assert.
             response.IsSuccess.Should().BeTrue();
@@ -60,7 +58,7 @@ namespace Ictx.WebApp.UnitTest
             this._appUnitOfWork.Setup(x => x.DipendenteRepository).Returns(this._dipendenteRepository.Object);
 
             // Act.
-            var responseResult = await this._sut.ReadAsync(0);
+            var responseResult = await this._sut.ReadAsync(0, this._cancellationToken);
 
             // Assert.
             responseResult.IsSuccess.Should().BeFalse();
@@ -78,7 +76,7 @@ namespace Ictx.WebApp.UnitTest
             this._appUnitOfWork.Setup(x => x.DipendenteRepository).Returns(this._dipendenteRepository.Object);
 
             // Act.
-            var response = await this._sut.DeleteAsync(dipendente.Id);
+            var response = await this._sut.DeleteAsync(dipendente.Id, this._cancellationToken);
 
             // Assert.
             response.IsSuccess.Should().BeTrue();
@@ -93,7 +91,7 @@ namespace Ictx.WebApp.UnitTest
             this._appUnitOfWork.Setup(x => x.DipendenteRepository).Returns(this._dipendenteRepository.Object);
 
             // Act.
-            var responseResult = await this._sut.DeleteAsync(0);
+            var responseResult = await this._sut.DeleteAsync(0, this._cancellationToken);
 
             // Assert.
             responseResult.IsSuccess.Should().BeFalse();

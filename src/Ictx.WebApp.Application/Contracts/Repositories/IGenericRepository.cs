@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Collections.Generic;
 using Ictx.WebApp.Application.Models;
 
-namespace Ictx.WebApp.Application.Repositories
+namespace Ictx.WebApp.Application.Contracts.Repositories
 {
     public interface IGenericRepository<T> where T : class
     {

@@ -10,7 +10,6 @@ namespace Ictx.WebApp.Application.DependencyInjection
         {
             // Services.
             services.TryAddScoped<DipendenteBO>();
-            services.TryAddScoped<MailBO>();
 
             return services;
         }

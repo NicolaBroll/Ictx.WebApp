@@ -43,9 +43,6 @@ namespace Ictx.WebApp.Api
             // Health check.
             services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
 
-            // Session data.
-            services.ConfigureSessionData();
-
             // MVC.
             services.ConfigureMvc();
 

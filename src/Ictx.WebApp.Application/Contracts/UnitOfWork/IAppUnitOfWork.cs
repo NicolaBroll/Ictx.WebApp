@@ -1,7 +1,7 @@
-﻿using Ictx.WebApp.Application.Repositories;
+﻿using Ictx.WebApp.Application.Contracts.Repositories;
 using Ictx.WebApp.Core.Entities;
 
-namespace Ictx.WebApp.Application.UnitOfWork
+namespace Ictx.WebApp.Application.Contracts.UnitOfWork
 {
     public interface IAppUnitOfWork : IUnitOfWorkBase
     {

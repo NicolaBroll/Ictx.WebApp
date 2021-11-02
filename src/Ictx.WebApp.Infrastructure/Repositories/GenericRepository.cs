@@ -1,5 +1,5 @@
 ﻿using Ictx.WebApp.Application.Models;
-using Ictx.WebApp.Application.Repositories;
+using Ictx.WebApp.Application.Contracts.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -99,7 +99,7 @@ namespace Ictx.WebApp.Infrastructure.Repositories
 
         public async virtual Task Delete(object id, CancellationToken cancellationToken = default)
         {
-            T entityToDelete = await _dbSet.FindAsync(id, cancellationToken);
+            T entityToDelete = await _dbSet.FindAsync(new object[] { id }, cancellationToken: cancellationToken);
             Delete(entityToDelete);
         }
         public virtual void Delete(T entityToDelete)

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Ictx.WebApp.Application.UnitOfWork;
+using Ictx.WebApp.Application.Contracts.UnitOfWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace Ictx.WebApp.Infrastructure.UnitOfWork

@@ -15,5 +15,6 @@ namespace Ictx.WebApp.Api.Common
     {
         public string Authority { get; set; }
         public string Audience { get; set; }
+        public char[] Key { get; internal set; }
     }
 }

@@ -61,5 +61,17 @@ namespace Ictx.WebApp.Api.Controllers
 
             return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponseDto(ex.Message));
         }
+
+        protected async Task<UserData> GetUserData()
+        {
+            var claim = HttpContext.User.FindFirst("sub");
+
+            if (claim != null)
+            {
+                await Task.FromResult(new UserData(int.Parse(claim.Value)));
+            }
+
+            return null;
+        }
     }
 }

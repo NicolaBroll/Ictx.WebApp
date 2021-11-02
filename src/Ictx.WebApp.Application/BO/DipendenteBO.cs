@@ -1,23 +1,20 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Application.Validators;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Application.Models;
-using Ictx.WebApp.Application.UnitOfWork;
+using Ictx.WebApp.Application.Contracts.UnitOfWork;
 
 namespace Ictx.WebApp.Application.BO
 {
-    public class DipendenteBO : BaseBO<Dipendente, int, PaginationModel>
+    public class DipendenteBO
     {
-        private readonly IUserData      _userData;
         private readonly IAppUnitOfWork _appUnitOfWork;
 
-        public DipendenteBO(ILogger<DipendenteBO> logger, IUserData userData, IAppUnitOfWork appUnitOfWork) : base(logger, new DipendenteValidator())
+        public DipendenteBO(IAppUnitOfWork appUnitOfWork)
         {
-            this._userData      = userData;
             this._appUnitOfWork = appUnitOfWork;
         }
 
@@ -26,7 +23,7 @@ namespace Ictx.WebApp.Application.BO
         /// </summary>
         /// <param name="filter">Parametri di paginazione</param>
         /// <returns>Ritorna unoggetto contenente la lista di dipendenti paginata e il totalcount dei record su DB</returns>
-        protected override async Task<PageResult<Dipendente>> ReadManyPaginatedViewsAsync(PaginationModel filter, CancellationToken cancellationToken)
+        public async Task<PageResult<Dipendente>> ReadManyPaginatedAsync(PaginationModel filter, CancellationToken cancellationToken)
         {
             var result = await this._appUnitOfWork.DipendenteRepository.ReadManyPaginatedAsync(
                 pagination: filter,
@@ -42,7 +39,7 @@ namespace Ictx.WebApp.Application.BO
         /// <param name="key">Id dipendente</param>
         /// <returns>Ritorna un Result<Dipendente> contenente il dipendente associato all'id richiesto oppure una 
         /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
-        protected override async Task<OperationResult<Dipendente>> ReadViewAsync(int key, CancellationToken cancellationToken)
+        public async Task<OperationResult<Dipendente>> ReadAsync(int key, CancellationToken cancellationToken)
         {
             var dipendente = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
 
@@ -61,21 +58,19 @@ namespace Ictx.WebApp.Application.BO
         /// <returns>Ritorna un Result<Dipendente> contenente il dipendente creato.
         /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
         /// </returns>
-        protected override async Task<OperationResult<Dipendente>> InsertViewAsync(Dipendente value, CancellationToken cancellationToken)
+        public async Task<OperationResult<Dipendente>> InsertAsync(Dipendente value, CancellationToken cancellationToken)
         {
-            var objToInsert = new Dipendente
+            var validazione = Validation(value);
+
+            if (validazione.IsFail)
             {
-                CodiceFiscale = value.CodiceFiscale,
-                Cognome = value.Cognome,
-                Nome = value.Nome,
-                Sesso = value.Sesso,
-                DataNascita = value.DataNascita
-            };
+                return validazione;
+            } 
 
-            await this._appUnitOfWork.DipendenteRepository.InsertAsync(objToInsert, cancellationToken);
-            await this._appUnitOfWork.SaveAsync();
+            await this._appUnitOfWork.DipendenteRepository.InsertAsync(value, cancellationToken);
+            await this._appUnitOfWork.SaveAsync(cancellationToken);
 
-            return new OperationResult<Dipendente>(objToInsert);
+            return new OperationResult<Dipendente>(value);
         }
 
         /// <summary>
@@ -87,8 +82,15 @@ namespace Ictx.WebApp.Application.BO
         /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
         /// Se la ditta non viene trovata, ritorna DittaNotFoundException.
         /// </returns>
-        protected override async Task<OperationResult<Dipendente>> SaveViewAsync(int key, Dipendente value, CancellationToken cancellationToken)
+        public async Task<OperationResult<Dipendente>> SaveAsync(int key, Dipendente value, CancellationToken cancellationToken)
         {
+            var validazione = Validation(value);
+
+            if (validazione.IsFail)
+            {
+                return validazione;
+            }
+
             var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
 
             if (objToUpdate is null)
@@ -103,7 +105,7 @@ namespace Ictx.WebApp.Application.BO
             objToUpdate.DataNascita = value.DataNascita;
 
             this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
-            await this._appUnitOfWork.SaveAsync();
+            await this._appUnitOfWork.SaveAsync(cancellationToken);
 
             return new OperationResult<Dipendente>(objToUpdate);
         }
@@ -114,7 +116,7 @@ namespace Ictx.WebApp.Application.BO
         /// <param name="id">Id dipendente</param>
         /// <returns>Ritorna un Result<Dipendente> contenente il dipendente eliminato. Oppure una 
         /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
-        protected override async Task<OperationResult<bool>> DeleteViewAsync(int key, CancellationToken cancellationToken)
+        public async Task<OperationResult<bool>> DeleteAsync(int key, CancellationToken cancellationToken)
         {
             var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
 
@@ -126,9 +128,25 @@ namespace Ictx.WebApp.Application.BO
             objToDelete.IsDeleted = true;
 
             this._appUnitOfWork.DipendenteRepository.Update(objToDelete);
-            await this._appUnitOfWork.SaveAsync();
+            await this._appUnitOfWork.SaveAsync(cancellationToken);
 
             return new OperationResult<bool>(true);
+        }
+
+        protected virtual OperationResult<Dipendente> Validation(Dipendente value)
+        {
+            var validationResult = new DipendenteValidator().Validate(value);
+
+            if (validationResult.IsValid)
+            {
+                return new OperationResult<Dipendente>(value);
+            }
+
+            var dictionaryErrors = validationResult.Errors
+                .GroupBy(x => x.PropertyName)
+                .ToDictionary(k => k.Key, v => v.Select(x => x.ErrorMessage));
+
+            return new OperationResult<Dipendente>(new BadRequestException(errors: dictionaryErrors));
         }
     }
 }
