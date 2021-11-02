@@ -1,12 +1,12 @@
-﻿using Ictx.WebApp.Application.Models;
-using Ictx.WebApp.Application.Contracts.Repositories;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq.Expressions;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
+using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Application.Contracts.Repositories;
 
 namespace Ictx.WebApp.Infrastructure.Repositories
 {
