@@ -58,7 +58,8 @@ namespace Ictx.WebApp.Infrastructure.DependencyInjection
         private static IServiceCollection ConfigureAppDbContext(this IServiceCollection services, string connectionString)
         {
             services.AddDbContext<AppDbContext>(options => {
-                options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
+                options.UseInMemoryDatabase(nameof(AppDbContext));
+                //options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
             });
 
             return services;

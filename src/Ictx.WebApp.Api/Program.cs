@@ -17,9 +17,9 @@ namespace Ictx.WebApp.Api
             using (var scope = host.Services.CreateScope())
             {
                 // Seed database.
-                var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+                //var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
 
-                appDbContext.Database.Migrate();
+                //appDbContext.Database.Migrate();
             }
 
             await host.RunAsync();

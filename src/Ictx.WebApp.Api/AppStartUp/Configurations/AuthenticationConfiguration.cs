@@ -29,8 +29,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
                     {
                         //ValidateIssuerSigningKey = true,
                         ValidIssuer = settings.Authority,
-                        ValidAudience = settings.Audience,
-                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(settings.Key))
+                        ValidAudience = settings.Audience
                     };
                 });
 
