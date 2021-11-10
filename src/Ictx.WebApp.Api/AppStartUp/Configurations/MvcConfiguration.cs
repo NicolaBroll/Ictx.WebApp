@@ -2,7 +2,6 @@
 using System.IO;
 using System.Reflection;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json.Serialization;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
@@ -35,8 +34,7 @@ namespace Ictx.WebApp.Api.AppStartUp.Configurations
             });
 
             services
-                .AddControllers()
-                .AddNewtonsoftJson(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
+                .AddControllers();
 
             // Api versioning.
             services.AddApiVersioning(

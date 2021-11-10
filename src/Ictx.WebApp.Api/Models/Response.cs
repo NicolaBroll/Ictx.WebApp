@@ -1,15 +1,15 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace Ictx.WebApp.Api.Models
 {
     public class ErrorResponseDto
     {
-        [JsonProperty("message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; }
 
-        [JsonProperty(NullValueHandling = NullValueHandling.Ignore, PropertyName = "errors")]
+        [JsonPropertyName("errors")]
         public Dictionary<string, IEnumerable<string>> Errors { get; set; }
 
         public ErrorResponseDto()
@@ -33,10 +33,10 @@ namespace Ictx.WebApp.Api.Models
 
     public class PageResultDto<T>
     {
-        [JsonProperty("data")]
+        [JsonPropertyName("data")]
         public IEnumerable<T> Data { get; set; }
 
-        [JsonProperty("totalCount")]
+        [JsonPropertyName("totalCount")]
         public int TotalCount { get; set; }
     }
 }

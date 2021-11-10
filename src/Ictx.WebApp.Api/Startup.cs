@@ -1,5 +1,4 @@
 using System.Linq;
-using Newtonsoft.Json;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -15,6 +14,7 @@ using Ictx.WebApp.Infrastructure.Data.App;
 using Ictx.WebApp.Infrastructure.DependencyInjection;
 using Ictx.WebApp.Application.DependencyInjection;
 using Ictx.WebApp.Infrastructure.Common;
+using System.Text.Json;
 
 namespace Ictx.WebApp.Api
 {
@@ -115,7 +115,7 @@ namespace Ictx.WebApp.Api
                         Duration = report.TotalDuration
                     };
 
-                    await context.Response.WriteAsync(JsonConvert.SerializeObject(response));
+                    await context.Response.WriteAsync(JsonSerializer.Serialize(response));
                 }
             });
 
