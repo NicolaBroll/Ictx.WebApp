@@ -16,11 +16,6 @@
         "ASPNETCORE_ENVIRONMENT": "Test"
       },
       "applicationUrl": "http://localhost:5002"
-    },
-    "Docker": {
-      "commandName": "Docker",
-      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}/swagger",
-      "publishAllPorts": true
     }
   }
 }

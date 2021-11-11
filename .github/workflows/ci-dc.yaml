@@ -2,9 +2,9 @@ name: Continuous integration and deployment
 
 on:
   push:
-    branches:
-      - dev
-      - master
+    branches: [ master, dev ]
+  pull_request:
+    branches: [ master, dev ]
 
 env:
   DOTNET_VERSION: '6.0.x'
