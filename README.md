@@ -1,3 +1,5 @@
+[![Continuous integration and deployment](https://github.com/NicolaBroll/Ictx.WebApp/actions/workflows/ci-dc.yaml/badge.svg)](https://github.com/NicolaBroll/Ictx.WebApp/actions/workflows/ci-dc.yaml)
+
 # Ictx.WebApp
 
 # Migrations
