@@ -21,10 +21,12 @@ namespace Ictx.WebApp.Api
     public class Startup
     {
         private readonly IConfiguration _configuration;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public Startup(IConfiguration configuration)
+        public Startup(IConfiguration configuration, IWebHostEnvironment webHostEnvironment)
         {
             this._configuration = configuration;
+            this._webHostEnvironment = webHostEnvironment;
         }
 
         /// <summary>
