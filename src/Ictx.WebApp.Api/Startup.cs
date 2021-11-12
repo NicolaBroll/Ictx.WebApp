@@ -15,6 +15,7 @@ using Ictx.WebApp.Infrastructure.DependencyInjection;
 using Ictx.WebApp.Application.DependencyInjection;
 using Ictx.WebApp.Infrastructure.Common;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
+using Ictx.WebApp.Api.AppStartUp.Middlewares;
 
 namespace Ictx.WebApp.Api;
 
@@ -97,6 +98,9 @@ public class Startup
         // Auth.
         app.UseAuthentication();
         app.UseAuthorization();
+
+        // Exception middleware.
+        app.UseMiddleware<ExceptionHandlingMiddleware>();
 
         // Health checks.
         app.UseHealthChecks("/health", new HealthCheckOptions()

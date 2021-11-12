@@ -7,14 +7,17 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Ictx.WebApp.Api.Common.Swagger;
 using Ictx.WebApp.Api.Helper;
+using Ictx.WebApp.Api.AppStartUp.Middlewares;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations;
 
 public static class MvcConfiguration
 {
-    /// <summary>Configura la Dependency Injection aggiungendo la configurazione letta dall'appsettings.json.</summary>
     public static IServiceCollection ConfigureMvc(this IServiceCollection services)
     {
+        // Aggiungo la gestione globale dell'eccezione in caso di internal server error.
+        services.AddTransient<ExceptionHandlingMiddleware>();
+
         // Validation.
         services.Configure<ApiBehaviorOptions>(opt =>
         {

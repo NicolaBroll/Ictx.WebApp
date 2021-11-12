@@ -7,6 +7,7 @@ using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Application.BO;
 using Ictx.WebApp.Application.Models;
+using System;
 
 namespace Ictx.WebApp.Api.Controllers.V1;
 
@@ -36,6 +37,14 @@ public class DipendenteController : AppBaseController
     [ProducesResponseType(typeof(PageResultDto<DipendenteDto>), (int)HttpStatusCode.OK)]
     public async Task<ActionResult<PageResultDto<DipendenteDto>>> Get([FromQuery] PaginationModel paginationModel, CancellationToken cancellationToken)
     {
+
+
+
+        //////////// AAA Remove
+        throw new NotImplementedException();
+
+
+
         var list = await _dipendenteBO.ReadManyPaginatedAsync(
             paginationModel, 
             cancellationToken);
