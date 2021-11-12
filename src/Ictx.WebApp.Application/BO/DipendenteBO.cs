@@ -80,7 +80,6 @@ namespace Ictx.WebApp.Application.BO
         /// <param name="value">Modello contenente i nuovi dati.</param>
         /// <returns>Ritorna un Result<Dipendente> contenente il dipendente modificato.
         /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
-        /// Se la ditta non viene trovata, ritorna DittaNotFoundException.
         /// </returns>
         public async Task<OperationResult<Dipendente>> SaveAsync(int key, Dipendente value, CancellationToken cancellationToken)
         {
@@ -113,7 +112,7 @@ namespace Ictx.WebApp.Application.BO
         /// <summary>
         /// Elimina un dipendente. Se non viene trovato, ritorna DipendenteNotFoundException.
         /// </summary>
-        /// <param name="id">Id dipendente</param>
+        /// <param name="key">Id dipendente</param>
         /// <returns>Ritorna un Result<Dipendente> contenente il dipendente eliminato. Oppure una 
         /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
         public async Task<OperationResult<bool>> DeleteAsync(int key, CancellationToken cancellationToken)
@@ -133,7 +132,7 @@ namespace Ictx.WebApp.Application.BO
             return new OperationResult<bool>(true);
         }
 
-        protected virtual OperationResult<Dipendente> Validation(Dipendente value)
+        protected OperationResult<Dipendente> Validation(Dipendente value)
         {
             var validationResult = new DipendenteValidator().Validate(value);
 

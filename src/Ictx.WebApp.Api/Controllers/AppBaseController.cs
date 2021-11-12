@@ -12,22 +12,20 @@ public class AppBaseController : ControllerBase
 {
     protected ActionResult FailResponse(Exception ex)
     {
-        if (ex is BadRequestException badRequestException)
-        {  
-            return BadRequest(new ErrorResponseDto(ex.Message, badRequestException.Errors));
-        }
-
-        if (ex is NotFoundException)
+        switch (ex)
         {
-            return NotFound(new ErrorResponseDto(ex.Message));
-        }
+            case BadRequestException exception:
+                return BadRequest(new ErrorResponseDto(ex.Message, exception.Errors));
 
-        if (ex is TaskCanceledException)
-        {
-            return StatusCode(499, new ErrorResponseDto(ex.Message));
-        }
+            case NotFoundException:
+                return NotFound(new ErrorResponseDto(ex.Message));
 
-        return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponseDto(ex.Message));
+            case TaskCanceledException:
+                return StatusCode(499, new ErrorResponseDto(ex.Message));
+
+            default:
+                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponseDto(ex.Message));
+        }
     }
 
     protected async Task<UserData> GetUserData()
