@@ -1,8 +1,7 @@
-﻿namespace Ictx.WebApp.Api.Helper
+﻿namespace Ictx.WebApp.Api.Helper;
+
+public class ApiHelper
 {
-    public class ApiHelper
-    {
-        public const string AnyCors = "any";
-        public const string ApiRouteVersionedBase = "api/v{version:apiVersion}";
-    }
+    public const string AnyCors = "any";
+    public const string ApiRouteVersionedBase = "api/v{version:apiVersion}";
 }

@@ -1,9 +1,8 @@
-﻿namespace Ictx.WebApp.Api.Common.HealthCheck
+﻿namespace Ictx.WebApp.Api.Common.HealthCheck;
+
+public class HealthCheck
 {
-    public class HealthCheck
-    {
-        public string Status { get; set; }
-        public string Component { get; set; }
-        public string Description { get; set; }
-    }
+    public string Status { get; set; }
+    public string Component { get; set; }
+    public string Description { get; set; }
 }

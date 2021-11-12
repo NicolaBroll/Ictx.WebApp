@@ -3,17 +3,16 @@ using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Application.Models;
 using Ictx.WebApp.Core.Entities;
 
-namespace Ictx.WebApp.Api.Mappings
-{
-    public class DipendenteProfile : Profile
-	{
-		public DipendenteProfile()
-		{
-			// Pagination.
-			CreateMap<PageResult<Dipendente>, PageResultDto<DipendenteDto>>();
+namespace Ictx.WebApp.Api.Mappings;
 
-			CreateMap<Dipendente, DipendenteDto>();
-			CreateMap<DipendenteDto, Dipendente>();
-		}
+public class DipendenteProfile : Profile
+{
+	public DipendenteProfile()
+	{
+		// Pagination.
+		CreateMap<PageResult<Dipendente>, PageResultDto<DipendenteDto>>();
+
+		CreateMap<Dipendente, DipendenteDto>();
+		CreateMap<DipendenteDto, Dipendente>();
 	}
 }

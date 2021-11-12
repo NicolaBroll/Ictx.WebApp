@@ -1,54 +1,53 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using System;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
-using System;
 
-namespace Ictx.WebApp.Api.Common.Swagger
+namespace Ictx.WebApp.Api.Common.Swagger;
+
+public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
-    public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
+    readonly IApiVersionDescriptionProvider provider;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ConfigureSwaggerOptions"/> class.
+    /// </summary>
+    /// <param name="provider">The <see cref="IApiVersionDescriptionProvider">provider</see> used to generate Swagger documents.</param>
+    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
+
+    /// <inheritdoc />
+    public void Configure(SwaggerGenOptions options)
     {
-        readonly IApiVersionDescriptionProvider provider;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ConfigureSwaggerOptions"/> class.
-        /// </summary>
-        /// <param name="provider">The <see cref="IApiVersionDescriptionProvider">provider</see> used to generate Swagger documents.</param>
-        public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => this.provider = provider;
-
-        /// <inheritdoc />
-        public void Configure(SwaggerGenOptions options)
+        // add a swagger document for each discovered API version
+        // note: you might choose to skip or document deprecated API versions differently
+        foreach (var description in provider.ApiVersionDescriptions)
         {
-            // add a swagger document for each discovered API version
-            // note: you might choose to skip or document deprecated API versions differently
-            foreach (var description in provider.ApiVersionDescriptions)
+            try
             {
-                try
-                {
-                    options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
-                }
-                catch (Exception)
-                {
+                options.SwaggerDoc(description.GroupName, CreateInfoForApiVersion(description));
+            }
+            catch (Exception)
+            {
 
-                }
             }
         }
+    }
 
-        static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
+    static OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
+    {
+        var info = new OpenApiInfo()
         {
-            var info = new OpenApiInfo()
-            {
-                Title = "Web Api",
-                Version = description.ApiVersion.ToString()
-            };
+            Title = "Web Api",
+            Version = description.ApiVersion.ToString()
+        };
 
-            if (description.IsDeprecated)
-            {
-                info.Description += " This API version has been deprecated.";
-            }
-
-            return info;
+        if (description.IsDeprecated)
+        {
+            info.Description += " This API version has been deprecated.";
         }
+
+        return info;
     }
 }
