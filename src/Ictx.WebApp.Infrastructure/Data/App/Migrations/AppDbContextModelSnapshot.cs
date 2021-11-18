@@ -4,29 +4,31 @@ using Ictx.WebApp.Infrastructure.Data.App;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Ictx.WebApp.Api.Data.Migrations.Application
+#nullable disable
+
+namespace Ictx.WebApp.Infrastructure.Data.App.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210611134003_InitialAppDbContextMigration")]
-    partial class InitialAppDbContextMigration
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("ProductVersion", "5.0.6")
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("ProductVersion", "6.0.0")
+                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+
+            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("Ictx.WebApp.Core.Entities.Dipendente", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("CodiceFiscale")
                         .IsRequired()
@@ -60,7 +62,7 @@ namespace Ictx.WebApp.Api.Data.Migrations.Application
 
                     b.HasKey("Id");
 
-                    b.ToTable("Dipendente");
+                    b.ToTable("Dipendente", (string)null);
                 });
 #pragma warning restore 612, 618
         }
