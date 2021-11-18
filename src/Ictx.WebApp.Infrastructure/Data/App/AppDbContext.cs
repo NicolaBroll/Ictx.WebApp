@@ -11,8 +11,8 @@ using Ictx.WebApp.Infrastructure.Data.App.Configuration;
 using Microsoft.EntityFrameworkCore.Design;
 
 public class AppDbContext : DbContext
-{ 
-    public DbSet<Dipendente> Dipendente { get; set; }
+{
+    public DbSet<Dipendente> Dipendente => Set<Dipendente>();
        
     public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
     { }
