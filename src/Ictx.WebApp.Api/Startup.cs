@@ -16,6 +16,7 @@ using Ictx.WebApp.Infrastructure.Common;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
 using Ictx.WebApp.Api.AppStartUp.Middlewares;
 using Ictx.WebApp.Application.Data;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ictx.WebApp.Api;
 
@@ -102,8 +103,35 @@ public class Startup
         app.UseAuthentication();
         app.UseAuthorization();
 
-        // Exception middleware.
-        app.UseMiddleware<ExceptionHandlingMiddleware>();
+        //// Exception middleware.
+        //app.UseMiddleware<ExceptionHandlingMiddleware>();
+
+        if (!env.IsDevelopment())
+        {
+            // Do not add exception handler for dev environment. In dev,
+            // we get the developer exception page with detailed error info.
+            app.UseExceptionHandler(errorApp =>
+            {
+                // Logs unhandled exceptions. For more information about all the
+                // different possibilities for how to handle errors see
+                // https://docs.microsoft.com/en-us/aspnet/core/fundamentals/error-handling?view=aspnetcore-5.0
+                errorApp.Run(async context =>
+                {
+                    // Return machine-readable problem details. See RFC 7807 for details.
+                    // https://datatracker.ietf.org/doc/html/rfc7807#page-6
+                    var pd = new ProblemDetails
+                    {
+                        Type = "https://demo.api.com/errors/internal-server-error",
+                        Title = "Server error",
+                        Status = StatusCodes.Status500InternalServerError,
+                        Detail = "Server error",
+                    };
+                    pd.Extensions.Add("RequestId", context.TraceIdentifier);
+                    await context.Response.WriteAsJsonAsync(pd, pd.GetType(), null, contentType: "application/problem+json");
+                });
+            });
+        }
+
 
         // Health checks.
         app.UseHealthChecks("/health", new HealthCheckOptions()
