@@ -1,11 +1,10 @@
 ﻿using System.Threading.Tasks;
-using Ictx.WebApp.Application.Data;
-using Ictx.WebApp.Infrastructure.Data.App;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
+using Ictx.WebApp.Application.Data;
+using Microsoft.Extensions.Logging;
 
 namespace Ictx.WebApp.Api;
 
@@ -24,6 +23,8 @@ public class Program
             var fakeDataGenerator = scope.ServiceProvider.GetRequiredService<FakeDataGenerator>();
             await fakeDataGenerator.Genera();
 
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation("App start.");
         }
 
         await host.RunAsync();

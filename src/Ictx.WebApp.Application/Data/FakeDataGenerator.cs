@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Bogus;
 using Ictx.WebApp.Application.BO;
@@ -15,7 +16,7 @@ public class FakeDataGenerator
     public FakeDataGenerator(DipendenteBO dipendenteBO)
     {
         this._dipendenteBO = dipendenteBO;
-        this._cancellationToken = new System.Threading.CancellationToken();
+        this._cancellationToken = new CancellationToken();
     }
 
     public async Task Genera()
@@ -25,13 +26,22 @@ public class FakeDataGenerator
 
     private async Task GenerDipendenti()
     {
-        var dipendenteFake = new Faker<Dipendente>()
-            .RuleFor(x => x.Cognome, f => f.Person.LastName)
-            .RuleFor(x => x.Nome, f => f.Person.FirstName)
-            .RuleFor(x => x.Sesso, f => f.Person.ToSesso())
-            .RuleFor(x => x.DataNascita, f => f.Person.DateOfBirth);
+        var lstDipendenti = await this._dipendenteBO.ReadManyPaginatedAsync(new Models.PaginationModel
+        {
+            Page = 1,
+            PageSize = 1
+        }, this._cancellationToken);
 
-        await this._dipendenteBO.InsertManyAsync(dipendenteFake.Generate(100), this._cancellationToken);
+        if (!lstDipendenti.Data.Any())
+        {
+            var dipendenteFake = new Faker<Dipendente>()
+                .RuleFor(x => x.Cognome, f => f.Person.LastName)
+                .RuleFor(x => x.Nome, f => f.Person.FirstName)
+                .RuleFor(x => x.Sesso, f => f.Person.ToSesso())
+                .RuleFor(x => x.DataNascita, f => f.Person.DateOfBirth);
+
+            await this._dipendenteBO.InsertManyAsync(dipendenteFake.Generate(1000), this._cancellationToken);
+        }
     }
 }
 
