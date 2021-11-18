@@ -10,12 +10,12 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Common.HealthCheck;
-using Ictx.WebApp.Infrastructure.Data.App;
 using Ictx.WebApp.Infrastructure.DependencyInjection;
 using Ictx.WebApp.Application.DependencyInjection;
 using Ictx.WebApp.Infrastructure.Common;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
 using Ictx.WebApp.Api.AppStartUp.Middlewares;
+using Ictx.WebApp.Application.Data;
 
 namespace Ictx.WebApp.Api;
 
@@ -36,6 +36,9 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
+        // Fake data generator.
+        services.AddTransient<FakeDataGenerator>();
+
         services.AddHttpContextAccessor();
 
         // Application settings.
@@ -45,7 +48,7 @@ public class Startup
         services.ConfigureAutomapper();
 
         // Health check.
-        services.AddHealthChecks().AddDbContextCheck<AppDbContext>();
+        services.AddHealthChecks();//.AddDbContextCheck<AppDbContext>();
 
         // MVC.
         services.ConfigureMvc();

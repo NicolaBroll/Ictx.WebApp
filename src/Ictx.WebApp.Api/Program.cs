@@ -1,5 +1,8 @@
 ﻿using System.Threading.Tasks;
+using Ictx.WebApp.Application.Data;
+using Ictx.WebApp.Infrastructure.Data.App;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
@@ -16,8 +19,11 @@ public class Program
         {
             // Seed database.
             //var appDbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-
             //appDbContext.Database.Migrate();
+
+            var fakeDataGenerator = scope.ServiceProvider.GetRequiredService<FakeDataGenerator>();
+            await fakeDataGenerator.Genera();
+
         }
 
         await host.RunAsync();

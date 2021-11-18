@@ -6,6 +6,7 @@ using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Application.Models;
 using Ictx.WebApp.Application.Contracts.UnitOfWork;
+using System.Collections.Generic;
 
 namespace Ictx.WebApp.Application.BO
 {
@@ -60,17 +61,54 @@ namespace Ictx.WebApp.Application.BO
         /// </returns>
         public async Task<OperationResult<Dipendente>> InsertAsync(Dipendente value, CancellationToken cancellationToken)
         {
+            var insert = await Insert(value, cancellationToken);
+
+            if (insert.IsFail)
+            {
+                return insert;
+            }
+
+            await this._appUnitOfWork.SaveAsync(cancellationToken);
+
+            return new OperationResult<Dipendente>(value);
+        }
+
+        private async Task<OperationResult<Dipendente>> Insert(Dipendente value, CancellationToken cancellationToken)
+        {
             var validazione = Validation(value);
 
             if (validazione.IsFail)
             {
                 return validazione;
-            } 
+            }
 
             await this._appUnitOfWork.DipendenteRepository.InsertAsync(value, cancellationToken);
-            await this._appUnitOfWork.SaveAsync(cancellationToken);
 
             return new OperationResult<Dipendente>(value);
+        }
+
+        /// <summary>
+        /// Crea un dipendente.
+        /// </summary>
+        /// <param name="lstDipendenti">Modello contenente i dati del nuovo dipendente.</param>
+        /// <returns>Ritorna un Result<Dipendente> contenente il dipendente creato.
+        /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
+        /// </returns>
+        public async Task<OperationResult<List<Dipendente>>> InsertManyAsync(List<Dipendente> lstDipendenti, CancellationToken cancellationToken)
+        {
+            foreach (var dipendente in lstDipendenti)
+            {
+                var validazione = await Insert(dipendente, cancellationToken);
+
+                if (validazione.IsFail)
+                {
+                    return new OperationResult<List<Dipendente>>(validazione.Exception);
+                }
+            }
+
+            await this._appUnitOfWork.SaveAsync(cancellationToken);
+
+            return new OperationResult<List<Dipendente>>(lstDipendenti);
         }
 
         /// <summary>
@@ -97,7 +135,6 @@ namespace Ictx.WebApp.Application.BO
                 return new OperationResult<Dipendente>(new NotFoundException($"Dipendente con id: {key} non trovato."));
             }
 
-            objToUpdate.CodiceFiscale = value.CodiceFiscale;
             objToUpdate.Nome = value.Nome;
             objToUpdate.Cognome = value.Cognome;
             objToUpdate.Sesso = value.Sesso;

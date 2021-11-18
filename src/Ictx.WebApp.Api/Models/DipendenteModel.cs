@@ -8,9 +8,6 @@ public class DipendenteDto
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("codiceFiscale")]
-    public string CodiceFiscale { get; set; }
-
     [JsonPropertyName("cognome")]    
     public string Cognome { get; set; }
 
@@ -26,9 +23,8 @@ public class DipendenteDto
     public DipendenteDto()
     { }
 
-    public DipendenteDto(string codiceFiscale, string cognome, string nome, string sesso, DateTime dataNascita)
+    public DipendenteDto(string cognome, string nome, string sesso, DateTime dataNascita)
     {
-        this.CodiceFiscale = codiceFiscale;
         this.Cognome = cognome;
         this.Nome = nome;
         this.Sesso = sesso;
