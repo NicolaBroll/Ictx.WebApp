@@ -54,7 +54,7 @@ public class DipendenteController : AppBaseController
     /// <returns></returns>
     [HttpGet("{id}", Name= "GetDipendenteById")]
     [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
     public async Task<ActionResult<DipendenteDto>> GetById(int id, CancellationToken cancellationToken)
     {
         var result = await this._dipendenteBO.ReadAsync(id, cancellationToken);
@@ -78,7 +78,7 @@ public class DipendenteController : AppBaseController
     /// <returns></returns>
     [HttpDelete("{id}")]
     [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
     public async Task<ActionResult<bool>> Delete(int id, CancellationToken cancellationToken)
     {
         var result = await this._dipendenteBO.DeleteAsync(id, cancellationToken: cancellationToken);
@@ -101,7 +101,7 @@ public class DipendenteController : AppBaseController
     /// <returns></returns> 
     [HttpPost("")]
     [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
     public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model, CancellationToken cancellationToken)
     {
         var objToInsert = _mapper.Map<Dipendente>(model);
@@ -130,8 +130,8 @@ public class DipendenteController : AppBaseController
     /// <returns></returns>
     [HttpPut("{id}")]
     [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
-    [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.BadRequest)]
-    [ProducesResponseType(typeof(ErrorResponseDto), (int)HttpStatusCode.NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
     public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model, CancellationToken cancellationToken)
     {
         var objToUpdate = _mapper.Map<Dipendente>(model);

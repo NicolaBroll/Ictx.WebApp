@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Net;
 using System.Threading.Tasks;
-using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Application.Models;
 using Ictx.WebApp.Core.Exceptions;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ictx.WebApp.Api.Controllers;
@@ -12,19 +11,39 @@ public class AppBaseController : ControllerBase
 {
     protected ActionResult FailResponse(Exception ex)
     {
+        var problemDetails = new ProblemDetails
+        {
+            Title = "Server error",     
+            Detail = ex.Message
+        };
+
+        problemDetails.Extensions.Add("RequestId", HttpContext.TraceIdentifier);
+
         switch (ex)
         {
-            case BadRequestException exception:
-                return BadRequest(new ErrorResponseDto(ex.Message, exception.Errors));
+            case BadRequestException:
+                problemDetails.Type = "https://demo.api.com/errors/bad-request";
+                problemDetails.Status = StatusCodes.Status400BadRequest;
+
+                return BadRequest(problemDetails);
 
             case NotFoundException:
-                return NotFound(new ErrorResponseDto(ex.Message));
+                problemDetails.Type = "https://demo.api.com/errors/not-found";
+                problemDetails.Status = StatusCodes.Status404NotFound;
+
+                return NotFound(problemDetails);
 
             case TaskCanceledException:
-                return StatusCode(499, new ErrorResponseDto(ex.Message));
+                problemDetails.Type = "https://demo.api.com/errors/accepted";
+                problemDetails.Status = StatusCodes.Status202Accepted;
+
+                return Accepted(problemDetails);
 
             default:
-                return StatusCode((int)HttpStatusCode.InternalServerError, new ErrorResponseDto(ex.Message));
+                problemDetails.Type = "https://demo.api.com/errors/internal-server-error";
+                problemDetails.Status = StatusCodes.Status500InternalServerError;
+
+                return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
         }
     }
 

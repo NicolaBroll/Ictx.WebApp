@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Ictx.WebApp.Api.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ictx.WebApp.Api.AppStartUp.Middlewares;
 
@@ -26,12 +25,18 @@ internal sealed class ExceptionHandlingMiddleware : IMiddleware
         {
             this._logger.LogError(e, e.Message);
 
-            var response = new ErrorResponseDto("Server Error");
+            var pd = new ProblemDetails
+            {
+                Type = "https://demo.api.com/errors/internal-server-error",
+                Title = "Server error",
+                Status = StatusCodes.Status500InternalServerError,
+                Detail = "Server error",
+            };
 
-            context.Response.ContentType = "application/json";
+            pd.Extensions.Add("RequestId", context.TraceIdentifier);   
+
             context.Response.StatusCode = 500;
-
-            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
+            await context.Response.WriteAsJsonAsync(pd, pd.GetType(), null, contentType: "application/problem+json");
         }
     }
 }
