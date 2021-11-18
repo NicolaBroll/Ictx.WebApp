@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Bogus;
 using Ictx.WebApp.Application.BO;
 using Ictx.WebApp.Core.Entities;
@@ -10,12 +11,14 @@ namespace Ictx.WebApp.Application.Data;
 
 public class FakeDataGenerator
 {
-    private readonly DipendenteBO _dipendenteBO;
-    private readonly CancellationToken _cancellationToken;
+    private readonly ILogger<FakeDataGenerator> _logger;
+    private readonly DipendenteBO               _dipendenteBO;
+    private readonly CancellationToken          _cancellationToken;
 
-    public FakeDataGenerator(DipendenteBO dipendenteBO)
+    public FakeDataGenerator(ILogger<FakeDataGenerator> logger, DipendenteBO dipendenteBO)
     {
-        this._dipendenteBO = dipendenteBO;
+        this._logger            = logger;
+        this._dipendenteBO      = dipendenteBO;
         this._cancellationToken = new CancellationToken();
     }
 
@@ -34,13 +37,17 @@ public class FakeDataGenerator
 
         if (!lstDipendenti.Data.Any())
         {
+            this._logger.LogInformation("Seeding dipendenti...");
+
             var dipendenteFake = new Faker<Dipendente>()
                 .RuleFor(x => x.Cognome, f => f.Person.LastName)
                 .RuleFor(x => x.Nome, f => f.Person.FirstName)
                 .RuleFor(x => x.Sesso, f => f.Person.ToSesso())
                 .RuleFor(x => x.DataNascita, f => f.Person.DateOfBirth);
 
-            await this._dipendenteBO.InsertManyAsync(dipendenteFake.Generate(1000), this._cancellationToken);
+            await this._dipendenteBO.InsertManyAsync(dipendenteFake.Generate(3000), this._cancellationToken);
+
+            this._logger.LogInformation("OK dipendenti seeded.");
         }
     }
 }
