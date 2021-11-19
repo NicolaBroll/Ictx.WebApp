@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+﻿using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
@@ -9,60 +9,58 @@ using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Application.Contracts.UnitOfWork;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Ictx.WebApp.Infrastructure.Data.App;
-using System;
 
-namespace Ictx.WebApp.Infrastructure.DependencyInjection
+namespace Ictx.WebApp.Infrastructure.DependencyInjection;
+
+public static class InfrastructureExtension
 {
-    public static class InfrastructureExtension
+    public static IServiceCollection AddInfrastructure(this IServiceCollection services, InfrastructureOptions infrastructureOptions)
     {
-        public static IServiceCollection AddInfrastructure(this IServiceCollection services, InfrastructureOptions infrastructureOptions)
+        if (infrastructureOptions is null)
         {
-            if (infrastructureOptions is null)
-            {
-                throw new ArgumentNullException(nameof(infrastructureOptions));
-            }
-
-            services.ConfigureMail(infrastructureOptions.MailSettings);
-            services.ConfigureInfrastructureServices();
-            services.ConfigureAppDbContext(infrastructureOptions.ConnectionString);
-
-            return services;
+            throw new ArgumentNullException(nameof(infrastructureOptions));
         }
 
-        private static IServiceCollection ConfigureMail(this IServiceCollection services, MailSettings mailSettings)
-        {
-            // Mail settings.
-            services.AddSingleton<IMailSettings>(sp => mailSettings);
+        services.ConfigureMail(infrastructureOptions.MailSettings);
+        services.ConfigureInfrastructureServices();
+        services.ConfigureAppDbContext(infrastructureOptions.ConnectionString);
 
-            // Razor pages per il render della mail.
-            services.AddRazorPages();
+        return services;
+    }
 
-            // Mail services.
-            services.AddScoped<IRazorViewService, RazorViewService>();
-            services.AddScoped<IMailService, MailService>();
+    private static IServiceCollection ConfigureMail(this IServiceCollection services, MailSettings mailSettings)
+    {
+        // Mail settings.
+        services.AddSingleton<IMailSettings>(sp => mailSettings);
 
-            return services;
-        }
+        // Razor pages per il render della mail.
+        services.AddRazorPages();
 
-        private static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
-        {
-            // Services.
-            services.TryAddSingleton<IDateTimeService, DateTimeService>();
+        // Mail services.
+        services.AddScoped<IRazorViewService, RazorViewService>();
+        services.AddScoped<IMailService, MailService>();
 
-            // Unit of work.
-            services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();
+        return services;
+    }
 
-            return services;
-        }
+    private static IServiceCollection ConfigureInfrastructureServices(this IServiceCollection services)
+    {
+        // Services.
+        services.TryAddSingleton<IDateTimeService, DateTimeService>();
 
-        private static IServiceCollection ConfigureAppDbContext(this IServiceCollection services, string connectionString)
-        {
-            services.AddDbContext<AppDbContext>(options => {
-                options.UseInMemoryDatabase(nameof(AppDbContext));
-                //options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
-            });
+        // Unit of work.
+        services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();
 
-            return services;
-        }
+        return services;
+    }
+
+    private static IServiceCollection ConfigureAppDbContext(this IServiceCollection services, string connectionString)
+    {
+        services.AddDbContext<AppDbContext>(options => {
+            options.UseInMemoryDatabase(nameof(AppDbContext));
+            //options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
+        });
+
+        return services;
     }
 }
