@@ -17,6 +17,9 @@ using Ictx.WebApp.Api.AppStartUp.Configurations;
 using Ictx.WebApp.Api.AppStartUp.Middlewares;
 using Ictx.WebApp.Application.Data;
 using Microsoft.AspNetCore.Mvc;
+using Ictx.WebApp.Application.Validators;
+using FluentValidation;
+using Ictx.WebApp.Core.Entities;
 
 namespace Ictx.WebApp.Api;
 
@@ -37,6 +40,10 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
+        services.AddScoped<IValidator<Dipendente>, DipendenteValidator>();
+
+
+
         // Fake data generator.
         services.AddTransient<FakeDataGenerator>();
 

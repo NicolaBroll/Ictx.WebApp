@@ -2,22 +2,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using FluentValidation;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.Exceptions;
 using Ictx.WebApp.Application.Models;
-using Ictx.WebApp.Application.Validators;
 using Ictx.WebApp.Application.Contracts.UnitOfWork;
 
 namespace Ictx.WebApp.Application.BO;
 
-public class DipendenteBO
+public class DipendenteBO: BaseBO<Dipendente>
 {
-    private readonly IAppUnitOfWork _appUnitOfWork;
-
-    public DipendenteBO(IAppUnitOfWork appUnitOfWork)
-    {
-        this._appUnitOfWork = appUnitOfWork;
-    }
+    public DipendenteBO(IAppUnitOfWork appUnitOfWork, IValidator<Dipendente> dipendenteValidator) : base(appUnitOfWork, dipendenteValidator)
+    { }
 
     /// <summary>
     /// Ritorna una lista di dipendenti paginata.
@@ -46,7 +41,7 @@ public class DipendenteBO
 
         if (dipendente is null)
         {
-            return OperationResult<Dipendente>.Fail(new NotFoundException($"Dipendente con id: {key} non trovato."));
+            return OperationResult<Dipendente>.NotFound($"Dipendente con id: {key} non trovato.");
         }
 
         return OperationResult<Dipendente>.Success(dipendente);
@@ -61,20 +56,6 @@ public class DipendenteBO
     /// </returns>
     public async Task<OperationResult<Dipendente>> InsertAsync(Dipendente value, CancellationToken cancellationToken)
     {
-        var insert = await Insert(value, cancellationToken);
-
-        if (insert.IsFail)
-        {
-            return insert;
-        }
-
-        await this._appUnitOfWork.SaveAsync(cancellationToken);
-
-        return OperationResult<Dipendente>.Success(value);
-    }
-
-    private async Task<OperationResult<Dipendente>> Insert(Dipendente value, CancellationToken cancellationToken)
-    {
         var validazione = Validation(value);
 
         if (validazione.IsFail)
@@ -83,9 +64,11 @@ public class DipendenteBO
         }
 
         await this._appUnitOfWork.DipendenteRepository.InsertAsync(value, cancellationToken);
+        await this._appUnitOfWork.SaveAsync(cancellationToken);
 
         return OperationResult<Dipendente>.Success(value);
     }
+
 
     /// <summary>
     /// Crea un dipendente.
@@ -95,17 +78,15 @@ public class DipendenteBO
     /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
     /// </returns>
     public async Task<OperationResult<List<Dipendente>>> InsertManyAsync(List<Dipendente> lstDipendenti, CancellationToken cancellationToken)
-    {
-        foreach (var dipendente in lstDipendenti)
+    {  
+        var validazione = Validation(lstDipendenti);
+
+        if (validazione.IsFail)
         {
-            var validazione = await Insert(dipendente, cancellationToken);
-
-            if (validazione.IsFail)
-            {
-                return OperationResult<List<Dipendente>>.Fail(validazione.Exception);
-            }
+            return validazione;
         }
-
+   
+        await this._appUnitOfWork.DipendenteRepository.InsertManyAsync(lstDipendenti, cancellationToken);
         await this._appUnitOfWork.SaveAsync(cancellationToken);
 
         return OperationResult<List<Dipendente>>.Success(lstDipendenti);
@@ -132,7 +113,7 @@ public class DipendenteBO
 
         if (objToUpdate is null)
         {
-            return OperationResult<Dipendente>.Fail(new NotFoundException($"Dipendente con id: {key} non trovato."));
+            return OperationResult<Dipendente>.NotFound($"Dipendente con id: {key} non trovato.");
         }
 
         objToUpdate.Nome = value.Nome;
@@ -158,7 +139,7 @@ public class DipendenteBO
 
         if (objToDelete is null)
         {
-            return OperationResult<bool>.Fail(new NotFoundException($"Dipendente con id: {key} non trovato."));
+            return OperationResult<bool>.NotFound($"Dipendente con id: {key} non trovato.");
         }
 
         objToDelete.IsDeleted = true;
@@ -167,21 +148,5 @@ public class DipendenteBO
         await this._appUnitOfWork.SaveAsync(cancellationToken);
 
         return OperationResult<bool>.Success(true);
-    }
-
-    protected OperationResult<Dipendente> Validation(Dipendente value)
-    {
-        var validationResult = new DipendenteValidator().Validate(value);
-
-        if (validationResult.IsValid)
-        {
-            return OperationResult<Dipendente>.Success(value);
-        }
-
-        var dictionaryErrors = validationResult.Errors
-            .GroupBy(x => x.PropertyName)
-            .ToDictionary(k => k.Key, v => v.Select(x => x.ErrorMessage));
-
-        return OperationResult<Dipendente>.Fail(new BadRequestException(errors: dictionaryErrors));
     }
 }

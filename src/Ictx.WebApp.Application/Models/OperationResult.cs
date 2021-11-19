@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Ictx.WebApp.Core.Entities;
+using Ictx.WebApp.Core.Exceptions;
+using System;
+using System.Collections.Generic;
 
 namespace Ictx.WebApp.Application.Models;
 
@@ -24,5 +27,11 @@ public class OperationResult<T>
 
     public static OperationResult<T> Success(T data) =>  new OperationResult<T>(data);    
 
-    public static OperationResult<T> Fail(Exception ex) => new OperationResult<T>(ex);    
+
+    internal static OperationResult<T> NotFound() => new OperationResult<T>(new NotFoundException());
+
+    internal static OperationResult<T> NotFound(string m) => new OperationResult<T>(new NotFoundException(m));
+
+
+    internal static OperationResult<T> Invalid(Dictionary<string, IEnumerable<string>> dictionaryErrors) => new OperationResult<T>(new BadRequestException(dictionaryErrors));
 }

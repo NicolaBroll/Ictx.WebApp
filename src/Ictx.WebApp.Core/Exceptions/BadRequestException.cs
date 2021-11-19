@@ -7,7 +7,7 @@ namespace Ictx.WebApp.Core.Exceptions
     {  
         public Dictionary<string, IEnumerable<string>> Errors { get; }
 
-        public BadRequestException(string message = "", Dictionary<string, IEnumerable<string>>  errors = default) : base(String.IsNullOrEmpty(message) ? "I dati inseriti non sono corretti." : message)
+        public BadRequestException(Dictionary<string, IEnumerable<string>>  errors = default) : base("Validation error.")
         {
             this.Errors = errors;
         }
