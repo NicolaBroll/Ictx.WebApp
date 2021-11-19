@@ -17,6 +17,8 @@ public class BaseBO<T>
         this._validator     = validator;
     }
 
+    #region Validation
+
     protected OperationResult<T> Validation(T value)
     {
         var validationResult = this._validator.Validate(value);
@@ -26,9 +28,7 @@ public class BaseBO<T>
             return OperationResult<T>.Success(value);
         }
 
-        var dictionaryErrors = validationResult.Errors
-            .GroupBy(x => x.PropertyName)
-            .ToDictionary(k => k.Key, v => v.Select(x => x.ErrorMessage));
+        var dictionaryErrors = FromValidationFailureToDictionary(validationResult);
 
         return OperationResult<T>.Invalid(dictionaryErrors);
     }
@@ -37,19 +37,24 @@ public class BaseBO<T>
     {
         foreach (var item in list)
         {
-            var res = this._validator.Validate(item);
+            var validationResult = this._validator.Validate(item);
 
-            if (!res.IsValid)
+            if (!validationResult.IsValid)
             {
-                var dictionaryErrors = res.Errors
-                    .GroupBy(x => x.PropertyName)
-                    .ToDictionary(k => k.Key, v => v.Select(x => x.ErrorMessage));
-
+                var dictionaryErrors = FromValidationFailureToDictionary(validationResult);
                 return OperationResult<List<T>>.Invalid(dictionaryErrors);
             }
         }
 
         return OperationResult<List<T>>.Success(list);
     }
-}
 
+    private static Dictionary<string, IEnumerable<string>> FromValidationFailureToDictionary(FluentValidation.Results.ValidationResult res)
+    {
+        return res.Errors
+            .GroupBy(x => x.PropertyName)
+            .ToDictionary(k => k.Key, v => v.Select(x => x.ErrorMessage));
+    }
+    
+    #endregion
+}
