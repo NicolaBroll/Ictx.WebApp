@@ -1,6 +1,6 @@
 ﻿using System.Threading.Tasks;
 
-namespace Ictx.WebApp.Templates.Mail
+namespace Ictx.WebApp.Core.Contracts.Services
 {
     public interface IRazorViewService
     {

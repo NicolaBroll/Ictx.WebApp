@@ -3,7 +3,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ictx.WebApp.Infrastructure.Common;
-using Ictx.WebApp.Templates.Mail;
 using Ictx.WebApp.Core.Contracts.Services;
 using Ictx.WebApp.Infrastructure.Services;
 using Ictx.WebApp.Core.Contracts.UnitOfWork;
@@ -46,6 +45,7 @@ public static class InfrastructureExtension
     {
         // Services.
         services.TryAddSingleton<IDateTimeService, DateTimeService>();
+        services.AddScoped<IRazorViewService, RazorViewService>();
 
         // Unit of work.
         services.TryAddScoped<IAppUnitOfWork, AppUnitOfWork>();

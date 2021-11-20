@@ -12,8 +12,6 @@ namespace Ictx.WebApp.Core.DependencyInjection
             // Services.
             services.TryAddScoped<DipendenteBO>();
 
-            services.AddScoped<IRazorViewService, RazorViewService>();
-
             return services;
         }
     }
