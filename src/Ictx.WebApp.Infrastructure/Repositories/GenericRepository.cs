@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
-using Ictx.WebApp.Application.Models;
-using Ictx.WebApp.Application.Contracts.Repositories;
+using Ictx.WebApp.Core.Models;
+using Ictx.WebApp.Core.Contracts.Repositories;
 
 namespace Ictx.WebApp.Infrastructure.Repositories
 {

@@ -1,8 +1,9 @@
-﻿using Ictx.WebApp.Application.BO;
+﻿using Ictx.WebApp.Core.BO;
+using Ictx.WebApp.Templates.Mail;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
-namespace Ictx.WebApp.Application.DependencyInjection
+namespace Ictx.WebApp.Core.DependencyInjection
 {
     public static class ApplicationExtension
     {
@@ -10,6 +11,8 @@ namespace Ictx.WebApp.Application.DependencyInjection
         {
             // Services.
             services.TryAddScoped<DipendenteBO>();
+
+            services.AddScoped<IRazorViewService, RazorViewService>();
 
             return services;
         }

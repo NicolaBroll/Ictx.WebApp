@@ -3,7 +3,7 @@ using Ictx.WebApp.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 
-namespace Ictx.WebApp.Application.Models;
+namespace Ictx.WebApp.Core.Models;
 
 public class OperationResult<T>
 {

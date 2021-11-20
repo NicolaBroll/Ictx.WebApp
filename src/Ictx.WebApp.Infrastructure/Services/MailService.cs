@@ -6,8 +6,8 @@ using Microsoft.Extensions.Logging;
 using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
-using Ictx.WebApp.Application.Contracts.Services;
-using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Core.Contracts.Services;
+using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Infrastructure.Common;
 
 namespace Ictx.WebApp.Infrastructure.Services

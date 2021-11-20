@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ictx.WebApp.Application.Models
+namespace Ictx.WebApp.Core.Models
 {
     public class MailModel
     {

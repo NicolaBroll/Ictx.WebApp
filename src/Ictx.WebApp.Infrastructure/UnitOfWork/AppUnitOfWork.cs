@@ -1,5 +1,5 @@
-﻿using Ictx.WebApp.Application.Contracts.UnitOfWork;
-using Ictx.WebApp.Application.Contracts.Repositories;
+﻿using Ictx.WebApp.Core.Contracts.UnitOfWork;
+using Ictx.WebApp.Core.Contracts.Repositories;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Infrastructure.Data.App;
 using Ictx.WebApp.Infrastructure.Repositories;

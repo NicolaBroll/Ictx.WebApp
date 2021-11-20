@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ictx.WebApp.Application.Contracts.Services
+namespace Ictx.WebApp.Core.Contracts.Services
 {
     public interface IDateTimeService
     {

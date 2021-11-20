@@ -1,4 +1,4 @@
-﻿using Ictx.WebApp.Application.Contracts.Services;
+﻿using Ictx.WebApp.Core.Contracts.Services;
 using System;
 
 namespace Ictx.WebApp.Infrastructure.Services

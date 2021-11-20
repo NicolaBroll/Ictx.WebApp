@@ -1,9 +1,9 @@
-﻿using Ictx.WebApp.Application.Models;
+﻿using Ictx.WebApp.Core.Models;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Ictx.WebApp.Application.Contracts.Services
+namespace Ictx.WebApp.Core.Contracts.Services
 {
     public interface IMailService
     {

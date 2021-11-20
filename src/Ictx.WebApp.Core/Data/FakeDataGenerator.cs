@@ -3,11 +3,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Bogus;
-using Ictx.WebApp.Application.BO;
+using Ictx.WebApp.Core.BO;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 
-namespace Ictx.WebApp.Application.Data;
+namespace Ictx.WebApp.Core.Data;
 
 public class FakeDataGenerator
 {

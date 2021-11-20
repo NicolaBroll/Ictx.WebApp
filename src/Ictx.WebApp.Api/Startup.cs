@@ -11,13 +11,12 @@ using Microsoft.Extensions.Hosting;
 using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Infrastructure.DependencyInjection;
-using Ictx.WebApp.Application.DependencyInjection;
+using Ictx.WebApp.Core.DependencyInjection;
 using Ictx.WebApp.Infrastructure.Common;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
-using Ictx.WebApp.Api.AppStartUp.Middlewares;
-using Ictx.WebApp.Application.Data;
+using Ictx.WebApp.Core.Data;
 using Microsoft.AspNetCore.Mvc;
-using Ictx.WebApp.Application.Validators;
+using Ictx.WebApp.Core.Validators;
 using FluentValidation;
 using Ictx.WebApp.Core.Entities;
 

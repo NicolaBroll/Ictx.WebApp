@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Exceptions;
-using Ictx.WebApp.Application.BO;
-using Ictx.WebApp.Application.Contracts.UnitOfWork;
-using Ictx.WebApp.Application.Contracts.Repositories;
+using Ictx.WebApp.Core.BO;
+using Ictx.WebApp.Core.Contracts.UnitOfWork;
+using Ictx.WebApp.Core.Contracts.Repositories;
 using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Application.Validators;
+using Ictx.WebApp.Core.Validators;
 
 namespace Ictx.WebApp.UnitTest;
 

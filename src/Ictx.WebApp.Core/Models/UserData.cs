@@ -1,4 +1,4 @@
-﻿namespace Ictx.WebApp.Application.Models
+﻿namespace Ictx.WebApp.Core.Models
 {
     public class UserData
     {

@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Ictx.WebApp.Infrastructure.Common;
 using Ictx.WebApp.Templates.Mail;
-using Ictx.WebApp.Application.Contracts.Services;
+using Ictx.WebApp.Core.Contracts.Services;
 using Ictx.WebApp.Infrastructure.Services;
-using Ictx.WebApp.Application.Contracts.UnitOfWork;
+using Ictx.WebApp.Core.Contracts.UnitOfWork;
 using Ictx.WebApp.Infrastructure.UnitOfWork;
 using Ictx.WebApp.Infrastructure.Data.App;
 
@@ -37,7 +37,6 @@ public static class InfrastructureExtension
         services.AddRazorPages();
 
         // Mail services.
-        services.AddScoped<IRazorViewService, RazorViewService>();
         services.AddScoped<IMailService, MailService>();
 
         return services;

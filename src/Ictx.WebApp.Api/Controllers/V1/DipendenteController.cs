@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Application.BO;
-using Ictx.WebApp.Application.Models;
+using Ictx.WebApp.Core.BO;
+using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.Api.Controllers.V1;
 

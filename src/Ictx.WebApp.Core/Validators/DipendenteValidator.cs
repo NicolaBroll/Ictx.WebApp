@@ -3,7 +3,7 @@ using FluentValidation;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 
-namespace Ictx.WebApp.Application.Validators
+namespace Ictx.WebApp.Core.Validators
 {
     public class DipendenteValidator : AbstractValidator<Dipendente>
     {

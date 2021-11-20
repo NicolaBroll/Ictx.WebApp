@@ -1,10 +1,10 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 using FluentValidation;
-using Ictx.WebApp.Application.Models;
-using Ictx.WebApp.Application.Contracts.UnitOfWork;
+using Ictx.WebApp.Core.Models;
+using Ictx.WebApp.Core.Contracts.UnitOfWork;
 
-namespace Ictx.WebApp.Application.BO;
+namespace Ictx.WebApp.Core.BO;
 
 public class BaseBO<T>
 {
