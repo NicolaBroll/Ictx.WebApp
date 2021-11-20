@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,11 +15,6 @@ using Ictx.WebApp.Infrastructure.DependencyInjection;
 using Ictx.WebApp.Core.DependencyInjection;
 using Ictx.WebApp.Infrastructure.Common;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
-using Ictx.WebApp.Core.Data;
-using Microsoft.AspNetCore.Mvc;
-using Ictx.WebApp.Core.Validators;
-using FluentValidation;
-using Ictx.WebApp.Core.Entities;
 
 namespace Ictx.WebApp.Api;
 
@@ -39,13 +35,6 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddScoped<IValidator<Dipendente>, DipendenteValidator>();
-
-
-
-        // Fake data generator.
-        services.AddTransient<FakeDataGenerator>();
-
         services.AddHttpContextAccessor();
 
         // Application settings.
