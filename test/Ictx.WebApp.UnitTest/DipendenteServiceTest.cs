@@ -14,6 +14,7 @@ using Ictx.WebApp.Core.Contracts.UnitOfWork;
 using Ictx.WebApp.Core.Contracts.Repositories;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Validators;
+using Ictx.WebApp.Core.Contracts.Services;
 
 namespace Ictx.WebApp.UnitTest;
 
@@ -21,7 +22,8 @@ public class DipendenteServiceTest
 {
     private readonly DipendenteBO _sut;
     private readonly Mock<IAppUnitOfWork> _appUnitOfWork = new ();
-    private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new ();
+    private readonly Mock<IGenericRepository<Dipendente>> _dipendenteRepository = new();
+    private readonly Mock<IDateTimeService> _dateTimeService = new ();
 
     private readonly CancellationToken _cancellationToken;
     private readonly List<Dipendente> _listaDipendentiFake;
@@ -30,7 +32,10 @@ public class DipendenteServiceTest
     {
         var validator = new DipendenteValidator();
 
-        this._sut = new DipendenteBO(this._appUnitOfWork.Object, validator);
+        this._dateTimeService.Setup(x => x.UtcNow).Returns(DateTime.UtcNow);
+
+        this._sut = new DipendenteBO(this._appUnitOfWork.Object, validator, _dateTimeService.Object, new UserData(Guid.NewGuid()));
+
         this._cancellationToken = new CancellationToken();
         this._listaDipendentiFake = GetListaDipendentiFake();
     }
