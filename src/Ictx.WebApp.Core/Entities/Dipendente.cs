@@ -9,8 +9,11 @@ namespace Ictx.WebApp.Core.Entities
         public string Cognome { get; set; }
         public string Nome { get; set; }
         public Sesso Sesso { get; set; }
+
+        /// <summary>
+        /// Espresso in local time.
+        /// </summary>
         public DateTime DataNascita { get; set; }
-        public bool IsDeleted { get; set; }
 
         public override string ToString()
         {

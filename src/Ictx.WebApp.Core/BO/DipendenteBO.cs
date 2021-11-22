@@ -6,23 +6,20 @@ using FluentValidation;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Contracts.UnitOfWork;
-using Ictx.WebApp.Core.Contracts.Services;
+using System;
 
 namespace Ictx.WebApp.Core.BO;
 
 public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
 {
-    private readonly IDateTimeService   _dateTimeService;
-    private readonly IUserData          _userData;
+    private readonly IUserData _userData;
 
     public DipendenteBO(
         IAppUnitOfWork          appUnitOfWork,
         IValidator<Dipendente>  dipendenteValidator,
-        IDateTimeService        dateTimeService,
         IUserData               userData
         ) : base(appUnitOfWork, dipendenteValidator)
     {
-        this._dateTimeService   = dateTimeService;
         this._userData          = userData;
     }
 
@@ -42,7 +39,7 @@ public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
     }
 
     /// <summary>
-    /// Ritorna un dipendente. Se non viene trovato, ritorna DipendenteNotFoundException.
+    /// Ritorna un dipendente. Se non viene trovato, ritorna NotFoundException.
     /// </summary>
     /// <param name="key">Id dipendente</param>
     /// <returns>Ritorna un Result<Dipendente> contenente il dipendente associato all'id richiesto oppure una 
@@ -63,12 +60,10 @@ public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
     /// Crea un dipendente.
     /// </summary>
     /// <param name="value">Modello contenente i dati del nuovo dipendente.</param>
-    /// <returns>Ritorna un Result<Dipendente> contenente il dipendente creato.
-    /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
     /// </returns>
     protected override async Task<OperationResult<Dipendente>> InsertViewAsync(Dipendente value, CancellationToken cancellationToken)
     {
-        var utcNow = this._dateTimeService.UtcNow;
+        var utcNow = DateTime.UtcNow;
 
         value.InsertedUtc = utcNow;
         value.UpdatedUtc = utcNow;
@@ -84,12 +79,10 @@ public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
     /// Crea un dipendente.
     /// </summary>
     /// <param name="lstDipendenti">Modello contenente i dati del nuovo dipendente.</param>
-    /// <returns>Ritorna un Result<Dipendente> contenente il dipendente creato.
-    /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
     /// </returns>
     protected override async Task<OperationResult<List<Dipendente>>> InsertManyViewsAsync(List<Dipendente> lstDipendenti, CancellationToken cancellationToken)
     {
-        var utcNow = this._dateTimeService.UtcNow;
+        var utcNow = DateTime.UtcNow;
 
         foreach (var dipendente in lstDipendenti)
         {
@@ -108,8 +101,7 @@ public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
     /// </summary>
     /// <param name="key">Id dipendente da modificare.</param>
     /// <param name="value">Modello contenente i nuovi dati.</param>
-    /// <returns>Ritorna un Result<Dipendente> contenente il dipendente modificato.
-    /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
+    /// Se il dipendente non viene trovato, ritorna NotFoundException.
     /// </returns>
     protected override async Task<OperationResult<Dipendente>> SaveViewAsync(int key, Dipendente value, CancellationToken cancellationToken)
     {
@@ -124,7 +116,7 @@ public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
         objToUpdate.Cognome = value.Cognome;
         objToUpdate.Sesso = value.Sesso;
         objToUpdate.DataNascita = value.DataNascita;
-        objToUpdate.UpdatedUtc = this._dateTimeService.UtcNow;
+        objToUpdate.UpdatedUtc = DateTime.UtcNow;
 
         this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
         await this._appUnitOfWork.SaveAsync(cancellationToken);
@@ -136,8 +128,6 @@ public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
     /// Elimina un dipendente. Se non viene trovato, ritorna DipendenteNotFoundException.
     /// </summary>
     /// <param name="key">Id dipendente</param>
-    /// <returns>Ritorna un Result<Dipendente> contenente il dipendente eliminato. Oppure una 
-    /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
     protected override async Task<OperationResult<bool>> DeleteViewAsync(int key, CancellationToken cancellationToken)
     {
         var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
@@ -148,6 +138,7 @@ public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
         }
 
         objToDelete.IsDeleted = true;
+        objToDelete.DeletedUtc = DateTime.UtcNow;
 
         this._appUnitOfWork.DipendenteRepository.Update(objToDelete);
         await this._appUnitOfWork.SaveAsync(cancellationToken);
