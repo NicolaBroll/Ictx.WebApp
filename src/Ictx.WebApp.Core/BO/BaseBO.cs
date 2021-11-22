@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
 using System.Collections.Generic;
 using FluentValidation;
 using Ictx.WebApp.Core.Models;
@@ -6,7 +9,7 @@ using Ictx.WebApp.Core.Contracts.UnitOfWork;
 
 namespace Ictx.WebApp.Core.BO;
 
-public class BaseBO<T>
+public abstract class BaseBO<T, K, Q> where Q : PaginationModel
 {
     protected readonly IAppUnitOfWork _appUnitOfWork;
     protected readonly IValidator<T>  _validator;
@@ -17,11 +20,124 @@ public class BaseBO<T>
         this._validator     = validator;
     }
 
-    #region Validation
-
-    protected OperationResult<T> Validation(T value)
+    // Read many paginated.
+    public async Task<PageResult<T>> ReadManyPaginatedAsync(Q filter, CancellationToken cancellationToken = default)
     {
-        var validationResult = this._validator.Validate(value);
+        return await ReadManyPaginatedViewsAsync(filter, cancellationToken);
+    }
+
+    protected virtual async Task<PageResult<T>> ReadManyPaginatedViewsAsync(Q filter, CancellationToken cancellationToken)
+    {
+        return await Task.FromException<PageResult<T>>(new NotImplementedException());
+    }
+
+    // Read many.
+    protected virtual async Task<IEnumerable<T>> ReadManyViewsAsync(Q filter, CancellationToken cancellationToken)
+    {
+        return await Task.FromException<List<T>>(new NotImplementedException());
+    }
+
+    public async Task<IEnumerable<T>> ReadManydAsync(Q filter, CancellationToken cancellationToken = default)
+    {
+        return await ReadManyViewsAsync(filter, cancellationToken);
+    }
+
+
+    // Read.
+    public async Task<OperationResult<T>> ReadAsync(K key, CancellationToken cancellationToken = default)
+    { 
+        return await ReadViewAsync(key, cancellationToken);
+    }
+
+    protected virtual async Task<OperationResult<T>> ReadViewAsync(K key, CancellationToken cancellationToken)
+    {
+        return await Task.FromException<OperationResult<T>>(new NotImplementedException());
+    }
+
+
+    // Delete.
+    public async Task<OperationResult<bool>> DeleteAsync(K key, CancellationToken cancellationToken = default)
+    {
+        return await DeleteViewAsync(key, cancellationToken);
+    }
+
+    protected virtual async Task<OperationResult<bool>> DeleteViewAsync(K key, CancellationToken cancellationToken)
+    {
+        return await Task.FromException<OperationResult<bool>>(new NotImplementedException());
+    }
+
+
+    // Save.
+    public async Task<OperationResult<T>> SaveAsync(K key, T value, CancellationToken cancellationToken = default)
+    {
+        var validazione = await ValidationSingleAsync(value);
+
+        if (validazione.IsFail)
+        {
+            return validazione;
+        }
+
+        return await SaveViewAsync(key, value, cancellationToken);       
+    }
+
+    protected virtual async Task<OperationResult<T>> SaveViewAsync(K key, T value, CancellationToken cancellationToken)
+    {
+        return await Task.FromException<OperationResult<T>>(new NotImplementedException());
+    }
+
+
+    // Insert.
+    public async Task<OperationResult<T>> InsertAsync(T value, CancellationToken cancellationToken = default)
+    {
+        var validazione = await ValidationSingleAsync(value);
+
+        if (validazione.IsFail)
+        {
+            return validazione;
+        }
+
+        return await InsertViewAsync(value, cancellationToken);
+    }
+
+    protected virtual async Task<OperationResult<T>> InsertViewAsync(T value, CancellationToken cancellationToken)
+    {
+        return await Task.FromException<OperationResult<T>>(new NotImplementedException());
+    }
+
+
+    // Insert many.
+    public async Task<OperationResult<List<T>>> InsertManyAsync(List<T> value, CancellationToken cancellationToken = default)
+    {
+        var validazione = await ValidationManyAsync(value);
+
+        if (validazione.IsFail)
+        {
+            return validazione;
+        }
+
+        return await InsertManyViewsAsync(value, cancellationToken);
+    }
+
+    protected virtual async Task<OperationResult<List<T>>> InsertManyViewsAsync(List<T> value, CancellationToken cancellationToken)
+    {
+        return await Task.FromException<OperationResult<List<T>>>(new NotImplementedException());
+    }
+
+
+    // Validation single.
+    public async Task<OperationResult<T>> ValidationSingleAsync(T value)
+    {
+        return await ValidationSingleViewAsync(value);
+    }
+
+    protected virtual async Task<OperationResult<T>> ValidationSingleViewAsync(T value)
+    {
+        if (this._validator is null)
+        {
+            return OperationResult<T>.Success(value);
+        }
+
+        var validationResult = await this._validator.ValidateAsync(value);
 
         if (validationResult.IsValid)
         {
@@ -33,11 +149,23 @@ public class BaseBO<T>
         return OperationResult<T>.Invalid(dictionaryErrors);
     }
 
-    protected OperationResult<List<T>> Validation(List<T> list)
+
+    // Validation multiple.
+    public async Task<OperationResult<List<T>>> ValidationManyAsync(List<T> value)
     {
+        return await ValidationManyViewAsync(value);
+    }
+
+    protected virtual async Task<OperationResult<List<T>>> ValidationManyViewAsync(List<T> list)
+    {
+        if (this._validator is null)
+        {
+            return OperationResult<List<T>>.Success(list);
+        }
+
         foreach (var item in list)
         {
-            var validationResult = this._validator.Validate(item);
+            var validationResult = await this._validator.ValidateAsync(item);
 
             if (!validationResult.IsValid)
             {
@@ -55,6 +183,4 @@ public class BaseBO<T>
             .GroupBy(x => x.PropertyName)
             .ToDictionary(k => k.Key, v => v.Select(x => x.ErrorMessage));
     }
-    
-    #endregion
 }

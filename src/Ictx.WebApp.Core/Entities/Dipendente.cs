@@ -4,7 +4,7 @@ using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.Core.Entities
 {
-    public class Dipendente : BaseEntity
+    public class Dipendente : BaseEntity<int>
     {
         public string Cognome { get; set; }
         public string Nome { get; set; }

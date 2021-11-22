@@ -1,12 +1,18 @@
-﻿namespace Ictx.WebApp.Core.Models
-{
-    public class UserData
-    {
-        public int UserId { get; private set; }
+﻿using System;
 
-        public UserData(int userId)
-        {
-            this.UserId = userId;
-        }
+namespace Ictx.WebApp.Core.Models;
+
+public interface IUserData
+{
+    Guid UserId { get; }
+}
+
+public class UserData : IUserData
+{
+    public Guid UserId { get; private set; }
+
+    public UserData(Guid userId)
+    {
+        this.UserId = userId;
     }
 }

@@ -15,6 +15,10 @@ public static class MvcConfiguration
 {
     public static IServiceCollection ConfigureMvc(this IServiceCollection services)
     {
+        services.AddHttpContextAccessor();
+
+        services.ConfigureSessionData();
+
         // Aggiungo la gestione globale dell'eccezione in caso di internal server error.
         services.AddTransient<ExceptionHandlingMiddleware>();
 

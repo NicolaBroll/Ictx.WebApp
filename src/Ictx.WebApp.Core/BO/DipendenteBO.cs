@@ -6,20 +6,32 @@ using FluentValidation;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Contracts.UnitOfWork;
+using Ictx.WebApp.Core.Contracts.Services;
 
 namespace Ictx.WebApp.Core.BO;
 
-public class DipendenteBO: BaseBO<Dipendente>
+public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
 {
-    public DipendenteBO(IAppUnitOfWork appUnitOfWork, IValidator<Dipendente> dipendenteValidator) : base(appUnitOfWork, dipendenteValidator)
-    { }
+    private readonly IDateTimeService   _dateTimeService;
+    private readonly IUserData          _userData;
+
+    public DipendenteBO(
+        IAppUnitOfWork          appUnitOfWork,
+        IValidator<Dipendente>  dipendenteValidator,
+        IDateTimeService        dateTimeService,
+        IUserData               userData
+        ) : base(appUnitOfWork, dipendenteValidator)
+    {
+        this._dateTimeService   = dateTimeService;
+        this._userData          = userData;
+    }
 
     /// <summary>
     /// Ritorna una lista di dipendenti paginata.
     /// </summary>
     /// <param name="filter">Parametri di paginazione</param>
     /// <returns>Ritorna unoggetto contenente la lista di dipendenti paginata e il totalcount dei record su DB</returns>
-    public async Task<PageResult<Dipendente>> ReadManyPaginatedAsync(PaginationModel filter, CancellationToken cancellationToken)
+    protected override async Task<PageResult<Dipendente>> ReadManyPaginatedViewsAsync(PaginationModel filter, CancellationToken cancellationToken)
     {
         var result = await this._appUnitOfWork.DipendenteRepository.ReadManyPaginatedAsync(
             pagination: filter,
@@ -35,7 +47,7 @@ public class DipendenteBO: BaseBO<Dipendente>
     /// <param name="key">Id dipendente</param>
     /// <returns>Ritorna un Result<Dipendente> contenente il dipendente associato all'id richiesto oppure una 
     /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
-    public async Task<OperationResult<Dipendente>> ReadAsync(int key, CancellationToken cancellationToken)
+    protected override async Task<OperationResult<Dipendente>> ReadViewAsync(int key, CancellationToken cancellationToken)
     {
         var dipendente = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
 
@@ -54,14 +66,12 @@ public class DipendenteBO: BaseBO<Dipendente>
     /// <returns>Ritorna un Result<Dipendente> contenente il dipendente creato.
     /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
     /// </returns>
-    public async Task<OperationResult<Dipendente>> InsertAsync(Dipendente value, CancellationToken cancellationToken)
+    protected override async Task<OperationResult<Dipendente>> InsertViewAsync(Dipendente value, CancellationToken cancellationToken)
     {
-        var validazione = Validation(value);
+        var utcNow = this._dateTimeService.UtcNow;
 
-        if (validazione.IsFail)
-        {
-            return validazione;
-        }
+        value.InsertedUtc = utcNow;
+        value.UpdatedUtc = utcNow;
 
         await this._appUnitOfWork.DipendenteRepository.InsertAsync(value, cancellationToken);
         await this._appUnitOfWork.SaveAsync(cancellationToken);
@@ -77,15 +87,16 @@ public class DipendenteBO: BaseBO<Dipendente>
     /// <returns>Ritorna un Result<Dipendente> contenente il dipendente creato.
     /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
     /// </returns>
-    public async Task<OperationResult<List<Dipendente>>> InsertManyAsync(List<Dipendente> lstDipendenti, CancellationToken cancellationToken)
-    {  
-        var validazione = Validation(lstDipendenti);
+    protected override async Task<OperationResult<List<Dipendente>>> InsertManyViewsAsync(List<Dipendente> lstDipendenti, CancellationToken cancellationToken)
+    {
+        var utcNow = this._dateTimeService.UtcNow;
 
-        if (validazione.IsFail)
+        foreach (var dipendente in lstDipendenti)
         {
-            return validazione;
+            dipendente.InsertedUtc = utcNow;
+            dipendente.UpdatedUtc = utcNow;
         }
-   
+
         await this._appUnitOfWork.DipendenteRepository.InsertManyAsync(lstDipendenti, cancellationToken);
         await this._appUnitOfWork.SaveAsync(cancellationToken);
 
@@ -100,15 +111,8 @@ public class DipendenteBO: BaseBO<Dipendente>
     /// <returns>Ritorna un Result<Dipendente> contenente il dipendente modificato.
     /// Se il dipendente non viene trovato, ritorna DipendenteNotFoundException.
     /// </returns>
-    public async Task<OperationResult<Dipendente>> SaveAsync(int key, Dipendente value, CancellationToken cancellationToken)
+    protected override async Task<OperationResult<Dipendente>> SaveViewAsync(int key, Dipendente value, CancellationToken cancellationToken)
     {
-        var validazione = Validation(value);
-
-        if (validazione.IsFail)
-        {
-            return validazione;
-        }
-
         var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
 
         if (objToUpdate is null)
@@ -120,6 +124,7 @@ public class DipendenteBO: BaseBO<Dipendente>
         objToUpdate.Cognome = value.Cognome;
         objToUpdate.Sesso = value.Sesso;
         objToUpdate.DataNascita = value.DataNascita;
+        objToUpdate.UpdatedUtc = this._dateTimeService.UtcNow;
 
         this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
         await this._appUnitOfWork.SaveAsync(cancellationToken);
@@ -133,7 +138,7 @@ public class DipendenteBO: BaseBO<Dipendente>
     /// <param name="key">Id dipendente</param>
     /// <returns>Ritorna un Result<Dipendente> contenente il dipendente eliminato. Oppure una 
     /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
-    public async Task<OperationResult<bool>> DeleteAsync(int key, CancellationToken cancellationToken)
+    protected override async Task<OperationResult<bool>> DeleteViewAsync(int key, CancellationToken cancellationToken)
     {
         var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
 

@@ -1,7 +1,5 @@
-﻿using System;
-using FluentValidation;
+﻿using FluentValidation;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.Models;
 
 namespace Ictx.WebApp.Core.Validators
 {
@@ -11,17 +9,20 @@ namespace Ictx.WebApp.Core.Validators
         {
             // Nome.
             RuleFor(dipendente => dipendente.Nome)
+                .NotEmpty()
                 .MinimumLength(1).WithMessage("Il campo '{PropertyName}' è obbligatorio.")
                 .MaximumLength(64).WithMessage("Il campo '{PropertyName}' non può superare i {MaxLength} caratteri.");
 
             // Cognome.
             RuleFor(dipendente => dipendente.Cognome)
+                .NotEmpty()
                 .MinimumLength(1).WithMessage("Il campo '{PropertyName}' è obbligatorio.")
                 .MaximumLength(64).WithMessage("Il campo '{PropertyName}' non può superare i {MaxLength} caratteri.");
 
             // Data nascita.
             RuleFor(dipendente => dipendente.DataNascita)
-                .NotNull().WithMessage("Il campo '{PropertyName}' è obbligatorio.");
+                .NotNull()
+                .WithMessage("Il campo '{PropertyName}' è obbligatorio.");
         }
     }
 }

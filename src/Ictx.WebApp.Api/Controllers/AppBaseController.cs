@@ -17,14 +17,16 @@ public class AppBaseController : ControllerBase
             Detail = ex.Message
         };
 
-        problemDetails.Extensions.Add("RequestId", HttpContext.TraceIdentifier);
+        problemDetails.Extensions.Add("requestId", HttpContext.TraceIdentifier);
 
         switch (ex)
         {
-            case BadRequestException:
+            case BadRequestException badRequestException:
                 problemDetails.Type = "https://demo.api.com/errors/bad-request";
                 problemDetails.Status = StatusCodes.Status400BadRequest;
 
+                problemDetails.Extensions.Add("errors", badRequestException.Errors);
+                
                 return BadRequest(problemDetails);
 
             case NotFoundException:
@@ -45,17 +47,5 @@ public class AppBaseController : ControllerBase
 
                 return StatusCode(StatusCodes.Status500InternalServerError, problemDetails);
         }
-    }
-
-    protected async Task<UserData> GetUserData()
-    {
-        var claim = HttpContext.User.FindFirst("sub");
-
-        if (claim != null)
-        {
-            await Task.FromResult(new UserData(int.Parse(claim.Value)));
-        }
-
-        return null;
     }
 }

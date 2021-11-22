@@ -35,8 +35,6 @@ public class Startup
     /// <param name="services"></param>
     public void ConfigureServices(IServiceCollection services)
     {
-        services.AddHttpContextAccessor();
-
         // Application settings.
         services.ConfigureApplicationSettings(this._configuration);
 

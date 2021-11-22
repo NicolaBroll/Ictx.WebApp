@@ -2,11 +2,11 @@
 
 namespace Ictx.WebApp.Core.Entities.Base
 {
-    public class BaseEntity
+    public class BaseEntity<TKey>
     {
-        public int Id { get; set; }
-        public DateTime Inserted { get; set; }
-        public DateTime Updated { get; set; }
+        public TKey Id { get; set; }
+        public DateTime InsertedUtc { get; set; }
+        public DateTime UpdatedUtc { get; set; }
 
         public override string ToString()
         {
