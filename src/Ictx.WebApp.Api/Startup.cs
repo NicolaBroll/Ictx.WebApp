@@ -65,6 +65,9 @@ public class Startup
                 .ApplicationDatacontextConfigurationStage(this._configuration.GetConnectionString("DefaultConnection"))
                 .MailConfigurationStage(mailConfig)
         );
+
+        // Background service.
+        services.AddHostedService<AppBackgroundService>();
     }
 
     /// <summary>

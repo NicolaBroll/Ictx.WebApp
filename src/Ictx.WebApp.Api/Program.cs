@@ -2,9 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Serilog;
 using Ictx.WebApp.Core.Data;
-using Microsoft.Extensions.Logging;
 
 namespace Ictx.WebApp.Api;
 
@@ -24,19 +24,19 @@ public class Program
             await fakeDataGenerator.Genera();
 
             var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-            logger.LogInformation("App start.");
+            logger.LogInformation("WebApp partito.");
         }
 
         await host.RunAsync();
     }
 
-    public static IHostBuilder CreateHostBuilder(string[] args)
+    private static IHostBuilder CreateHostBuilder(string[] args)
     {
         return Host.CreateDefaultBuilder(args)
-                    .UseSerilog((context, services, configuration) => configuration.ReadFrom.Configuration(context.Configuration))
-                    .ConfigureWebHostDefaults(webBuilder =>
-                    {
-                        webBuilder.UseStartup<Startup>();
-                    });
+                   .UseSerilog((context, services, configuration) => configuration.ReadFrom.Configuration(context.Configuration))
+                   .ConfigureWebHostDefaults(webBuilder =>
+                   {
+                       webBuilder.UseStartup<Startup>();
+                   });
     }       
 }
