@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -6,11 +7,11 @@ using FluentValidation;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Contracts.UnitOfWork;
-using System;
+using Ictx.WebApp.Core.BO.Base;
 
 namespace Ictx.WebApp.Core.BO;
 
-public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
+public class DipendenteBO: PersistableBO<Dipendente, int, PaginationModel>
 {
     private readonly IUserData _userData;
 
@@ -20,7 +21,7 @@ public class DipendenteBO: BaseBO<Dipendente, int, PaginationModel>
         IUserData               userData
         ) : base(appUnitOfWork, dipendenteValidator)
     {
-        this._userData          = userData;
+        this._userData = userData;
     }
 
     /// <summary>

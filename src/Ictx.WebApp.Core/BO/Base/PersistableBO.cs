@@ -7,53 +7,16 @@ using FluentValidation;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Contracts.UnitOfWork;
 
-namespace Ictx.WebApp.Core.BO;
+namespace Ictx.WebApp.Core.BO.Base;
 
-public abstract class BaseBO<T, K, Q> where Q : PaginationModel
+public abstract class PersistableBO<T, K, Q> : ReadOnlyBO<T, K, Q> where Q : PaginationModel
 {
-    protected readonly IAppUnitOfWork _appUnitOfWork;
     protected readonly IValidator<T>  _validator;
 
-    public BaseBO(IAppUnitOfWork appUnitOfWork, IValidator<T> validator)
+    public PersistableBO(IAppUnitOfWork appUnitOfWork, IValidator<T> validator = null): base(appUnitOfWork)
     {
-        this._appUnitOfWork = appUnitOfWork;
         this._validator     = validator;
-    }
-
-    // Read many paginated.
-    public async Task<PageResult<T>> ReadManyPaginatedAsync(Q filter, CancellationToken cancellationToken = default)
-    {
-        return await ReadManyPaginatedViewsAsync(filter, cancellationToken);
-    }
-
-    protected virtual async Task<PageResult<T>> ReadManyPaginatedViewsAsync(Q filter, CancellationToken cancellationToken)
-    {
-        return await Task.FromException<PageResult<T>>(new NotImplementedException());
-    }
-
-    // Read many.
-    protected virtual async Task<IEnumerable<T>> ReadManyViewsAsync(Q filter, CancellationToken cancellationToken)
-    {
-        return await Task.FromException<List<T>>(new NotImplementedException());
-    }
-
-    public async Task<IEnumerable<T>> ReadManydAsync(Q filter, CancellationToken cancellationToken = default)
-    {
-        return await ReadManyViewsAsync(filter, cancellationToken);
-    }
-
-
-    // Read.
-    public async Task<OperationResult<T>> ReadAsync(K key, CancellationToken cancellationToken = default)
-    { 
-        return await ReadViewAsync(key, cancellationToken);
-    }
-
-    protected virtual async Task<OperationResult<T>> ReadViewAsync(K key, CancellationToken cancellationToken)
-    {
-        return await Task.FromException<OperationResult<T>>(new NotImplementedException());
-    }
-
+    }    
 
     // Delete.
     public async Task<OperationResult<bool>> DeleteAsync(K key, CancellationToken cancellationToken = default)
