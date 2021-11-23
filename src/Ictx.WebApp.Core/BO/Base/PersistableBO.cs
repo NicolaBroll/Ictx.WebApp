@@ -1,37 +1,41 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Linq;
 using System.Collections.Generic;
 using FluentValidation;
+using FluentValidation.Results;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Contracts.UnitOfWork;
 
 namespace Ictx.WebApp.Core.BO.Base;
 
-public abstract class PersistableBO<T, K, Q> : ReadOnlyBO<T, K, Q> where Q : PaginationModel
+public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEntity, TKey, TParameters> where TParameters : PaginationModel
 {
-    protected readonly IValidator<T>  _validator;
+    protected readonly IValidator<TEntity> _validator;
 
-    public PersistableBO(IAppUnitOfWork appUnitOfWork, IValidator<T> validator = null): base(appUnitOfWork)
+    public PersistableBO(IAppUnitOfWork appUnitOfWork, IValidator<TEntity> validator = null): base(appUnitOfWork)
     {
         this._validator     = validator;
-    }    
+    }
 
-    // Delete.
-    public async Task<OperationResult<bool>> DeleteAsync(K key, CancellationToken cancellationToken = default)
+    #region Delete
+
+    public async Task<OperationResult<bool>> DeleteAsync(TKey key, CancellationToken cancellationToken = default)
     {
         return await DeleteViewAsync(key, cancellationToken);
     }
 
-    protected virtual async Task<OperationResult<bool>> DeleteViewAsync(K key, CancellationToken cancellationToken)
+    protected virtual async Task<OperationResult<bool>> DeleteViewAsync(TKey key, CancellationToken cancellationToken)
     {
         return await Task.FromException<OperationResult<bool>>(new NotImplementedException());
     }
 
+    #endregion
 
-    // Save.
-    public async Task<OperationResult<T>> SaveAsync(K key, T value, CancellationToken cancellationToken = default)
+    #region Save
+
+    public async Task<OperationResult<TEntity>> SaveAsync(TKey key, TEntity value, CancellationToken cancellationToken = default)
     {
         var validazione = await ValidationSingleAsync(value);
 
@@ -43,14 +47,16 @@ public abstract class PersistableBO<T, K, Q> : ReadOnlyBO<T, K, Q> where Q : Pag
         return await SaveViewAsync(key, value, cancellationToken);       
     }
 
-    protected virtual async Task<OperationResult<T>> SaveViewAsync(K key, T value, CancellationToken cancellationToken)
+    protected virtual async Task<OperationResult<TEntity>> SaveViewAsync(TKey key, TEntity value, CancellationToken cancellationToken)
     {
-        return await Task.FromException<OperationResult<T>>(new NotImplementedException());
+        return await Task.FromException<OperationResult<TEntity>>(new NotImplementedException());
     }
 
+    #endregion
 
-    // Insert.
-    public async Task<OperationResult<T>> InsertAsync(T value, CancellationToken cancellationToken = default)
+    #region Insert
+
+    public async Task<OperationResult<TEntity>> InsertAsync(TEntity value, CancellationToken cancellationToken = default)
     {
         var validazione = await ValidationSingleAsync(value);
 
@@ -62,14 +68,16 @@ public abstract class PersistableBO<T, K, Q> : ReadOnlyBO<T, K, Q> where Q : Pag
         return await InsertViewAsync(value, cancellationToken);
     }
 
-    protected virtual async Task<OperationResult<T>> InsertViewAsync(T value, CancellationToken cancellationToken)
+    protected virtual async Task<OperationResult<TEntity>> InsertViewAsync(TEntity value, CancellationToken cancellationToken)
     {
-        return await Task.FromException<OperationResult<T>>(new NotImplementedException());
+        return await Task.FromException<OperationResult<TEntity>>(new NotImplementedException());
     }
 
+    #endregion
 
-    // Insert many.
-    public async Task<OperationResult<List<T>>> InsertManyAsync(List<T> value, CancellationToken cancellationToken = default)
+    #region Insert many
+
+    public async Task<OperationResult<List<TEntity>>> InsertManyAsync(List<TEntity> value, CancellationToken cancellationToken = default)
     {
         var validazione = await ValidationManyAsync(value);
 
@@ -81,49 +89,52 @@ public abstract class PersistableBO<T, K, Q> : ReadOnlyBO<T, K, Q> where Q : Pag
         return await InsertManyViewsAsync(value, cancellationToken);
     }
 
-    protected virtual async Task<OperationResult<List<T>>> InsertManyViewsAsync(List<T> value, CancellationToken cancellationToken)
+    protected virtual async Task<OperationResult<List<TEntity>>> InsertManyViewsAsync(List<TEntity> value, CancellationToken cancellationToken)
     {
-        return await Task.FromException<OperationResult<List<T>>>(new NotImplementedException());
+        return await Task.FromException<OperationResult<List<TEntity>>>(new NotImplementedException());
     }
 
+    #endregion
 
-    // Validation single.
-    public async Task<OperationResult<T>> ValidationSingleAsync(T value)
+    #region Validation 
+    
+    // Single.
+    public async Task<OperationResult<TEntity>> ValidationSingleAsync(TEntity value)
     {
         return await ValidationSingleViewAsync(value);
     }
 
-    protected virtual async Task<OperationResult<T>> ValidationSingleViewAsync(T value)
+    protected virtual async Task<OperationResult<TEntity>> ValidationSingleViewAsync(TEntity value)
     {
         if (this._validator is null)
         {
-            return OperationResult<T>.Success(value);
+            return OperationResult<TEntity>.Success(value);
         }
 
         var validationResult = await this._validator.ValidateAsync(value);
 
         if (validationResult.IsValid)
         {
-            return OperationResult<T>.Success(value);
+            return OperationResult<TEntity>.Success(value);
         }
 
         var dictionaryErrors = FromValidationFailureToDictionary(validationResult);
 
-        return OperationResult<T>.Invalid(dictionaryErrors);
+        return OperationResult<TEntity>.Invalid(dictionaryErrors);
     }
 
 
-    // Validation multiple.
-    public async Task<OperationResult<List<T>>> ValidationManyAsync(List<T> value)
+    // Multiple.
+    public async Task<OperationResult<List<TEntity>>> ValidationManyAsync(List<TEntity> value)
     {
         return await ValidationManyViewAsync(value);
     }
 
-    protected virtual async Task<OperationResult<List<T>>> ValidationManyViewAsync(List<T> list)
+    protected virtual async Task<OperationResult<List<TEntity>>> ValidationManyViewAsync(List<TEntity> list)
     {
         if (this._validator is null)
         {
-            return OperationResult<List<T>>.Success(list);
+            return OperationResult<List<TEntity>>.Success(list);
         }
 
         foreach (var item in list)
@@ -133,17 +144,18 @@ public abstract class PersistableBO<T, K, Q> : ReadOnlyBO<T, K, Q> where Q : Pag
             if (!validationResult.IsValid)
             {
                 var dictionaryErrors = FromValidationFailureToDictionary(validationResult);
-                return OperationResult<List<T>>.Invalid(dictionaryErrors);
+                return OperationResult<List<TEntity>>.Invalid(dictionaryErrors);
             }
         }
 
-        return OperationResult<List<T>>.Success(list);
+        return OperationResult<List<TEntity>>.Success(list);
     }
 
-    private static Dictionary<string, IEnumerable<string>> FromValidationFailureToDictionary(FluentValidation.Results.ValidationResult res)
-    {
-        return res.Errors
+    private static Dictionary<string, IEnumerable<string>> FromValidationFailureToDictionary(ValidationResult res) => 
+        res.Errors
             .GroupBy(x => x.PropertyName)
             .ToDictionary(k => k.Key, v => v.Select(x => x.ErrorMessage));
-    }
+
+    #endregion
+
 }

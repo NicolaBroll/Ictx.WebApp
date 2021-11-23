@@ -7,7 +7,7 @@ namespace Ictx.WebApp.Core.Exceptions
     {  
         public Dictionary<string, IEnumerable<string>> Errors { get; }
 
-        public BadRequestException(Dictionary<string, IEnumerable<string>>  errors = default) : base("Validation error.")
+        public BadRequestException(Dictionary<string, IEnumerable<string>> errors = default) : base("Validation error.")
         {
             this.Errors = errors;
         }

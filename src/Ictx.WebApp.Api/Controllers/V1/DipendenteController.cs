@@ -18,6 +18,7 @@ public class DipendenteController : AppBaseController
 {
     private readonly IMapper _mapper;
     private readonly DipendenteBO _dipendenteBO;
+    private const string GET_DIPENDENTE_BY_ID_ACTION_NAME = "GetDipendenteById";
 
     public DipendenteController(IMapper mapper, DipendenteBO dipendenteBO)
     {
@@ -49,10 +50,10 @@ public class DipendenteController : AppBaseController
     /// <param name="id">Identificativo dipendente.</param>
     /// <param name="cancellationToken"></param>
     /// <response code = "200">Ritorna un dipendente.</response>
-    /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con
+    /// <response code = "404">Ritorna un ProblemDetails in quanto nel database non è presente un dipendente con
     /// l'identificativo richesto.</response>
     /// <returns></returns>
-    [HttpGet("{id}", Name= "GetDipendenteById")]
+    [HttpGet("{id}", Name = GET_DIPENDENTE_BY_ID_ACTION_NAME)]
     [ProducesResponseType(typeof(DipendenteDto), (int)HttpStatusCode.OK)]
     [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
     public async Task<ActionResult<DipendenteDto>> GetById(int id, CancellationToken cancellationToken)
@@ -73,7 +74,7 @@ public class DipendenteController : AppBaseController
     /// <param name="id">Identificativo dipendente.</param>
     /// <param name="cancellationToken"></param>
     /// <response code = "200">Dipendente eliminato con successo.</response>
-    /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente con
+    /// <response code = "404">Ritorna un ProblemDetails in quanto nel database non è presente un dipendente con
     /// l'identificativo richesto.</response>
     /// <returns></returns>
     [HttpDelete("{id}")]
@@ -109,7 +110,7 @@ public class DipendenteController : AppBaseController
 
         if (result.IsSuccess)
         {
-            return CreatedAtRoute("GetDipendenteById", 
+            return CreatedAtRoute(GET_DIPENDENTE_BY_ID_ACTION_NAME, 
                 new { id = result.ResultData.Id },
                 _mapper.Map<DipendenteDto>(result.ResultData));
         }
@@ -125,7 +126,7 @@ public class DipendenteController : AppBaseController
     /// <param name="cancellationToken"></param>
     /// <response code = "200">Dipendente modificato correttamente, ritorna l'oggetto modificato.</response>
     /// <response code = "400">Errore validazione.</response>
-    /// <response code = "404">Ritorna un ErrorResponse in quanto nel database non è presente un dipendente
+    /// <response code = "404">Ritorna un ProblemDetails in quanto nel database non è presente un dipendente
     /// con l'identificativo richesto.</response>
     /// <returns></returns>
     [HttpPut("{id}")]
