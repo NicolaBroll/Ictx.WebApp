@@ -8,139 +8,115 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Api.Controllers.V1;
 using Ictx.WebApp.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 {
     public class DipendenteControllerTest: IntegrationTest
     {
-        //private readonly int _version;
-        //private readonly int _dittaId;
-        //private readonly List<DipendenteDto> _lstDipendenteDto;
+        private readonly int _version;
+        private readonly string _controllerName;
+        private readonly List<DipendenteDto> _lstDipendenteDto;
 
         public DipendenteControllerTest(AppInstance instance) : base(instance)
         {
-            //this._version = 1;
-            //this._dittaId = 1;
-
-           // this._lstDipendenteDto = GetListaDipendentiFake();
+            this._version = 1;
+            this._controllerName = "Dipendente";
+            this._lstDipendenteDto = GetListaDipendentiFake();
         }
 
-        //#region GET
+        #region GET
 
-        ///// <summary>
-        ///// Verifica che la risposta sia corretta in assenza di dipendenti.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task GetAll_WithOutDipendenti_ReturnEmptyResponse()
-        //{
-        //    // Arrange.
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Get, _version);
+        /// <summary>
+        /// Inserisce i dipendenti in DB e successivamente richiede X dipendenti verificando sia il total count 
+        /// sia il count effettivo dei dipendenti ritornati dal server.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task GetAll_WithDipendenti_ReturnXDipendenti()
+        {
+            // Arrange.  
+            var dipendentiRequest = 16;
 
-        //    // Act.
-        //    var response = await HttpClient.GetAsync(url);
+            var postTasks = new List<Task>();
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
+            this._lstDipendenteDto.ToList().ForEach(x => postTasks.Add(PostDipendente(x)));
 
-        //    var parsedRespose = await response.Content.ReadAsAsync<PageResultDto<DipendenteDto>>();
+            Task.WaitAll(postTasks.ToArray());
 
-        //    parsedRespose.Data.Count().Should().Be(0);
-        //    parsedRespose.TotalCount.Should().Be(0);
-        //}
+            var url = GetUrl();
+            url += $"?page=1&pageSize={dipendentiRequest}";
 
-        ///// <summary>
-        ///// Inserisce i dipendenti in DB e successivamente richiede X dipendenti verificando sia il total count 
-        ///// sia il count effettivo dei dipendenti ritornati dal server.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task GetAll_WithDipendenti_ReturnXDipendenti()
-        //{
-        //    // Arrange.  
-        //    var dipendentiRequest = 16;
+            // Act.
+            var response = await HttpClient.GetAsync(url);
 
-        //    var postTasks = new List<Task>();
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        //    this._lstDipendenteDto.ToList().ForEach(x => postTasks.Add(PostDipendente(x)));
+            var parsedRespose = await response.Content.ReadAsAsync<PageResult<DipendenteDto>>();
 
-        //    Task.WaitAll(postTasks.ToArray());
+            parsedRespose.TotalCount.Should().BeGreaterOrEqualTo(this._lstDipendenteDto.Count); // Dipendenti totali in database.
+            parsedRespose.Data.Count().Should().Be(dipendentiRequest); // Dipendenti totali richiesti.
+        }
 
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Get, _version);
-        //    url += $"?dittaId={this._dittaId}&page=1&pageSize={dipendentiRequest}";
+        #endregion
 
-        //    // Act.
-        //    var response = await HttpClient.GetAsync(url);
+        #region GET ONE
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
+        /// <summary>
+        /// Verifica che venga resttuito 404 con il relativo messaggio d'errore nel caso il dipendente non sia presente.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task GetOne_WithOutDipendente_ReturnEmptyResponse()
+        {
+            // Arrange.
+            var dipendenteId = 99999999;
+            var url = GetUrl() + "/" + dipendenteId;
 
-        //    var parsedRespose = await response.Content.ReadAsAsync<PageResult<DipendenteDto>>();
+            // Act.
+            var response = await HttpClient.GetAsync(url);
 
-        //    parsedRespose.TotalCount.Should().BeGreaterOrEqualTo(this._lstDipendenteDto.Count); // Dipendenti totali in database.
-        //    parsedRespose.Data.Count().Should().Be(dipendentiRequest); // Dipendenti totali richiesti.
-        //}
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        //#endregion
+            var parsedRespose = await response.Content.ReadAsAsync<ProblemDetails>();
 
-        //#region GET ONE
+            parsedRespose.Detail.Should().NotBeNullOrEmpty();
+        }
 
-        ///// <summary>
-        ///// Verifica che venga resttuito 404 con il relativo messaggio d'errore nel caso il dipendente non sia presente.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task GetOne_WithOutDipendente_ReturnEmptyResponse()
-        //{
-        //    // Arrange.
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.GetById, _version);
-        //    var dipendenteId = 99999999;
+        /// <summary>
+        /// Crea il dipendente e verifica che sia possibile leggerlo con risposta 200.
+        /// Viene fatto un compare campo per campo verificando che l'oggetto restituito sia identico all'oggetto creato.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task GetOne_WithDipendente_ReturnResponse()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+            var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
+            var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
 
-        //    // Act.
-        //    var response = await HttpClient.GetAsync(url.Replace("{id}", dipendenteId.ToString()));
+            var url = GetUrl() + "/" + dipendenteCreated.Id;
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            // Act.
+            var response = await HttpClient.GetAsync(url);
 
-        //    var parsedRespose = await response.Content.ReadAsAsync<ErrorResponseDto>();
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        //    parsedRespose.Message.Should().NotBeNullOrEmpty();
-        //}
+            var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
 
-        ///// <summary>
-        ///// Crea il dipendente e verifica che sia possibile leggerlo con risposta 200.
-        ///// Viene fatto un compare campo per campo verificando che l'oggetto restituito sia identico all'oggetto creato.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task GetOne_WithDipendente_ReturnResponse()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First(); 
-        //    var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
-        //    var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
+            parsedRespose.Id.Should().Be(dipendenteCreated.Id);
+            parsedRespose.Cognome.Should().Be(dipendenteCreated.Cognome);
+            parsedRespose.Nome.Should().Be(dipendenteCreated.Nome);
+            parsedRespose.Sesso.Should().Be(dipendenteCreated.Sesso);
+            parsedRespose.DataNascita.Should().Be(dipendenteCreated.DataNascita);
+        }
 
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.GetById, _version);
-
-        //    // Act.
-        //    var response = await HttpClient.GetAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()));
-
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
-
-        //    var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
-
-        //    parsedRespose.Id.Should().Be(dipendenteCreated.Id);
-        //    parsedRespose.CodiceFiscale.Should().Be(dipendenteCreated.CodiceFiscale);
-        //    parsedRespose.Cognome.Should().Be(dipendenteCreated.Cognome);
-        //    parsedRespose.Nome.Should().Be(dipendenteCreated.Nome);
-        //    parsedRespose.Sesso.Should().Be(dipendenteCreated.Sesso);
-        //    parsedRespose.DataNascita.Should().Be(dipendenteCreated.DataNascita);
-        //}
-
-        //#endregion
+        #endregion
 
         //#region POST
 
@@ -383,41 +359,45 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
         //#region UTILS
 
-        //private List<DipendenteDto> GetListaDipendentiFake()
-        //{
-        //    return new List<DipendenteDto>()
-        //    {
-        //        new DipendenteDto("PRDFRN52D67D316U", "Apreda", "Fabrina", "F", new DateTime(1952, 04, 27)),
-        //        new DipendenteDto("MRTMND85P55F365E", "Martino", "Merinda", "F", new DateTime(1985, 09, 15)),
-        //        new DipendenteDto("MRSSNZ92P15M159G", "Morselli", "Assenzio", "M", new DateTime(1992, 09, 15)),
-        //        new DipendenteDto("BNGSRA91L12F329R", "Buongrazio", "Saro", "M", new DateTime(1991, 07, 12)),
-        //        new DipendenteDto("DMLTLC87B26C330A", "D'emilia", "Italico", "M", new DateTime(1987, 02, 26)),
-        //        new DipendenteDto("NFNVNT76A10A160I", "Infante", "Valento", "M", new DateTime(1976, 01, 10)),
-        //        new DipendenteDto("DLGTTL67E54A761P", "Delgado", "Attala", "F", new DateTime(1967, 05, 14)),
-        //        new DipendenteDto("WLLDRO68H17B361E", "Williams", "Dorio", "M", new DateTime(1968, 06, 17)),
-        //        new DipendenteDto("FRRLRT94L53H437X", "Ferrari", "Laurita", "F", new DateTime(1994, 07, 13)),
-        //        new DipendenteDto("BNASSM65B53B692O", "Baiano", "Sigismonda", "F", new DateTime(1965, 02, 13)),
-        //        new DipendenteDto("CZZRMD99B01L601R", "Cozzolino", "Remido", "M", new DateTime(1999, 02, 01)),
-        //        new DipendenteDto("BRNPMT55L41E388X", "Brunetti", "Primetta", "F", new DateTime(1955, 07, 01)),
-        //        new DipendenteDto("DTTGRD79P26H938X", "Dotti", "Galardo", "M", new DateTime(1979, 09, 26)),
-        //        new DipendenteDto("RZUGLN62L66G774X", "Urzo", "Gigliana", "F", new DateTime(1962, 07, 26)),
-        //        new DipendenteDto("PLSRLT00H28L276N", "Pulsoni", "Risoluto", "M", new DateTime(2000, 06, 28)),
-        //        new DipendenteDto("BRNFTT00S60A278W", "Bernardi", "Fifetta", "F", new DateTime(2000, 11, 20)),
-        //        new DipendenteDto("BRNLND67M25L385J", "Brunetti", "Alindo", "M", new DateTime(1967, 08, 25)),
-        //        new DipendenteDto("BRGFLL82M53C908P", "Baragliu", "Finella", "F", new DateTime(1982, 08, 13)),
-        //        new DipendenteDto("DTRSMN69B21G499Y", "Di tuoro ", "Osmano", "M", new DateTime(1969, 02, 21)),
-        //        new DipendenteDto("LCNPLE61B15F219H", "Lucani", "Euplio", "M", new DateTime(1961, 02, 15))
-        //    };
-        //}
+        private List<DipendenteDto> GetListaDipendentiFake() => 
+            new List<DipendenteDto>()
+            {
+                new DipendenteDto("Apreda", "Fabrina", "F", new DateTime(1952, 04, 27)),
+                new DipendenteDto("Martino", "Merinda", "F", new DateTime(1985, 09, 15)),
+                new DipendenteDto("Morselli", "Assenzio", "M", new DateTime(1992, 09, 15)),
+                new DipendenteDto("Buongrazio", "Saro", "M", new DateTime(1991, 07, 12)),
+                new DipendenteDto("D'emilia", "Italico", "M", new DateTime(1987, 02, 26)),
+                new DipendenteDto("Infante", "Valento", "M", new DateTime(1976, 01, 10)),
+                new DipendenteDto("Delgado", "Attala", "F", new DateTime(1967, 05, 14)),
+                new DipendenteDto("Williams", "Dorio", "M", new DateTime(1968, 06, 17)),
+                new DipendenteDto("Ferrari", "Laurita", "F", new DateTime(1994, 07, 13)),
+                new DipendenteDto("Baiano", "Sigismonda", "F", new DateTime(1965, 02, 13)),
+                new DipendenteDto("Cozzolino", "Remido", "M", new DateTime(1999, 02, 01)),
+                new DipendenteDto("Brunetti", "Primetta", "F", new DateTime(1955, 07, 01)),
+                new DipendenteDto("Dotti", "Galardo", "M", new DateTime(1979, 09, 26)),
+                new DipendenteDto("Urzo", "Gigliana", "F", new DateTime(1962, 07, 26)),
+                new DipendenteDto("Pulsoni", "Risoluto", "M", new DateTime(2000, 06, 28)),
+                new DipendenteDto("Bernardi", "Fifetta", "F", new DateTime(2000, 11, 20)),
+                new DipendenteDto("Brunetti", "Alindo", "M", new DateTime(1967, 08, 25)),
+                new DipendenteDto("Baragliu", "Finella", "F", new DateTime(1982, 08, 13)),
+                new DipendenteDto("Di tuoro ", "Osmano", "M", new DateTime(1969, 02, 21)),
+                new DipendenteDto("Lucani", "Euplio", "M", new DateTime(1961, 02, 15))
+            };
 
-        //private async Task<HttpResponseMessage> PostDipendente(DipendenteDto dipendenteToCreate)
-        //{
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Post, _version);
 
-        //    var rsponse = await HttpClient.PostAsJsonAsync(url, dipendenteToCreate);
+        private async Task<HttpResponseMessage> PostDipendente(DipendenteDto dipendenteToCreate)
+        {
+            string url = GetUrl();
 
-        //    return rsponse;
-        //}
+            var rsponse = await HttpClient.PostAsJsonAsync(url, dipendenteToCreate);
+
+            return rsponse;
+        }
+
+        private string GetUrl()
+        {
+            return $"/api/v{this._version}/{this._controllerName}";
+        }
 
         //#endregion
     }
