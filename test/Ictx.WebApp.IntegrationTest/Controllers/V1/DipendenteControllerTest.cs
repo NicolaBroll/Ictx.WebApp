@@ -118,246 +118,181 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
 
         #endregion
 
-        //#region POST
+        #region POST
 
-        ///// <summary>
-        ///// Crea il dipendente e verifica che la risposta sia 200.
-        ///// Viene fatto un compare campo per campo verificando che l'oggetto restituito sia identico all'oggetto creato.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task CreateOne_ReturnOk()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
+        /// <summary>
+        /// Crea il dipendente e verifica che la risposta sia 200.
+        /// Viene fatto un compare campo per campo verificando che l'oggetto restituito sia identico all'oggetto creato.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CreateOne_ReturnOk()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
 
-        //    // Act.
-        //    var response = await PostDipendente(dipendenteToCreate);
+            // Act.
+            var response = await PostDipendente(dipendenteToCreate);
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.Created);
 
-        //    var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
+            var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
 
-        //    parsedRespose.CodiceFiscale.ToUpper().Should().Be(dipendenteToCreate.CodiceFiscale.ToUpper());
-        //    parsedRespose.Cognome.ToUpper().Should().Be(dipendenteToCreate.Cognome.ToUpper());
-        //    parsedRespose.Nome.ToUpper().Should().Be(dipendenteToCreate.Nome.ToUpper());
-        //    parsedRespose.Sesso.Should().Be(dipendenteToCreate.Sesso);
-        //    parsedRespose.DataNascita.Should().Be(dipendenteToCreate.DataNascita);
-        //}
+            parsedRespose.Cognome.Should().Be(dipendenteToCreate.Cognome);
+            parsedRespose.Nome.Should().Be(dipendenteToCreate.Nome);
+            parsedRespose.Sesso.Should().Be(dipendenteToCreate.Sesso);
+            parsedRespose.DataNascita.Should().Be(dipendenteToCreate.DataNascita);
+        }
 
-        ///// <summary>
-        ///// Crea il dipendente e verifica che la validazione per il codice fiscale funzioni.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task CreateOne_WithCodiceFiscaleEmpty_ReturnBadRequest()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
+        /// <summary>
+        /// Crea il dipendente e verifica che la validazione per il nome funzioni.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CreateOne_WithNomeEmpty_ReturnBadRequest()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
 
-        //    dipendenteToCreate.CodiceFiscale = string.Empty;
+            dipendenteToCreate.Nome = string.Empty;
 
-        //    // Act.
-        //    var response = await PostDipendente(dipendenteToCreate);
+            // Act.
+            var response = await PostDipendente(dipendenteToCreate);
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //}
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
 
-        ///// <summary>
-        ///// Crea il dipendente e verifica che la validazione per il nome funzioni.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task CreateOne_WithNomeEmpty_ReturnBadRequest()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
+        /// <summary>
+        /// Crea il dipendente e verifica che la validazione per il cognome funzioni.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task CreateOne_WithCognomeEmpty_ReturnBadRequest()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
 
-        //    dipendenteToCreate.Nome = string.Empty;
+            dipendenteToCreate.Cognome = string.Empty;
 
-        //    // Act.
-        //    var response = await PostDipendente(dipendenteToCreate);
+            // Act.
+            var response = await PostDipendente(dipendenteToCreate);
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //}
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
+        }
 
-        ///// <summary>
-        ///// Crea il dipendente e verifica che la validazione per il cognome funzioni.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task CreateOne_WithCognomeEmpty_ReturnBadRequest()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
+        #endregion
 
-        //    dipendenteToCreate.Cognome = string.Empty;
+        #region PUT
 
-        //    // Act.
-        //    var response = await PostDipendente(dipendenteToCreate);
+        /// <summary>
+        /// Modifica il dipendente e verifica che la risposta sia 200.
+        /// Viene fatto un compare campo per campo verificando che l'oggetto restituito sia identico all'oggetto modificato lato client.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task EditOne_WithDipendente_ReturnResponse()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+            var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
+            var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //}
+            dipendenteCreated.Cognome = "MMMMMMMMMMMMMMMM";
+            dipendenteCreated.Nome = "MMMMMMMMMMMMMMMM";
+            dipendenteCreated.Sesso = "M";
+            dipendenteCreated.DataNascita = DateTime.MinValue;
 
-        ///// <summary>
-        ///// Crea il dipendente e verifica che la validazione per la ditta funzioni.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task CreateOne_WithOutDitta_ReturnBadRequest()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
+            var url = GetUrl() + "/" + dipendenteCreated.Id.ToString();
 
-        //    dipendenteToCreate.DittaId = 0;
+            // Act.
+            var response = await HttpClient.PutAsJsonAsync(url, dipendenteCreated);
 
-        //    // Act.
-        //    var response = await PostDipendente(dipendenteToCreate);
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //}
+            var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
 
-        //#endregion
+            parsedRespose.Id.Should().Be(dipendenteCreated.Id);
+            parsedRespose.Cognome.Should().Be(dipendenteCreated.Cognome);
+            parsedRespose.Nome.Should().Be(dipendenteCreated.Nome);
+            parsedRespose.Sesso.Should().Be(dipendenteCreated.Sesso);
+            parsedRespose.DataNascita.Should().Be(dipendenteCreated.DataNascita);
+        }
 
-        //#region PUT
+        /// <summary>
+        /// Verifica che venga restituito 404 nel caso il dipendente non sia presente in DB.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task EditOne_WithoutDipendente_ReturnNotFound()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+            var id = 999;
 
-        ///// <summary>
-        ///// Modifica il dipendente e verifica che la risposta sia 200.
-        ///// Viene fatto un compare campo per campo verificando che l'oggetto restituito sia identico all'oggetto modificato lato client.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task EditOne_WithDipendente_ReturnResponse()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
-        //    var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
-        //    var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
+            var url = GetUrl() + "/" + id;
 
-        //    dipendenteCreated.CodiceFiscale = "MMMMMMMMMMMMMMMM";
-        //    dipendenteCreated.Cognome = "MMMMMMMMMMMMMMMM";
-        //    dipendenteCreated.Nome = "MMMMMMMMMMMMMMMM";
-        //    dipendenteCreated.Sesso = "M";
-        //    dipendenteCreated.DataNascita = DateTime.MinValue;
+            // Act.
+            var response = await HttpClient.PutAsJsonAsync(url, dipendenteToCreate);
 
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Put, _version);
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.NotFound);
+        }
 
-        //    // Act.
-        //    var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()), dipendenteCreated);
+        #endregion
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
+        #region DELETE
 
-        //    var parsedRespose = await response.Content.ReadAsAsync<DipendenteDto>();
+        /// <summary>
+        /// Crea un dipendente.
+        /// Verifica che la delete restituisca 200 per il dipendente creato in precedenza.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task DeleteOne_WithDipendente_ReturnOk()
+        {
+            // Arrange.
+            var dipendenteToCreate = this._lstDipendenteDto.First();
+            var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
+            var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
 
-        //    parsedRespose.Id.Should().Be(dipendenteCreated.Id);
-        //    parsedRespose.DittaId.Should().Be(dipendenteCreated.DittaId);
-        //    parsedRespose.CodiceFiscale.ToUpper().Should().Be(dipendenteCreated.CodiceFiscale.ToUpper());
-        //    parsedRespose.Cognome.ToUpper().Should().Be(dipendenteCreated.Cognome.ToUpper());
-        //    parsedRespose.Nome.ToUpper().Should().Be(dipendenteCreated.Nome.ToUpper());
-        //    parsedRespose.Sesso.Should().Be(dipendenteCreated.Sesso);
-        //    parsedRespose.DataNascita.Should().Be(dipendenteCreated.DataNascita);
-        //}
+            var url = GetUrl() + "/" + dipendenteCreated.Id.ToString();
 
-        ///// <summary>
-        ///// Verifica che venga restituito 404 nel caso il dipendente non sia presente in DB.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task EditOne_WithoutDipendente_ReturnNotFound()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
-        //    var id = 999;
+            // Act.
+            var response = await HttpClient.DeleteAsync(url);
 
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Put, _version);
+            // Assert.
+            response.StatusCode.Should().Be(HttpStatusCode.OK);
+        }
 
-        //    // Act.
-        //    var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", id.ToString()), dipendenteToCreate);
+        /// <summary>
+        /// Verifica che venga resttuito 404 con il relativo messaggio d'errore nel caso il dipendente non sia presente.
+        /// </summary>
+        /// <returns></returns>
+        [Fact]
+        public async Task DeleteOne_WithoutDipendente_ReturnNotFound()
+        {
+            // Arrange.
+            var id = 999999;
+            var url = GetUrl() + "/" + id;
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        //}
+            // Act.
+            var response = await HttpClient.DeleteAsync(url.Replace("{id}", id.ToString()));
 
-        ///// <summary>
-        ///// Verifica che venga restituito bad request se la ditta non viene trovata in DB.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task EditOne_WithDipendenteWithOutDitta_ReturnBadRequest()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
-        //    var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
-        //    var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
+            // Assert.
+            ; response.StatusCode.Should().Be(HttpStatusCode.NotFound);
 
-        //    dipendenteCreated.DittaId = 99999;
+            var parsedRespose = await response.Content.ReadAsAsync<ProblemDetails>();
 
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Put, _version);
+            parsedRespose.Detail.Should().NotBeNullOrEmpty();
+        }
 
-        //    // Act.
-        //    var response = await HttpClient.PutAsJsonAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()), dipendenteCreated);
+        #endregion
 
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //}
-
-        //#endregion
-
-        //#region DELETE
-
-        ///// <summary>
-        ///// Crea un dipendente.
-        ///// Verifica che la delete restituisca 200 per il dipendente creato in precedenza.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task DeleteOne_WithDipendente_ReturnOk()
-        //{
-        //    // Arrange.
-        //    var dipendenteToCreate = this._lstDipendenteDto.First();
-        //    var dipendenteCreatedResponse = await PostDipendente(dipendenteToCreate);
-        //    var dipendenteCreated = await dipendenteCreatedResponse.Content.ReadAsAsync<DipendenteDto>();
-
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Delete, _version);
-
-        //    // Act.
-        //    var response = await HttpClient.DeleteAsync(url.Replace("{id}", dipendenteCreated.Id.ToString()));
-
-        //    // Assert.
-        //    response.StatusCode.Should().Be(HttpStatusCode.OK);
-        //}
-
-        ///// <summary>
-        ///// Verifica che venga resttuito 404 con il relativo messaggio d'errore nel caso il dipendente non sia presente.
-        ///// </summary>
-        ///// <returns></returns>
-        //[Fact]
-        //public async Task DeleteOne_WithoutDipendente_ReturnNotFound()
-        //{
-        //    // Arrange.
-        //    var id = 999999;
-        //    var url = GetVersionedUrl(ApiRoutesV1.DipendenteRoute.Delete, _version);
-
-        //    // Act.
-        //    var response = await HttpClient.DeleteAsync(url.Replace("{id}", id.ToString()));
-
-        //    // Assert.
-        //    ; response.StatusCode.Should().Be(HttpStatusCode.NotFound);
-
-        //    var parsedRespose = await response.Content.ReadAsAsync<ErrorResponseDto>();
-
-        //    parsedRespose.Message.Should().NotBeNullOrEmpty();
-        //}
-
-        //#endregion
-
-        //#region UTILS
+        #region UTILS
 
         private List<DipendenteDto> GetListaDipendentiFake() => 
             new List<DipendenteDto>()
@@ -399,6 +334,6 @@ namespace Ictx.WebApp.IntegrationTest.Controllers.V1
             return $"/api/v{this._version}/{this._controllerName}";
         }
 
-        //#endregion
+        #endregion
     }
 }
