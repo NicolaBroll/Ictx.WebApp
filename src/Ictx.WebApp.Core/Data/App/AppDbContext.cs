@@ -1,5 +1,4 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Data.App.Configuration;
 using Microsoft.EntityFrameworkCore.Design;
 using Ictx.WebApp.Core.Domain.Dipendente;

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Ictx.WebApp.Core.Exceptions;
+using Ictx.WebApp.Fwk.Exceptions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

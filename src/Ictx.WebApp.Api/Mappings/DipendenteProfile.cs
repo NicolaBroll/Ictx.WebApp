@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.Domain.Dipendente;
+using Ictx.WebApp.Fwk.Models;
 
 namespace Ictx.WebApp.Api.Mappings;
 

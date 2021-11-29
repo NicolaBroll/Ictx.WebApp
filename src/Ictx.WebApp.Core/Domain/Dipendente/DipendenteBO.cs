@@ -5,32 +5,34 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
-using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.BO.Base;
 using Ictx.WebApp.Core.Data.App;
 using Ictx.WebApp.Core.Domain.Utente;
+using Ictx.WebApp.Fwk.BO.Base;
+using Ictx.WebApp.Fwk.Models;
 
 namespace Ictx.WebApp.Core.Domain.Dipendente;
 
 public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
 {
-    private readonly IUserData  _userData;
-    private readonly UtenteBO   _utenteBO;
+    private readonly IUserData      _userData;
+    private readonly UtenteBO       _utenteBO;
+    private readonly AppDbContext   _appDbContext;
 
     public DipendenteBO(
         AppDbContext            appDbContext,
         IValidator<Dipendente>  dipendenteValidator,
         IUserData               userData,
         UtenteBO                utenteBO
-        ) : base(appDbContext, dipendenteValidator)
+        ) : base(dipendenteValidator)
     {
-        this._userData = userData;
-        this._utenteBO = utenteBO;
+        this._appDbContext  = appDbContext;
+        this._userData      = userData;
+        this._utenteBO      = utenteBO;
     }
 
     protected IQueryable<Dipendente> GetQuery(DipendenteFilter filter, Utente.Utente utente)
     {
-        var query = this.AppDbContext.Dipendente.AsQueryable();
+        var query = this._appDbContext.Dipendente.AsQueryable();
 
         query = ApplicaFiltri(query, filter);
         query = ApplicaFiltriUtente(query, utente);
@@ -88,7 +90,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
     protected override async Task<OperationResult<Dipendente>> ReadViewAsync(int key, CancellationToken cancellationToken)
     {
-        var dipendente = await this.AppDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
+        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
         if (dipendente is null)
         {
@@ -115,8 +117,8 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         value.InsertedUtc = utcNow;
         value.UpdatedUtc = utcNow;
 
-        await this.AppDbContext.Dipendente.AddAsync(value, cancellationToken);
-        await this.AppDbContext.SaveChangesAsync(cancellationToken);
+        await this._appDbContext.Dipendente.AddAsync(value, cancellationToken);
+        await this._appDbContext.SaveChangesAsync(cancellationToken);
 
         return OperationResult<Dipendente>.Success(value);
     }
@@ -137,8 +139,8 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
             dipendente.UpdatedUtc = utcNow;
         }
 
-        await this.AppDbContext.Dipendente.AddRangeAsync(lstDipendenti, cancellationToken);
-        await this.AppDbContext.SaveChangesAsync(cancellationToken);
+        await this._appDbContext.Dipendente.AddRangeAsync(lstDipendenti, cancellationToken);
+        await this._appDbContext.SaveChangesAsync(cancellationToken);
 
         return OperationResult<List<Dipendente>>.Success(lstDipendenti);
     }
@@ -152,7 +154,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// </returns>
     protected override async Task<OperationResult<Dipendente>> SaveViewAsync(int key, Dipendente value, CancellationToken cancellationToken)
     {
-        var dipendente = await this.AppDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
+        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
         if (dipendente is null)
         {
@@ -170,8 +172,8 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         dipendente.DataNascita = value.DataNascita;
         dipendente.UpdatedUtc = DateTime.UtcNow;
 
-        this.AppDbContext.Dipendente.Update(dipendente);
-        await this.AppDbContext.SaveChangesAsync(cancellationToken);
+        this._appDbContext.Dipendente.Update(dipendente);
+        await this._appDbContext.SaveChangesAsync(cancellationToken);
 
         return OperationResult<Dipendente>.Success(dipendente);
     }
@@ -182,7 +184,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// <param name="key">Id dipendente</param>
     protected override async Task<OperationResult<bool>> DeleteViewAsync(int key, CancellationToken cancellationToken)
     {
-        var dipendente = await this.AppDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
+        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
         if (dipendente is null)
         {
@@ -197,8 +199,8 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         dipendente.IsDeleted = true;
         dipendente.DeletedUtc = DateTime.UtcNow;
 
-        this.AppDbContext.Dipendente.Update(dipendente);
-        await this.AppDbContext.SaveChangesAsync(cancellationToken);
+        this._appDbContext.Dipendente.Update(dipendente);
+        await this._appDbContext.SaveChangesAsync(cancellationToken);
 
         return OperationResult<bool>.Success(true);
     }

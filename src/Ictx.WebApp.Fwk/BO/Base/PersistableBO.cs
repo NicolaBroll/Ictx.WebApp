@@ -14,7 +14,7 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
 {
     protected readonly IValidator<TEntity> _validator;
 
-    public PersistableBO(DbContext appDbContext, IValidator<TEntity> validator = null): base(appDbContext)
+    public PersistableBO(IValidator<TEntity> validator = null)
     {
         this._validator     = validator;
     }

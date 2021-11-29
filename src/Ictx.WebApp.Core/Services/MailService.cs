@@ -6,7 +6,7 @@ using Microsoft.Extensions.Logging;
 using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
-using Ictx.WebApp.Core.Models;
+using Ictx.WebApp.Fwk.Models;
 
 namespace Ictx.WebApp.Core.Services
 {

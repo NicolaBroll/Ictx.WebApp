@@ -3,15 +3,14 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using FluentValidation;
-using Ictx.WebApp.Core.BO.Base;
-using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.Data.App;
+using Ictx.WebApp.Fwk.BO.Base;
+using Ictx.WebApp.Fwk.Models;
 
 namespace Ictx.WebApp.Core.Domain.Utente;
 
 public class UtenteBO : PersistableBO<Utente, Guid, PaginationModel>
 {
-    public UtenteBO(AppDbContext appDbContext, IValidator<Utente> validator = null) : base(appDbContext, validator)
+    public UtenteBO(IValidator<Utente> validator = null) : base(validator)
     { }
 
     protected async override Task<OperationResult<Utente>> ReadViewAsync(Guid key, CancellationToken cancellationToken)

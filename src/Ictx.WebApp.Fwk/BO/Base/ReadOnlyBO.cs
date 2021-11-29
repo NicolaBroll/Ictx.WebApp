@@ -10,13 +10,6 @@ namespace Ictx.WebApp.Fwk.BO.Base;
 
 public abstract class ReadOnlyBO<TEntity, TKey, TParameters> where TParameters : PaginationModel
 {
-    protected readonly DbContext AppDbContext;
-
-    public ReadOnlyBO(DbContext appDbContext)
-    {
-        this.AppDbContext = appDbContext;
-    }
-
     #region Read many
 
     public async Task<IEnumerable<TEntity>> ReadManyAsync(TParameters filter, CancellationToken cancellationToken = default)
