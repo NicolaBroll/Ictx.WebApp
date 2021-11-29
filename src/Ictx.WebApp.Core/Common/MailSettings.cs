@@ -1,4 +1,4 @@
-﻿namespace Ictx.WebApp.Infrastructure.Common
+﻿namespace Ictx.WebApp.Core.Common
 {
     public interface IMailSettings
     {

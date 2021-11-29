@@ -1,20 +1,21 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.Contracts.UnitOfWork;
+using Ictx.WebApp.Core.Data.App;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ictx.WebApp.Core.BO.Base;
 
 public abstract class ReadOnlyBO<TEntity, TKey, TParameters> where TParameters : PaginationModel
 {
-    protected readonly IAppUnitOfWork _appUnitOfWork;
+    protected readonly AppDbContext AppDbContext;
 
-    public ReadOnlyBO(IAppUnitOfWork appUnitOfWork)
+    public ReadOnlyBO(AppDbContext appDbContext)
     {
-        this._appUnitOfWork = appUnitOfWork;
+        this.AppDbContext = appDbContext;
     }
 
     #region Read many
@@ -42,20 +43,6 @@ public abstract class ReadOnlyBO<TEntity, TKey, TParameters> where TParameters :
 
     #endregion
 
-    #region Query many
-
-    public IQueryable<TEntity> QueryManyAsync(TParameters filter, CancellationToken cancellationToken = default)
-    {
-        return QueryManyViewsAsync(filter, cancellationToken);
-    }
-
-    protected virtual IQueryable<TEntity> QueryManyViewsAsync(TParameters filter, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
-    }
-
-    #endregion
-
     #region Read
 
     public async Task<OperationResult<TEntity>> ReadAsync(TKey key, CancellationToken cancellationToken = default)
@@ -70,4 +57,17 @@ public abstract class ReadOnlyBO<TEntity, TKey, TParameters> where TParameters :
 
     #endregion
 
+    public async virtual Task<PageResult<TData>> GetPaginatedResult<TData>(IQueryable<TData> query, PaginationModel pagination, CancellationToken cancellationToken = default)
+    {
+        if (pagination is null)
+        {
+            throw new ArgumentException("PaginationModel is null.");
+        }
+
+        // Pagination.
+        var count = query.Count();
+        var list = await query.Skip((pagination.Page - 1) * pagination.PageSize).Take(pagination.PageSize).ToListAsync(cancellationToken: cancellationToken);
+
+        return new PageResult<TData>(list, count);
+    }
 }

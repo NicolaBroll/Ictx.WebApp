@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ictx.WebApp.Core.Models
 {
@@ -8,5 +9,6 @@ namespace Ictx.WebApp.Core.Models
         public string Nome { get; set; }
         public string Cognome { get; set; }
         public string Email { get; set; }
+        public List<int> LstDitteAllowed { get; set; }
     }
 }

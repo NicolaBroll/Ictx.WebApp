@@ -6,13 +6,18 @@ using Microsoft.Extensions.Logging;
 using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
-using Ictx.WebApp.Core.Contracts.Services;
 using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Infrastructure.Common;
+using Ictx.WebApp.Core.Common;
 
-namespace Ictx.WebApp.Infrastructure.Services
+namespace Ictx.WebApp.Core.Services
 {
-    public class MailService: IMailService
+    public interface IMailService
+    {
+        Task SendEmail(List<MailModel> mails, CancellationToken cancellationToken = default);
+        Task SendEmail(MailModel mail, CancellationToken cancellationToken = default);
+    }
+
+    public class MailService : IMailService
     {
         private readonly ILogger<MailService>   _logger;
         private readonly IMailSettings          _mailSettings;

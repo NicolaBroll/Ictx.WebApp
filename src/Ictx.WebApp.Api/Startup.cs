@@ -11,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Common.HealthCheck;
-using Ictx.WebApp.Infrastructure.DependencyInjection;
 using Ictx.WebApp.Core.DependencyInjection;
-using Ictx.WebApp.Infrastructure.Common;
+using Ictx.WebApp.Core.DependencyInjection;
+using Ictx.WebApp.Core.Common;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
 
 namespace Ictx.WebApp.Api;
@@ -50,15 +50,12 @@ public class Startup
         // Authentication.
         services.ConfigureAuthentication(this._configuration);
 
-        // Configuro i servizi consumati dall'app.
-        services.AddApplication();
-
         // Infrastructure.
         var mailConfig = new MailSettings();
         this._configuration.Bind(nameof(MailSettings), mailConfig);
 
-        services.AddInfrastructure(
-            InfrastructureOptionsBuilder
+        services.AddApplicationCore(
+            ApplicationCoreOptionsBuilder
                 .Configure()
                 .ApplicationDatacontextConfigurationStage(this._configuration.GetConnectionString("DefaultConnection"))
                 .MailConfigurationStage(mailConfig)

@@ -22,9 +22,9 @@
     <PackageReference Include="Serilog.Sinks.File" Version="5.0.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
-
+  
   <ItemGroup>
-    <ProjectReference Include="..\Ictx.WebApp.Infrastructure\Ictx.WebApp.Infrastructure.csproj" />
+    <ProjectReference Include="..\Ictx.WebApp.Core\Ictx.WebApp.Core.csproj" />
   </ItemGroup>
 
 </Project>

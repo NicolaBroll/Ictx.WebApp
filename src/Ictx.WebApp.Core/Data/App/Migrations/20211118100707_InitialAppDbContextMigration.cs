@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Ictx.WebApp.Infrastructure.Data.App.Migrations
+namespace Ictx.WebApp.Core.Data.App.Migrations
 {
     public partial class InitialAppDbContextMigration : Migration
     {

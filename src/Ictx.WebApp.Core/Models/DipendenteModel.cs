@@ -9,4 +9,10 @@ namespace Ictx.WebApp.Core.Models
         [Description("Femmina")]
         F
     }
+
+    public class DipendenteFilter : PaginationModel
+    {
+        public int? Id { get; set; }
+        public int? IdDitta { get; set; }
+    }
 }

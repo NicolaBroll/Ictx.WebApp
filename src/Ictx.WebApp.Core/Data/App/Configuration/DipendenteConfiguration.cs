@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Ictx.WebApp.Infrastructure.Data.App.Configuration
+namespace Ictx.WebApp.Core.Data.App.Configuration
 {
     public class DipendenteConfiguration : IEntityTypeConfiguration<Dipendente>
     {
@@ -11,6 +11,9 @@ namespace Ictx.WebApp.Infrastructure.Data.App.Configuration
             builder.ToTable(nameof(Dipendente));
 
             builder.HasKey(ci => ci.Id);
+
+            builder.Property(ci => ci.IdDitta)
+                .IsRequired(true);
 
             builder.Property(ci => ci.Nome)
                 .IsRequired(true)

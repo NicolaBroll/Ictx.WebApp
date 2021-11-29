@@ -6,6 +6,7 @@ namespace Ictx.WebApp.Core.Entities
 {
     public class Dipendente : BaseEntity<int>
     {
+        public int IdDitta { get; set; }
         public string Cognome { get; set; }
         public string Nome { get; set; }
         public Sesso Sesso { get; set; }
@@ -17,14 +18,15 @@ namespace Ictx.WebApp.Core.Entities
 
         public override string ToString()
         {
-            return base.ToString() + $" Cognome:{Cognome} Nome:{Nome}";
+            return base.ToString() + $" IdDitta:{IdDitta} Cognome:{Cognome} Nome:{Nome}";
         }
 
         public Dipendente()
         { }
 
-        public Dipendente(string cognome, string nome, Sesso sesso, DateTime dataNascita)
+        public Dipendente(int idDitta, string cognome, string nome, Sesso sesso, DateTime dataNascita)
         {
+            this.IdDitta = idDitta;
             this.Cognome = cognome;
             this.Nome = nome;
             this.Sesso = sesso;

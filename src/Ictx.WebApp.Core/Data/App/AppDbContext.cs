@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Infrastructure.Data.App.Configuration;
+using Ictx.WebApp.Core.Data.App.Configuration;
 using Microsoft.EntityFrameworkCore.Design;
 
-namespace Ictx.WebApp.Infrastructure.Data.App;
+namespace Ictx.WebApp.Core.Data.App;
 
 public class AppDbContext : DbContext
 {

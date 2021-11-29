@@ -35,10 +35,10 @@ public class DipendenteController : AppBaseController
     /// <returns></returns>
     [HttpGet("")]
     [ProducesResponseType(typeof(PageResultDto<DipendenteDto>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<PageResultDto<DipendenteDto>>> Get([FromQuery] PaginationModel paginationModel, CancellationToken cancellationToken)
+    public async Task<ActionResult<PageResultDto<DipendenteDto>>> Get([FromQuery] DipendenteFilter dipendenteFilter, CancellationToken cancellationToken)
     {
         var list = await _dipendenteBO.ReadManyPaginatedAsync(
-            paginationModel, 
+            dipendenteFilter, 
             cancellationToken);
 
         return Ok(_mapper.Map<PageResultDto<DipendenteDto>>(list));

@@ -1,20 +1,20 @@
-﻿using Ictx.WebApp.Infrastructure.Common;
+﻿using Ictx.WebApp.Core.Common;
 
-namespace Ictx.WebApp.Infrastructure.DependencyInjection
+namespace Ictx.WebApp.Core.DependencyInjection
 {
-    public class InfrastructureOptionsBuilder :
+    public class ApplicationCoreOptionsBuilder :
             IApplicationDatacontextConfigurationStage,
             IMailConfigurationStage
     {
         private string _connectionSting;
         private MailSettings _mailSettings;
 
-        private InfrastructureOptionsBuilder()
+        private ApplicationCoreOptionsBuilder()
         { }
 
         public static IApplicationDatacontextConfigurationStage Configure()
         {
-            return new InfrastructureOptionsBuilder();
+            return new ApplicationCoreOptionsBuilder();
         }
 
         public IMailConfigurationStage ApplicationDatacontextConfigurationStage(string connectionSting)
@@ -23,10 +23,10 @@ namespace Ictx.WebApp.Infrastructure.DependencyInjection
             return this;
         }
 
-        public InfrastructureOptions MailConfigurationStage(MailSettings mailSettings)
+        public ApplicationCoreOptions MailConfigurationStage(MailSettings mailSettings)
         {
             this._mailSettings = mailSettings;
-            return new InfrastructureOptions(this._connectionSting, this._mailSettings);
+            return new ApplicationCoreOptions(this._connectionSting, this._mailSettings);
         }
 
 
@@ -41,7 +41,7 @@ namespace Ictx.WebApp.Infrastructure.DependencyInjection
 
     public interface IMailConfigurationStage
     {
-        public InfrastructureOptions MailConfigurationStage(MailSettings mailSettings);
+        public ApplicationCoreOptions MailConfigurationStage(MailSettings mailSettings);
     }
 
     #endregion

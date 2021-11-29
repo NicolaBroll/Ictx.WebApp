@@ -2,10 +2,10 @@
 
 namespace Ictx.WebApp.Core.Exceptions
 {
-    public class NotFoundException: Exception
+    public class UnauthorizedException : Exception
     {
-        public NotFoundException(string message = "") 
-            : base(String.IsNullOrEmpty(message) ? "Dato non trovato." : message)
+        public UnauthorizedException(string message = "") 
+            : base(String.IsNullOrEmpty(message) ? "Accesso alla risorsa non autorizzato." : message)
         { }
     }
 }

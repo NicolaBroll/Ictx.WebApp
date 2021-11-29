@@ -1,42 +1,79 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using FluentValidation;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.Contracts.UnitOfWork;
 using Ictx.WebApp.Core.BO.Base;
+using Ictx.WebApp.Core.Data.App;
+using System.Linq;
+using Microsoft.EntityFrameworkCore;
 
 namespace Ictx.WebApp.Core.BO;
 
-public class DipendenteBO: PersistableBO<Dipendente, int, PaginationModel>
+public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
 {
-    private readonly IUserData _userData;
+    private readonly IUserData  _userData;
+    private readonly UtenteBO   _utenteBO;
 
     public DipendenteBO(
-        IAppUnitOfWork          appUnitOfWork,
+        AppDbContext            appDbContext,
         IValidator<Dipendente>  dipendenteValidator,
-        IUserData               userData
-        ) : base(appUnitOfWork, dipendenteValidator)
+        IUserData               userData,
+        UtenteBO                utenteBO
+        ) : base(appDbContext, dipendenteValidator)
     {
         this._userData = userData;
+        this._utenteBO = utenteBO;
     }
+
+    protected IQueryable<Dipendente> GetQuery(DipendenteFilter filter, Utente utente)
+    {
+        var query = this.AppDbContext.Dipendente.AsQueryable();
+
+        ApplicaFiltri(query, filter);
+        ApplicaFiltriUtente(query, utente);
+
+        return query;
+    }
+
+    private void ApplicaFiltriUtente(IQueryable<Dipendente> query, Utente utente)
+    {
+        query = query.Where(x => utente.LstDitteAllowed.Contains(x.Id));
+    }
+
+    private void ApplicaFiltri(IQueryable<Dipendente> query, DipendenteFilter filter)
+    {
+        if (filter.Id != null)
+        {
+            query = query.Where(x => x.Id == filter.Id);
+        }
+
+        if (filter.Id != null)
+        {
+            query = query.Where(x => x.Id == filter.Id);
+        }
+    }
+
 
     /// <summary>
     /// Ritorna una lista di dipendenti paginata.
     /// </summary>
     /// <param name="filter">Parametri di paginazione</param>
     /// <returns>Ritorna unoggetto contenente la lista di dipendenti paginata e il totalcount dei record su DB</returns>
-    protected override async Task<PageResult<Dipendente>> ReadManyPaginatedViewsAsync(PaginationModel filter, CancellationToken cancellationToken)
+    protected override async Task<PageResult<Dipendente>> ReadManyPaginatedViewsAsync(DipendenteFilter filter, CancellationToken cancellationToken)
     {
-        var result = await this._appUnitOfWork.DipendenteRepository.ReadManyPaginatedAsync(
-            pagination: filter,
-            orderBy: x => x.OrderBy(o => o.Cognome).ThenBy(x => x.Nome),
-            cancellationToken: cancellationToken);
+        var utente = await this._utenteBO.ReadAsync(this._userData.UserId);
 
-        return result;
+        if (utente.IsFail)
+        {
+            return new PageResult<Dipendente>();
+        }
+
+        var query = GetQuery(filter, utente.ResultData);
+
+        return await GetPaginatedResult(query, filter);
     }
 
     /// <summary>
@@ -47,11 +84,16 @@ public class DipendenteBO: PersistableBO<Dipendente, int, PaginationModel>
     /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
     protected override async Task<OperationResult<Dipendente>> ReadViewAsync(int key, CancellationToken cancellationToken)
     {
-        var dipendente = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
+        var dipendente = await this.AppDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
         if (dipendente is null)
         {
             return OperationResult<Dipendente>.NotFound($"Dipendente con id: {key} non trovato.");
+        }
+
+        if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
+        {
+            return OperationResult<Dipendente>.Unauthorized();
         }
 
         return OperationResult<Dipendente>.Success(dipendente);
@@ -69,8 +111,8 @@ public class DipendenteBO: PersistableBO<Dipendente, int, PaginationModel>
         value.InsertedUtc = utcNow;
         value.UpdatedUtc = utcNow;
 
-        await this._appUnitOfWork.DipendenteRepository.InsertAsync(value, cancellationToken);
-        await this._appUnitOfWork.SaveAsync(cancellationToken);
+        await this.AppDbContext.Dipendente.AddAsync(value, cancellationToken);
+        await this.AppDbContext.SaveChangesAsync(cancellationToken);
 
         return OperationResult<Dipendente>.Success(value);
     }
@@ -91,8 +133,8 @@ public class DipendenteBO: PersistableBO<Dipendente, int, PaginationModel>
             dipendente.UpdatedUtc = utcNow;
         }
 
-        await this._appUnitOfWork.DipendenteRepository.InsertManyAsync(lstDipendenti, cancellationToken);
-        await this._appUnitOfWork.SaveAsync(cancellationToken);
+        await this.AppDbContext.Dipendente.AddRangeAsync(lstDipendenti, cancellationToken);
+        await this.AppDbContext.SaveChangesAsync(cancellationToken);
 
         return OperationResult<List<Dipendente>>.Success(lstDipendenti);
     }
@@ -106,23 +148,28 @@ public class DipendenteBO: PersistableBO<Dipendente, int, PaginationModel>
     /// </returns>
     protected override async Task<OperationResult<Dipendente>> SaveViewAsync(int key, Dipendente value, CancellationToken cancellationToken)
     {
-        var objToUpdate = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
+        var dipendente = await this.AppDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
-        if (objToUpdate is null)
+        if (dipendente is null)
         {
             return OperationResult<Dipendente>.NotFound($"Dipendente con id: {key} non trovato.");
         }
 
-        objToUpdate.Nome = value.Nome;
-        objToUpdate.Cognome = value.Cognome;
-        objToUpdate.Sesso = value.Sesso;
-        objToUpdate.DataNascita = value.DataNascita;
-        objToUpdate.UpdatedUtc = DateTime.UtcNow;
+        if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
+        {
+            return OperationResult<Dipendente>.Unauthorized();
+        }
 
-        this._appUnitOfWork.DipendenteRepository.Update(objToUpdate);
-        await this._appUnitOfWork.SaveAsync(cancellationToken);
+        dipendente.Nome = value.Nome;
+        dipendente.Cognome = value.Cognome;
+        dipendente.Sesso = value.Sesso;
+        dipendente.DataNascita = value.DataNascita;
+        dipendente.UpdatedUtc = DateTime.UtcNow;
 
-        return OperationResult<Dipendente>.Success(objToUpdate);
+        this.AppDbContext.Dipendente.Update(dipendente);
+        await this.AppDbContext.SaveChangesAsync(cancellationToken);
+
+        return OperationResult<Dipendente>.Success(dipendente);
     }
 
     /// <summary>
@@ -131,19 +178,43 @@ public class DipendenteBO: PersistableBO<Dipendente, int, PaginationModel>
     /// <param name="key">Id dipendente</param>
     protected override async Task<OperationResult<bool>> DeleteViewAsync(int key, CancellationToken cancellationToken)
     {
-        var objToDelete = await this._appUnitOfWork.DipendenteRepository.ReadAsync(key, cancellationToken);
+        var dipendente = await this.AppDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
-        if (objToDelete is null)
+        if (dipendente is null)
         {
             return OperationResult<bool>.NotFound($"Dipendente con id: {key} non trovato.");
         }
 
-        objToDelete.IsDeleted = true;
-        objToDelete.DeletedUtc = DateTime.UtcNow;
+        if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
+        {
+            return OperationResult<bool>.Unauthorized();
+        }
 
-        this._appUnitOfWork.DipendenteRepository.Update(objToDelete);
-        await this._appUnitOfWork.SaveAsync(cancellationToken);
+        dipendente.IsDeleted = true;
+        dipendente.DeletedUtc = DateTime.UtcNow;
+
+        this.AppDbContext.Dipendente.Update(dipendente);
+        await this.AppDbContext.SaveChangesAsync(cancellationToken);
 
         return OperationResult<bool>.Success(true);
+    }
+
+    private async Task<OperationResult<Dipendente>> IsAllowedToViewDipendente(int key, CancellationToken cancellationToken)
+    {
+        var utente = await this._utenteBO.ReadAsync(this._userData.UserId);
+
+        if (utente.IsFail)
+        {
+            return OperationResult<Dipendente>.Unauthorized();
+        }
+
+        var query = GetQuery(new DipendenteFilter
+        {
+            Id = key,
+        }, utente.ResultData);
+
+        var dipendente = await query.FirstOrDefaultAsync(cancellationToken);
+
+        return dipendente is null ? OperationResult<Dipendente>.Unauthorized() : OperationResult<Dipendente>.Success(dipendente);
     }
 }

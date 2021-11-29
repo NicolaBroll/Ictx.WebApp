@@ -25,15 +25,15 @@ public class OperationResult<T>
     }
 
     // Success.
-    public static OperationResult<T> Success(T data) =>  new OperationResult<T>(data);    
+    public static OperationResult<T> Success(T data) =>  new OperationResult<T>(data);
 
 
     // Not found.
-    internal static OperationResult<T> NotFound() => new OperationResult<T>(new NotFoundException());
-
-    internal static OperationResult<T> NotFound(string message) => new OperationResult<T>(new NotFoundException(message));
-
+    public static OperationResult<T> NotFound(string message = null) => new OperationResult<T>(new NotFoundException(message));
 
     // Invalid.
-    internal static OperationResult<T> Invalid(Dictionary<string, IEnumerable<string>> dictionaryErrors) => new OperationResult<T>(new BadRequestException(dictionaryErrors));
+    public static OperationResult<T> Invalid(Dictionary<string, IEnumerable<string>> dictionaryErrors) => new OperationResult<T>(new BadRequestException(dictionaryErrors));
+
+    // Unauthorized.
+    public static OperationResult<T> Unauthorized(string message = null) => new OperationResult<T>(new UnauthorizedException(message));
 }

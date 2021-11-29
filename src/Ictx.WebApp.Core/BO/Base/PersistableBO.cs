@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using FluentValidation;
 using FluentValidation.Results;
 using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.Contracts.UnitOfWork;
+using Ictx.WebApp.Core.Data.App;
 
 namespace Ictx.WebApp.Core.BO.Base;
 
@@ -14,7 +14,7 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
 {
     protected readonly IValidator<TEntity> _validator;
 
-    public PersistableBO(IAppUnitOfWork appUnitOfWork, IValidator<TEntity> validator = null): base(appUnitOfWork)
+    public PersistableBO(AppDbContext appDbContext, IValidator<TEntity> validator = null): base(appDbContext)
     {
         this._validator     = validator;
     }

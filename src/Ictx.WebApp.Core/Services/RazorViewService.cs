@@ -2,7 +2,6 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using Ictx.WebApp.Core.Contracts.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Abstractions;
@@ -13,8 +12,13 @@ using Microsoft.AspNetCore.Mvc.ViewEngines;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Routing;
 
-namespace Ictx.WebApp.Infrastructure.Services
+namespace Ictx.WebApp.Core.Services
 {
+    public interface IRazorViewService
+    {
+        Task<string> RenderViewToStringAsync<TModel>(string viewName, TModel model);
+    }
+
     public class RazorViewService : IRazorViewService
     {
         private IRazorViewEngine _viewEngine;

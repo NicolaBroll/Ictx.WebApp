@@ -34,6 +34,12 @@ public class AppBaseController : ControllerBase
 
                 return NotFound(problemDetails);
 
+            case UnauthorizedException:
+                problemDetails.Type = "https://demo.api.com/errors/unauthorized";
+                problemDetails.Status = StatusCodes.Status401Unauthorized;
+
+                return Unauthorized(problemDetails);
+
             case TaskCanceledException:
                 problemDetails.Type = "https://demo.api.com/errors/accepted";
                 problemDetails.Status = StatusCodes.Status202Accepted;

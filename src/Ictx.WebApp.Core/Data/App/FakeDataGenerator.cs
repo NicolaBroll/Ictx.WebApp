@@ -7,7 +7,7 @@ using Ictx.WebApp.Core.BO;
 using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 
-namespace Ictx.WebApp.Core.Data;
+namespace Ictx.WebApp.Core.Data.App;
 
 public class FakeDataGenerator
 {
@@ -29,7 +29,7 @@ public class FakeDataGenerator
 
     private async Task GenerDipendenti()
     {
-        var lstDipendenti = await this._dipendenteBO.ReadManyPaginatedAsync(new Models.PaginationModel
+        var lstDipendenti = await this._dipendenteBO.ReadManyPaginatedAsync(new DipendenteFilter
         {
             Page = 1,
             PageSize = 1
@@ -40,6 +40,7 @@ public class FakeDataGenerator
             this._logger.LogInformation("Seeding dipendenti...");
 
             var dipendenteFake = new Faker<Dipendente>()
+                .RuleFor(x => x.IdDitta, f => f.Random.Int(1, 10))
                 .RuleFor(x => x.Cognome, f => f.Person.LastName)
                 .RuleFor(x => x.Nome, f => f.Person.FirstName)
                 .RuleFor(x => x.Sesso, f => f.Person.ToSesso())
