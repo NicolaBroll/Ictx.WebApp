@@ -2,18 +2,17 @@
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
-using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.Data.App;
+using Ictx.WebApp.Fwk.Models;
 using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
-namespace Ictx.WebApp.Core.BO.Base;
+namespace Ictx.WebApp.Fwk.BO.Base;
 
 public abstract class ReadOnlyBO<TEntity, TKey, TParameters> where TParameters : PaginationModel
 {
-    protected readonly AppDbContext AppDbContext;
+    protected readonly DbContext AppDbContext;
 
-    public ReadOnlyBO(AppDbContext appDbContext)
+    public ReadOnlyBO(DbContext appDbContext)
     {
         this.AppDbContext = appDbContext;
     }

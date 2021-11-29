@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ictx.WebApp.Core.Exceptions
+namespace Ictx.WebApp.Fwk.Exceptions
 {   
     public class BadRequestException : Exception
     {  

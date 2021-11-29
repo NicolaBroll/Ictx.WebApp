@@ -2,12 +2,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
-using Ictx.WebApp.Core.BO;
-using Ictx.WebApp.Core.Common;
 using Ictx.WebApp.Core.Data.App;
-using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Services;
-using Ictx.WebApp.Core.Validators;
+using Ictx.WebApp.Core.Domain.Dipendente;
+using Ictx.WebApp.Core.Domain.Utente;
 
 namespace Ictx.WebApp.Core.DependencyInjection
 {

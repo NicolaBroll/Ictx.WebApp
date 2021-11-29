@@ -12,9 +12,8 @@ using Microsoft.Extensions.Hosting;
 using Ictx.WebApp.Api.Helper;
 using Ictx.WebApp.Api.Common.HealthCheck;
 using Ictx.WebApp.Core.DependencyInjection;
-using Ictx.WebApp.Core.DependencyInjection;
-using Ictx.WebApp.Core.Common;
 using Ictx.WebApp.Api.AppStartUp.Configurations;
+using Ictx.WebApp.Core.Services;
 
 namespace Ictx.WebApp.Api;
 

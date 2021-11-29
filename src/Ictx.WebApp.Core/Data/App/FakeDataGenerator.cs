@@ -3,9 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Bogus;
-using Ictx.WebApp.Core.BO;
-using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.Models;
+using Ictx.WebApp.Core.Domain.Dipendente;
 
 namespace Ictx.WebApp.Core.Data.App;
 

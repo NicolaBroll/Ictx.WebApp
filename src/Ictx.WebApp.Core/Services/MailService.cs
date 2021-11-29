@@ -7,10 +7,27 @@ using MailKit.Net.Smtp;
 using MimeKit;
 using MimeKit.Text;
 using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.Common;
 
 namespace Ictx.WebApp.Core.Services
 {
+    public interface IMailSettings
+    {
+        public string FromMailAddress { get; set; }
+        public string FromName { get; set; }
+        public string IpAddress { get; set; }
+        public int Port { get; set; }
+        public bool UseSsl { get; set; }
+    }
+
+    public class MailSettings : IMailSettings
+    {
+        public string FromMailAddress { get; set; }
+        public string FromName { get; set; }
+        public string IpAddress { get; set; }
+        public int Port { get; set; }
+        public bool UseSsl { get; set; }
+    }
+
     public interface IMailService
     {
         Task SendEmail(List<MailModel> mails, CancellationToken cancellationToken = default);

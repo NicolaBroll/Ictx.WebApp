@@ -5,16 +5,16 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using FluentValidation;
 using FluentValidation.Results;
-using Ictx.WebApp.Core.Models;
-using Ictx.WebApp.Core.Data.App;
+using Ictx.WebApp.Fwk.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace Ictx.WebApp.Core.BO.Base;
+namespace Ictx.WebApp.Fwk.BO.Base;
 
 public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEntity, TKey, TParameters> where TParameters : PaginationModel
 {
     protected readonly IValidator<TEntity> _validator;
 
-    public PersistableBO(AppDbContext appDbContext, IValidator<TEntity> validator = null): base(appDbContext)
+    public PersistableBO(DbContext appDbContext, IValidator<TEntity> validator = null): base(appDbContext)
     {
         this._validator     = validator;
     }

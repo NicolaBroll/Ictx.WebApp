@@ -20,7 +20,7 @@ public static class MvcConfiguration
         services.ConfigureSessionData();
 
         // Aggiungo la gestione globale dell'eccezione in caso di internal server error.
-        services.AddTransient<ExceptionHandlingMiddleware>();
+        //services.AddTransient<ExceptionHandlingMiddleware>();
 
         // Validation.
         services.Configure<ApiBehaviorOptions>(opt =>

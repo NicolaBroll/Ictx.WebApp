@@ -1,4 +1,5 @@
 ﻿using Ictx.WebApp.Api.Services;
+using Ictx.WebApp.Core.Domain.Utente;
 using Ictx.WebApp.Core.Models;
 using Microsoft.Extensions.DependencyInjection;
 

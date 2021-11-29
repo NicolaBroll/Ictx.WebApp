@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ictx.WebApp.Core.Entities.Base
+namespace Ictx.WebApp.Fwk.Entities.Base
 {
     public class BaseEntity<TKey>
     {

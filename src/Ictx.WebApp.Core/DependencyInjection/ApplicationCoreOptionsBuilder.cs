@@ -1,4 +1,4 @@
-﻿using Ictx.WebApp.Core.Common;
+﻿using Ictx.WebApp.Core.Services;
 
 namespace Ictx.WebApp.Core.DependencyInjection
 {

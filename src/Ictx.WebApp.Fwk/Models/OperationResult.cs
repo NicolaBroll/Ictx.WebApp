@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ictx.WebApp.Core.Exceptions;
+using Ictx.WebApp.Fwk.Exceptions;
 
-namespace Ictx.WebApp.Core.Models;
+namespace Ictx.WebApp.Fwk.Models;
 
 public class OperationResult<T>
 {

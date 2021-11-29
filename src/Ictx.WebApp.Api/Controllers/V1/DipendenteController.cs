@@ -4,9 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Core.Entities;
-using Ictx.WebApp.Core.BO;
-using Ictx.WebApp.Core.Models;
+using Ictx.WebApp.Core.Domain.Dipendente;
 
 namespace Ictx.WebApp.Api.Controllers.V1;
 
@@ -29,7 +27,7 @@ public class DipendenteController : AppBaseController
     /// <summary>
     /// Ritorna una lista di dipendenti paginata.
     /// </summary>
-    /// <param name="paginationModel">Filtro per elementi di paginazione.</param>
+    /// <param name="dipendenteFilter">Filtro per elementi di paginazione.</param>
     /// <param name="cancellationToken"></param>
     /// <response code = "200">Ritorna la lista paginata di dipendenti.</response>
     /// <returns></returns>

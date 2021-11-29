@@ -15,6 +15,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mail", "mail", "{1B67EFF5-C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ictx.WebApp.Templates.Mail", "src\Ictx.WebApp.Templates.Mail\Ictx.WebApp.Templates.Mail.csproj", "{FC44E7A9-96CB-472D-862D-CD8C7235EB7C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ictx.WebApp.Fwk", "src\Ictx.WebApp.Fwk\Ictx.WebApp.Fwk.csproj", "{32828FD8-9E81-47D8-A1C7-9842C8E5BC39}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{FC44E7A9-96CB-472D-862D-CD8C7235EB7C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC44E7A9-96CB-472D-862D-CD8C7235EB7C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC44E7A9-96CB-472D-862D-CD8C7235EB7C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{32828FD8-9E81-47D8-A1C7-9842C8E5BC39}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{32828FD8-9E81-47D8-A1C7-9842C8E5BC39}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{32828FD8-9E81-47D8-A1C7-9842C8E5BC39}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{32828FD8-9E81-47D8-A1C7-9842C8E5BC39}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -43,6 +49,7 @@ Global
 		{D17ED816-A1F7-4906-9E51-989EE1772FEE} = {E419D7D5-98D8-4A9F-891F-FBE684475272}
 		{1B67EFF5-C646-4DCE-9599-CE25C438D097} = {D17ED816-A1F7-4906-9E51-989EE1772FEE}
 		{FC44E7A9-96CB-472D-862D-CD8C7235EB7C} = {1B67EFF5-C646-4DCE-9599-CE25C438D097}
+		{32828FD8-9E81-47D8-A1C7-9842C8E5BC39} = {E419D7D5-98D8-4A9F-891F-FBE684475272}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {02F1E8A1-0CE9-4B9A-BD37-3F1F1EF7D0CF}

@@ -1,16 +1,16 @@
 ﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using FluentValidation;
-using Ictx.WebApp.Core.Entities;
 using Ictx.WebApp.Core.Models;
 using Ictx.WebApp.Core.BO.Base;
 using Ictx.WebApp.Core.Data.App;
-using System.Linq;
-using Microsoft.EntityFrameworkCore;
+using Ictx.WebApp.Core.Domain.Utente;
 
-namespace Ictx.WebApp.Core.BO;
+namespace Ictx.WebApp.Core.Domain.Dipendente;
 
 public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
 {
@@ -28,32 +28,36 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         this._utenteBO = utenteBO;
     }
 
-    protected IQueryable<Dipendente> GetQuery(DipendenteFilter filter, Utente utente)
+    protected IQueryable<Dipendente> GetQuery(DipendenteFilter filter, Utente.Utente utente)
     {
         var query = this.AppDbContext.Dipendente.AsQueryable();
 
-        ApplicaFiltri(query, filter);
-        ApplicaFiltriUtente(query, utente);
+        query = ApplicaFiltri(query, filter);
+        query = ApplicaFiltriUtente(query, utente);
 
         return query;
     }
 
-    private void ApplicaFiltriUtente(IQueryable<Dipendente> query, Utente utente)
+    private IQueryable<Dipendente> ApplicaFiltriUtente(IQueryable<Dipendente> query, Utente.Utente utente)
     {
-        query = query.Where(x => utente.LstDitteAllowed.Contains(x.Id));
+        query = query.Where(x => utente.LstDitteAllowed.Contains(x.IdDitta));
+
+        return query;
     }
 
-    private void ApplicaFiltri(IQueryable<Dipendente> query, DipendenteFilter filter)
+    private IQueryable<Dipendente> ApplicaFiltri(IQueryable<Dipendente> query, DipendenteFilter filter)
     {
         if (filter.Id != null)
         {
             query = query.Where(x => x.Id == filter.Id);
         }
 
-        if (filter.Id != null)
+        if (filter.IdDitta != null)
         {
-            query = query.Where(x => x.Id == filter.Id);
+            query = query.Where(x => x.IdDitta == filter.IdDitta);
         }
+
+        return query;
     }
 
 

@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Serilog;
-using Ictx.WebApp.Core.Data;
+using Ictx.WebApp.Core.Data.App;
 
 namespace Ictx.WebApp.Api;
 
