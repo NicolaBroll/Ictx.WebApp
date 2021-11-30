@@ -26,10 +26,10 @@ namespace Ictx.WebApp.Api
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                using (var scope = this._serviceProvider.CreateScope())
-                {
-                    this._logger.LogInformation("AppBackgroundService Run.");
-                }
+                //using (var scope = this._serviceProvider.CreateScope())
+                //{
+                //    this._logger.LogInformation("AppBackgroundService Run.");
+                //}
 
                 await Task.Delay(TimeSpan.FromSeconds(delay), stoppingToken);
             }
