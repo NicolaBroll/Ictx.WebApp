@@ -111,7 +111,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// </summary>
     /// <param name="value">Modello contenente i dati del nuovo dipendente.</param>
     /// </returns>
-    protected override async Task<OperationResult<Dipendente>> InsertViewAsync(Dipendente value, CancellationToken cancellationToken)
+    protected override async Task<(Dipendente Data, Exception Exception)> InsertViewAsync(Dipendente value, CancellationToken cancellationToken)
     {
         var utcNow = DateTime.UtcNow;
 
@@ -121,7 +121,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         await this._appDbContext.Dipendente.AddAsync(value, cancellationToken);
         await this._appDbContext.SaveChangesAsync(cancellationToken);
 
-        return OperationResult<Dipendente>.Success(value);
+        return (value, null);
     }
 
 
@@ -153,18 +153,18 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// <param name="value">Modello contenente i nuovi dati.</param>
     /// Se il dipendente non viene trovato, ritorna NotFoundException.
     /// </returns>
-    protected override async Task<OperationResult<Dipendente>> SaveViewAsync(int key, Dipendente value, CancellationToken cancellationToken)
+    protected override async Task<(Dipendente Data, Exception Exception)> SaveViewAsync(int key, Dipendente value, CancellationToken cancellationToken)
     {
         var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
         if (dipendente is null)
         {
-            return OperationResult<Dipendente>.NotFound($"Dipendente con id: {key} non trovato.");
+            return (null, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
         if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
         {
-            return OperationResult<Dipendente>.Unauthorized();
+            return (null, new UnauthorizedException());
         }
 
         dipendente.Nome = value.Nome;
@@ -176,7 +176,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         this._appDbContext.Dipendente.Update(dipendente);
         await this._appDbContext.SaveChangesAsync(cancellationToken);
 
-        return OperationResult<Dipendente>.Success(dipendente);
+        return (dipendente, null);
     }
 
     /// <summary>

@@ -106,11 +106,11 @@ public class DipendenteController : AppBaseController
         var objToInsert = _mapper.Map<Dipendente>(model);
         var result = await this._dipendenteBO.InsertAsync(objToInsert, cancellationToken: cancellationToken);
 
-        if (result.IsSuccess)
+        if (result.Exception is null)
         {
             return CreatedAtRoute(GET_DIPENDENTE_BY_ID_ACTION_NAME, 
-                new { id = result.ResultData.Id },
-                _mapper.Map<DipendenteDto>(result.ResultData));
+                new { id = result.Data.Id },
+                _mapper.Map<DipendenteDto>(result.Data));
         }
 
         return FailResponse(result.Exception);
@@ -136,9 +136,9 @@ public class DipendenteController : AppBaseController
         var objToUpdate = _mapper.Map<Dipendente>(model);
         var result = await this._dipendenteBO.SaveAsync(id, objToUpdate, cancellationToken: cancellationToken);
 
-        if (result.IsSuccess)
+        if (result.Exception is null)
         {
-            return Ok(_mapper.Map<DipendenteDto>(result.ResultData));
+            return Ok(_mapper.Map<DipendenteDto>(result.Data));
         }
 
         return FailResponse(result.Exception);

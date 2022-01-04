@@ -7,6 +7,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Ictx.WebApp.Fwk.Models;
 using Microsoft.EntityFrameworkCore;
+using Ictx.WebApp.Fwk.Exceptions;
 
 namespace Ictx.WebApp.Fwk.BO.Base;
 
@@ -39,7 +40,7 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
     {
         var validazione = await ValidationSingleAsync(value);
 
-        if (validazione.IsFail)
+        if (validazione.Exception is not null)
         {
             return validazione;
         }
@@ -47,20 +48,20 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
         return await SaveViewAsync(key, value, cancellationToken);       
     }
 
-    protected virtual async Task<OperationResult<TEntity>> SaveViewAsync(TKey key, TEntity value, CancellationToken cancellationToken)
+    protected virtual async Task<(TEntity Data, Exception Exception)> SaveViewAsync(TKey key, TEntity value, CancellationToken cancellationToken)
     {
-        return await Task.FromException<OperationResult<TEntity>>(new NotImplementedException());
+        return await Task.FromException<(TEntity Data, Exception Exception)>(new NotImplementedException());
     }
 
     #endregion
 
     #region Insert
 
-    public async Task<OperationResult<TEntity>> InsertAsync(TEntity value, CancellationToken cancellationToken = default)
+    public async Task<(TEntity Data, Exception Exception)> InsertAsync(TEntity value, CancellationToken cancellationToken = default)
     {
         var validazione = await ValidationSingleAsync(value);
 
-        if (validazione.IsFail)
+        if (validazione.Exception is not null)
         {
             return validazione;
         }
@@ -68,9 +69,9 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
         return await InsertViewAsync(value, cancellationToken);
     }
 
-    protected virtual async Task<OperationResult<TEntity>> InsertViewAsync(TEntity value, CancellationToken cancellationToken)
+    protected virtual async Task<(TEntity Data, Exception Exception)> InsertViewAsync(TEntity value, CancellationToken cancellationToken)
     {
-        return await Task.FromException<OperationResult<TEntity>>(new NotImplementedException());
+        return await Task.FromException<(TEntity Data, Exception Exception)>(new NotImplementedException());
     }
 
     #endregion
@@ -99,28 +100,28 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
     #region Validation 
     
     // Single.
-    public async Task<OperationResult<TEntity>> ValidationSingleAsync(TEntity value)
+    public async Task<(TEntity Data, Exception Exception)> ValidationSingleAsync(TEntity value)
     {
         return await ValidationSingleViewAsync(value);
     }
 
-    protected virtual async Task<OperationResult<TEntity>> ValidationSingleViewAsync(TEntity value)
+    protected virtual async Task<(TEntity Data, Exception Exception)> ValidationSingleViewAsync(TEntity value)
     {
         if (this._validator is null)
         {
-            return OperationResult<TEntity>.Success(value);
+            return (value, null);
         }
 
         var validationResult = await this._validator.ValidateAsync(value);
 
         if (validationResult.IsValid)
         {
-            return OperationResult<TEntity>.Success(value);
+            return (value, null);
         }
 
         var dictionaryErrors = FromValidationFailureToDictionary(validationResult);
 
-        return OperationResult<TEntity>.Invalid(dictionaryErrors);
+        return (default(TEntity), new BadRequestException(dictionaryErrors));
     }
 
 
