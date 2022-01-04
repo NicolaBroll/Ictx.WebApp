@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Text.Json.Serialization;
 using Ictx.WebApp.Fwk.Entities.Base;
 using Ictx.WebApp.Fwk.Models;
 
@@ -46,10 +45,8 @@ public enum Sesso
 
 public class DipendenteFilter : PaginationModel
 {
-    [JsonPropertyName("id")]
     public int? Id { get; set; }
 
-    [JsonPropertyName("idDitta")]
     public int? IdDitta { get; set; }
 }
 

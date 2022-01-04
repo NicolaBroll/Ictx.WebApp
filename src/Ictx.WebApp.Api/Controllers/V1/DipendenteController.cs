@@ -14,9 +14,9 @@ namespace Ictx.WebApp.Api.Controllers.V1;
 [Route("api/v{version:apiVersion}/[controller]")]
 public class DipendenteController : AppBaseController
 {
-    private readonly IMapper _mapper;
-    private readonly DipendenteBO _dipendenteBO;
-    private const string GET_DIPENDENTE_BY_ID_ACTION_NAME = "GetDipendenteById";
+    private readonly IMapper        _mapper;
+    private readonly DipendenteBO   _dipendenteBO;
+    private const string            GET_DIPENDENTE_BY_ID_ACTION_NAME = "GetDipendenteById";
 
     public DipendenteController(IMapper mapper, DipendenteBO dipendenteBO)
     {
@@ -58,9 +58,9 @@ public class DipendenteController : AppBaseController
     {
         var result = await this._dipendenteBO.ReadAsync(id, cancellationToken);
 
-        if (result.IsSuccess)
+        if (result.Exception is null)
         {
-            return Ok(_mapper.Map<DipendenteDto>(result.ResultData));
+            return Ok(_mapper.Map<DipendenteDto>(result.Data));
         }
 
         return FailResponse(result.Exception);
@@ -82,7 +82,7 @@ public class DipendenteController : AppBaseController
     {
         var result = await this._dipendenteBO.DeleteAsync(id, cancellationToken: cancellationToken);
 
-        if (result.IsSuccess)
+        if (result.Exception is null)
         {
             return true;
         }

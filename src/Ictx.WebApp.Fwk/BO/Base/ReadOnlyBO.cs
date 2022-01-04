@@ -37,14 +37,14 @@ public abstract class ReadOnlyBO<TEntity, TKey, TParameters> where TParameters :
 
     #region Read
 
-    public async Task<OperationResult<TEntity>> ReadAsync(TKey key, CancellationToken cancellationToken = default)
+    public async Task<(TEntity Data, Exception Exception)> ReadAsync(TKey key, CancellationToken cancellationToken = default)
     { 
         return await ReadViewAsync(key, cancellationToken);
     }
 
-    protected virtual async Task<OperationResult<TEntity>> ReadViewAsync(TKey key, CancellationToken cancellationToken)
+    protected virtual async Task<(TEntity data, Exception exception)> ReadViewAsync(TKey key, CancellationToken cancellationToken)
     {
-        return await Task.FromException<OperationResult<TEntity>>(new NotImplementedException());
+        return await Task.FromException<(TEntity, Exception)> (new NotImplementedException());
     }
 
     #endregion

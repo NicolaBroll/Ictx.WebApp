@@ -13,16 +13,18 @@ public class UtenteBO : PersistableBO<Utente, Guid, PaginationModel>
     public UtenteBO(IValidator<Utente> validator = null) : base(validator)
     { }
 
-    protected async override Task<OperationResult<Utente>> ReadViewAsync(Guid key, CancellationToken cancellationToken)
+    protected async override Task<(Utente, Exception)> ReadViewAsync(Guid key, CancellationToken cancellationToken)
     {
-        return await Task.FromResult(OperationResult<Utente>.Success(new Utente
+        var utente = await Task.FromResult(new Utente
         {
             Id = key,
             Cognome = "Broll",
             Nome = "Nicola",
             Email = "nicola.brl94@gmail.com",
             LstDitteAllowed = new List<int> { 1 }
-        }));
+        });
+
+        return (utente, null);
     }
 }
 

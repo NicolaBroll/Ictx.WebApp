@@ -21,21 +21,21 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
 
     #region Delete
 
-    public async Task<OperationResult<bool>> DeleteAsync(TKey key, CancellationToken cancellationToken = default)
+    public async Task<(bool Data, Exception Exception)> DeleteAsync(TKey key, CancellationToken cancellationToken = default)
     {
         return await DeleteViewAsync(key, cancellationToken);
     }
 
-    protected virtual async Task<OperationResult<bool>> DeleteViewAsync(TKey key, CancellationToken cancellationToken)
+    protected virtual async Task<(bool Data, Exception Exception)> DeleteViewAsync(TKey key, CancellationToken cancellationToken)
     {
-        return await Task.FromException<OperationResult<bool>>(new NotImplementedException());
+        return await Task.FromException<(bool Data, Exception Exception)>(new NotImplementedException());
     }
 
     #endregion
 
     #region Save
 
-    public async Task<OperationResult<TEntity>> SaveAsync(TKey key, TEntity value, CancellationToken cancellationToken = default)
+    public async Task<(TEntity Data, Exception Exception)> SaveAsync(TKey key, TEntity value, CancellationToken cancellationToken = default)
     {
         var validazione = await ValidationSingleAsync(value);
 

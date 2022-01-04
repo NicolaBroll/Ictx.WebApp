@@ -9,6 +9,7 @@ using Ictx.WebApp.Core.Data.App;
 using Ictx.WebApp.Core.Domain.Utente;
 using Ictx.WebApp.Fwk.BO.Base;
 using Ictx.WebApp.Fwk.Models;
+using Ictx.WebApp.Fwk.Exceptions;
 
 namespace Ictx.WebApp.Core.Domain.Dipendente;
 
@@ -72,12 +73,12 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     {
         var utente = await this._utenteBO.ReadAsync(this._userData.UserId);
 
-        if (utente.IsFail)
+        if (utente.Exception is not null)
         {
             return new PageResult<Dipendente>();
         }
 
-        var query = GetQuery(filter, utente.ResultData);
+        var query = GetQuery(filter, utente.Data);
 
         return await GetPaginatedResult(query, filter);
     }
@@ -88,21 +89,21 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// <param name="key">Id dipendente</param>
     /// <returns>Ritorna un Result<Dipendente> contenente il dipendente associato all'id richiesto oppure una 
     /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
-    protected override async Task<OperationResult<Dipendente>> ReadViewAsync(int key, CancellationToken cancellationToken)
+    protected override async Task<(Dipendente, Exception)> ReadViewAsync(int key, CancellationToken cancellationToken)
     {
         var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
         if (dipendente is null)
         {
-            return OperationResult<Dipendente>.NotFound($"Dipendente con id: {key} non trovato.");
+            return (null, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
         if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
         {
-            return OperationResult<Dipendente>.Unauthorized();
+            return (null, new UnauthorizedException());
         }
 
-        return OperationResult<Dipendente>.Success(dipendente);
+        return (dipendente, null);
     }
 
     /// <summary>
@@ -182,18 +183,18 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// Elimina un dipendente. Se non viene trovato, ritorna DipendenteNotFoundException.
     /// </summary>
     /// <param name="key">Id dipendente</param>
-    protected override async Task<OperationResult<bool>> DeleteViewAsync(int key, CancellationToken cancellationToken)
+    protected override async Task<(bool Data, Exception Exception)> DeleteViewAsync(int key, CancellationToken cancellationToken)
     {
         var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
 
         if (dipendente is null)
         {
-            return OperationResult<bool>.NotFound($"Dipendente con id: {key} non trovato.");
+            return (false, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
         if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
         {
-            return OperationResult<bool>.Unauthorized();
+            return (false, new UnauthorizedException());
         }
 
         dipendente.IsDeleted = true;
@@ -202,14 +203,14 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         this._appDbContext.Dipendente.Update(dipendente);
         await this._appDbContext.SaveChangesAsync(cancellationToken);
 
-        return OperationResult<bool>.Success(true);
+        return (true, null);
     }
 
     private async Task<OperationResult<Dipendente>> IsAllowedToViewDipendente(int key, CancellationToken cancellationToken)
     {
         var utente = await this._utenteBO.ReadAsync(this._userData.UserId);
 
-        if (utente.IsFail)
+        if (utente.Exception is not null)
         {
             return OperationResult<Dipendente>.Unauthorized();
         }
@@ -217,7 +218,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         var query = GetQuery(new DipendenteFilter
         {
             Id = key,
-        }, utente.ResultData);
+        }, utente.Data);
 
         var dipendente = await query.FirstOrDefaultAsync(cancellationToken);
 
