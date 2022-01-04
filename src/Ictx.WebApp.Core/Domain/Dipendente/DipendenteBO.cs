@@ -98,7 +98,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
             return (null, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
-        if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
+        if ((await IsAllowedToViewDipendente(key, cancellationToken)))
         {
             return (null, new UnauthorizedException());
         }
@@ -130,7 +130,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// </summary>
     /// <param name="lstDipendenti">Modello contenente i dati del nuovo dipendente.</param>
     /// </returns>
-    protected override async Task<OperationResult<List<Dipendente>>> InsertManyViewsAsync(List<Dipendente> lstDipendenti, CancellationToken cancellationToken)
+    protected override async Task<(List<Dipendente> Data, Exception Exception)> InsertManyViewsAsync(List<Dipendente> lstDipendenti, CancellationToken cancellationToken)
     {
         var utcNow = DateTime.UtcNow;
 
@@ -143,7 +143,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         await this._appDbContext.Dipendente.AddRangeAsync(lstDipendenti, cancellationToken);
         await this._appDbContext.SaveChangesAsync(cancellationToken);
 
-        return OperationResult<List<Dipendente>>.Success(lstDipendenti);
+        return (lstDipendenti, null);
     }
 
     /// <summary>
@@ -162,7 +162,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
             return (null, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
-        if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
+        if ((await IsAllowedToViewDipendente(key, cancellationToken)))
         {
             return (null, new UnauthorizedException());
         }
@@ -192,7 +192,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
             return (false, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
-        if ((await IsAllowedToViewDipendente(key, cancellationToken)).IsFail)
+        if ((await IsAllowedToViewDipendente(key, cancellationToken)))
         {
             return (false, new UnauthorizedException());
         }
@@ -206,13 +206,13 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         return (true, null);
     }
 
-    private async Task<OperationResult<Dipendente>> IsAllowedToViewDipendente(int key, CancellationToken cancellationToken)
+    private async Task<bool> IsAllowedToViewDipendente(int key, CancellationToken cancellationToken)
     {
         var utente = await this._utenteBO.ReadAsync(this._userData.UserId);
 
         if (utente.Exception is not null)
         {
-            return OperationResult<Dipendente>.Unauthorized();
+            return false;
         }
 
         var query = GetQuery(new DipendenteFilter
@@ -222,6 +222,6 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
 
         var dipendente = await query.FirstOrDefaultAsync(cancellationToken);
 
-        return dipendente is null ? OperationResult<Dipendente>.Unauthorized() : OperationResult<Dipendente>.Success(dipendente);
+        return dipendente is null;
     }
 }

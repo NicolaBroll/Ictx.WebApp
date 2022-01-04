@@ -78,11 +78,11 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
 
     #region Insert many
 
-    public async Task<OperationResult<List<TEntity>>> InsertManyAsync(List<TEntity> value, CancellationToken cancellationToken = default)
+    public async Task<(List<TEntity> Data, Exception Exception)> InsertManyAsync(List<TEntity> value, CancellationToken cancellationToken = default)
     {
         var validazione = await ValidationManyAsync(value);
 
-        if (validazione.IsFail)
+        if (validazione.Exception is not null)
         {
             return validazione;
         }
@@ -90,9 +90,9 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
         return await InsertManyViewsAsync(value, cancellationToken);
     }
 
-    protected virtual async Task<OperationResult<List<TEntity>>> InsertManyViewsAsync(List<TEntity> value, CancellationToken cancellationToken)
+    protected virtual async Task<(List<TEntity> Data, Exception Exception)> InsertManyViewsAsync(List<TEntity> value, CancellationToken cancellationToken)
     {
-        return await Task.FromException<OperationResult<List<TEntity>>>(new NotImplementedException());
+        return await Task.FromException<(List<TEntity> Data, Exception Exception)>(new NotImplementedException());
     }
 
     #endregion
@@ -126,16 +126,16 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
 
 
     // Multiple.
-    public async Task<OperationResult<List<TEntity>>> ValidationManyAsync(List<TEntity> value)
+    public async Task<(List<TEntity> Data, Exception Exception)> ValidationManyAsync(List<TEntity> value)
     {
         return await ValidationManyViewAsync(value);
     }
 
-    protected virtual async Task<OperationResult<List<TEntity>>> ValidationManyViewAsync(List<TEntity> list)
+    protected virtual async Task<(List<TEntity> Data, Exception Exception)> ValidationManyViewAsync(List<TEntity> list)
     {
         if (this._validator is null)
         {
-            return OperationResult<List<TEntity>>.Success(list);
+            return (list, null);
         }
 
         foreach (var item in list)
@@ -145,11 +145,11 @@ public abstract class PersistableBO<TEntity, TKey, TParameters> : ReadOnlyBO<TEn
             if (!validationResult.IsValid)
             {
                 var dictionaryErrors = FromValidationFailureToDictionary(validationResult);
-                return OperationResult<List<TEntity>>.Invalid(dictionaryErrors);
+                return (null, new BadRequestException(dictionaryErrors));
             }
         }
 
-        return OperationResult<List<TEntity>>.Success(list);
+        return (list, null);
     }
 
     private static Dictionary<string, IEnumerable<string>> FromValidationFailureToDictionary(ValidationResult res) => 
