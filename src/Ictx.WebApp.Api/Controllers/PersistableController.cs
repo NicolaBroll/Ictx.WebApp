@@ -39,9 +39,7 @@ public class PersistableController<TDto, TEntity, TKey, TParameters, Persistable
 
         if (result.Exception is null)
         {
-            return CreatedAtRoute("GetById",
-                new { id = result.Data.Id },
-                _mapper.Map<TDto>(result.Data));
+            return Ok( _mapper.Map<TDto>(result.Data));
         }
 
         return FailResponse(result.Exception);

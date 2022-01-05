@@ -33,7 +33,7 @@ public class ReadOnlyController<TDto, TEntity, TKey, TParameters, ReadOnlyBo> : 
         return Ok(_mapper.Map<PageResultDto<DipendenteDto>>(list));
     }
 
-    [HttpGet("{id}", Name = "GetById")]
+    [HttpGet("{id}")]
     public async Task<ActionResult<TDto>> GetById(TKey id, CancellationToken cancellationToken)
     {
         var result = await this._bo.ReadAsync(id, cancellationToken);
