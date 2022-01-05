@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Core.Data.App.Configuration;
 using Ictx.WebApp.Core.Domain.Dipendente;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ictx.WebApp.Core.Data.App;
 
@@ -28,6 +30,27 @@ public class AppDbContext : DbContext
         base.OnConfiguring(optionsBuilder);
         optionsBuilder.UseLoggerFactory(this._loggerFactory);
     }
+
+    protected override void ConfigureConventions(ModelConfigurationBuilder builder)
+    {
+        builder.Properties<DateOnly>()
+            .HaveConversion<DateOnlyConverter>()
+            .HaveColumnType("date");
+    }
+}
+
+/// <summary>
+/// Converts <see cref="DateOnly" /> to <see cref="DateTime"/> and vice versa.
+/// </summary>
+public class DateOnlyConverter : ValueConverter<DateOnly, DateTime>
+{
+    /// <summary>
+    /// Creates a new instance of this converter.
+    /// </summary>
+    public DateOnlyConverter() : base(
+            d => d.ToDateTime(TimeOnly.MinValue),
+            d => DateOnly.FromDateTime(d))
+    { }
 }
 
 //public class AppDbContextFactory : IDesignTimeDbContextFactory<AppDbContext>
