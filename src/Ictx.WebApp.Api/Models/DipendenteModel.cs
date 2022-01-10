@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Ictx.WebApp.Api.Models;
@@ -20,13 +21,13 @@ public class DipendenteDto
     [JsonPropertyName("sesso")]      
     public string Sesso { get; set; }
 
-    [JsonPropertyName("dataNascita")]        
-    public DateTime DataNascita { get; set; }
+    [JsonPropertyName("dataNascita")]      
+    public string DataNascita { get; set; }
 
     public DipendenteDto()
     { }
 
-    public DipendenteDto(int idDitta, string cognome, string nome, string sesso, DateTime dataNascita)
+    public DipendenteDto(int idDitta, string cognome, string nome, string sesso, string dataNascita)
     {
         this.IdDitta = idDitta;
         this.Cognome = cognome;

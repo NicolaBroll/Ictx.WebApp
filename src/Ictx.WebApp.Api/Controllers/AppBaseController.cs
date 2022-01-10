@@ -12,7 +12,7 @@ public class AppBaseController : ControllerBase
     {
         var problemDetails = new ProblemDetails
         {
-            Title = "Server error",     
+            Title = "Server error",
             Detail = ex.Message
         };
 

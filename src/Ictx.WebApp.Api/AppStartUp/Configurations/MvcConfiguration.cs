@@ -7,7 +7,6 @@ using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using Ictx.WebApp.Api.Common.Swagger;
 using Ictx.WebApp.Api.Helper;
-using Ictx.WebApp.Api.AppStartUp.Middlewares;
 
 namespace Ictx.WebApp.Api.AppStartUp.Configurations;
 
@@ -23,10 +22,10 @@ public static class MvcConfiguration
         //services.AddTransient<ExceptionHandlingMiddleware>();
 
         // Validation.
-        services.Configure<ApiBehaviorOptions>(opt =>
-        {
-            opt.SuppressModelStateInvalidFilter = true;
-        });
+        //services.Configure<ApiBehaviorOptions>(opt =>
+        //{
+        //    opt.SuppressModelStateInvalidFilter = true;
+        //});
 
         // Cors.
         services.AddCors(options =>

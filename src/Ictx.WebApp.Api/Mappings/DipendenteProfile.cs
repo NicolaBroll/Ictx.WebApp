@@ -12,7 +12,8 @@ public class DipendenteProfile : Profile
 		// Pagination.
 		CreateMap<PageResult<Dipendente>, PageResultDto<DipendenteDto>>();
 
-		CreateMap<Dipendente, DipendenteDto>();
+		CreateMap<Dipendente, DipendenteDto>().ForMember(x => x.DataNascita, opt => opt.MapFrom(src => src.DataNascita.ToShortDateString()));
+
 		CreateMap<DipendenteDto, Dipendente>();
 	}
 }

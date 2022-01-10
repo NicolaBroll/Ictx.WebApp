@@ -9,18 +9,22 @@ public class DipendenteValidator : AbstractValidator<Dipendente>
         // Nome.
         RuleFor(dipendente => dipendente.Nome)
             .NotEmpty()
-            .MinimumLength(1).WithMessage("Il campo '{PropertyName}' è obbligatorio.")
-            .MaximumLength(64).WithMessage("Il campo '{PropertyName}' non può superare i {MaxLength} caratteri.");
+            .WithMessage("Il campo '{PropertyName}' è obbligatorio.")
+
+            .MaximumLength(64)
+            .WithMessage("Il campo '{PropertyName}' non può superare i {MaxLength} caratteri.");
 
         // Cognome.
         RuleFor(dipendente => dipendente.Cognome)
             .NotEmpty()
-            .MinimumLength(1).WithMessage("Il campo '{PropertyName}' è obbligatorio.")
-            .MaximumLength(64).WithMessage("Il campo '{PropertyName}' non può superare i {MaxLength} caratteri.");
+            .WithMessage("Il campo '{PropertyName}' è obbligatorio.")
+
+            .MaximumLength(64)
+            .WithMessage("Il campo '{PropertyName}' non può superare i {MaxLength} caratteri.");
 
         // Data nascita.
         RuleFor(dipendente => dipendente.DataNascita)
-            .NotNull()
+            .NotEmpty()
             .WithMessage("Il campo '{PropertyName}' è obbligatorio.");
     }
 }

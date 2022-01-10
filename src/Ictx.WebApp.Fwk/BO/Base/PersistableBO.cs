@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using FluentValidation;
 using FluentValidation.Results;
 using Ictx.WebApp.Fwk.Models;
-using Microsoft.EntityFrameworkCore;
 using Ictx.WebApp.Fwk.Exceptions;
 
 namespace Ictx.WebApp.Fwk.BO.Base;
