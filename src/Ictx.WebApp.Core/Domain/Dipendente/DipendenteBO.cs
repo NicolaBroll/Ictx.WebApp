@@ -98,7 +98,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
             return (null, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
-        if ((await IsAllowedToViewDipendente(key, cancellationToken)))
+        if (await IsAllowedToViewDipendente(key, cancellationToken))
         {
             return (null, new UnauthorizedException());
         }
@@ -162,7 +162,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
             return (null, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
-        if ((await IsAllowedToViewDipendente(key, cancellationToken)))
+        if (await IsAllowedToViewDipendente(key, cancellationToken))
         {
             return (null, new UnauthorizedException());
         }
@@ -192,7 +192,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
             return (false, new NotFoundException($"Dipendente con id: {key} non trovato."));
         }
 
-        if ((await IsAllowedToViewDipendente(key, cancellationToken)))
+        if (await IsAllowedToViewDipendente(key, cancellationToken))
         {
             return (false, new UnauthorizedException());
         }
