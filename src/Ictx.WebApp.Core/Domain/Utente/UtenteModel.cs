@@ -15,14 +15,17 @@ public class Utente
 public interface IUserData
 {
     Guid UserId { get; }
+    string UfficioBase { get; }
 }
 
 public class UserData : IUserData
 {
     public Guid UserId { get; private set; }
+    public string UfficioBase { get; private set; }
 
-    public UserData(Guid userId)
+    public UserData(Guid userId, string ufficioBase)
     {
         this.UserId = userId;
+        this.UfficioBase = ufficioBase;
     }
 }

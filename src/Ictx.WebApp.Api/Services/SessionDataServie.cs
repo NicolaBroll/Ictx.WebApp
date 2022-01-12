@@ -29,6 +29,6 @@ public class SessionDataService
 	/// <summary>Legge i dati dalla sorgente corretta e li inserisce all'interno di un oggetto SessionData</summary>
 	public UserData GetSessionData()
 	{
-		return new UserData(System.Guid.NewGuid());
+		return new UserData(System.Guid.NewGuid(), "9890");
 	}
 }

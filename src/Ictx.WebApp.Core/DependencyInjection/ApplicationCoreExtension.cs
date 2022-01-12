@@ -6,6 +6,7 @@ using Ictx.WebApp.Core.Data.App;
 using Ictx.WebApp.Core.Services;
 using Ictx.WebApp.Core.Domain.Dipendente;
 using Ictx.WebApp.Core.Domain.Utente;
+using Microsoft.Extensions.Logging;
 
 namespace Ictx.WebApp.Core.DependencyInjection
 {
@@ -60,9 +61,16 @@ namespace Ictx.WebApp.Core.DependencyInjection
 
         private static IServiceCollection ConfigureAppDbContext(this IServiceCollection services, string connectionString)
         {
-            services.AddDbContext<AppDbContext>(options => {
-                options.UseInMemoryDatabase(nameof(AppDbContext));
+            services.AddScoped(serviceProvider => 
+            {
+                var options = new DbContextOptionsBuilder<AppDbContext>();
+                var user = serviceProvider.GetService<IUserData>();
+                var loggerFactory = serviceProvider.GetService<ILoggerFactory>();
+
+                options.UseInMemoryDatabase(nameof(AppDbContext) + user.UfficioBase);
                 //options.UseSqlServer(connectionString, b => b.MigrationsAssembly(Assembly.GetExecutingAssembly().FullName));
+
+                return new AppDbContext(options.Options, loggerFactory);
             });
 
             return services;
