@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Ictx.WebApp.Core.Domain.Utente;
+namespace Ictx.WebApp.Core.Domain.UtenteDomain;
 
 public class Utente
 {

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Ictx.WebApp.Core.Domain.Dipendente;
+using Ictx.WebApp.Core.Domain.DipendenteDomain;
 using Ictx.WebApp.Api.Models;
 
 namespace Ictx.WebApp.Api.Controllers.V2;

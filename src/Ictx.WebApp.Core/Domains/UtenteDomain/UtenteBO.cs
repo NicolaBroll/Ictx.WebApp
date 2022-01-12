@@ -6,7 +6,7 @@ using FluentValidation;
 using Ictx.WebApp.Fwk.BO.Base;
 using Ictx.WebApp.Fwk.Models;
 
-namespace Ictx.WebApp.Core.Domain.Utente;
+namespace Ictx.WebApp.Core.Domain.UtenteDomain;
 
 public class UtenteBO : PersistableBO<Utente, Guid, PaginationModel>
 {

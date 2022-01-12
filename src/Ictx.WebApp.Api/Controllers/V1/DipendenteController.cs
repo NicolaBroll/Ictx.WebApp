@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
 using Ictx.WebApp.Api.Models;
-using Ictx.WebApp.Core.Domain.Dipendente;
+using Ictx.WebApp.Core.Domain.DipendenteDomain;
 
 namespace Ictx.WebApp.Api.Controllers.V1;
 
@@ -56,14 +56,14 @@ public class DipendenteController : AppBaseController
     [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
     public async Task<ActionResult<DipendenteDto>> GetById(int id, CancellationToken cancellationToken)
     {
-        var result = await this._dipendenteBO.ReadAsync(id, cancellationToken);
+        var (Data, Exception) = await this._dipendenteBO.ReadAsync(id, cancellationToken);
 
-        if (result.Exception is null)
+        if (Exception is null)
         {
-            return Ok(_mapper.Map<DipendenteDto>(result.Data));
+            return Ok(_mapper.Map<DipendenteDto>(Data));
         }
 
-        return FailResponse(result.Exception);
+        return FailResponse(Exception);
     }
 
     /// <summary>
@@ -80,14 +80,14 @@ public class DipendenteController : AppBaseController
     [ProducesResponseType(typeof(ProblemDetails), (int)HttpStatusCode.NotFound)]
     public async Task<ActionResult<bool>> Delete(int id, CancellationToken cancellationToken)
     {
-        var result = await this._dipendenteBO.DeleteAsync(id, cancellationToken: cancellationToken);
+        var (_, Exception) = await this._dipendenteBO.DeleteAsync(id, cancellationToken: cancellationToken);
 
-        if (result.Exception is null)
+        if (Exception is null)
         {
             return true;
         }
 
-        return FailResponse(result.Exception);
+        return FailResponse(Exception);
     }
 
     /// <summary>
@@ -104,16 +104,16 @@ public class DipendenteController : AppBaseController
     public async Task<ActionResult<DipendenteDto>> Post([FromBody] DipendenteDto model, CancellationToken cancellationToken)
     {
         var objToInsert = _mapper.Map<Dipendente>(model);
-        var result = await this._dipendenteBO.InsertAsync(objToInsert, cancellationToken: cancellationToken);
+        var (Data, Exception) = await this._dipendenteBO.InsertAsync(objToInsert, cancellationToken: cancellationToken);
 
-        if (result.Exception is null)
+        if (Exception is null)
         {
             return CreatedAtRoute(GET_DIPENDENTE_BY_ID_ACTION_NAME, 
-                new { id = result.Data.Id },
-                _mapper.Map<DipendenteDto>(result.Data));
+                new { id = Data.Id },
+                _mapper.Map<DipendenteDto>(Data));
         }
 
-        return FailResponse(result.Exception);
+        return FailResponse(Exception);
     }
 
     /// <summary>
@@ -134,13 +134,13 @@ public class DipendenteController : AppBaseController
     public async Task<ActionResult<DipendenteDto>> Put(int id, [FromBody] DipendenteDto model, CancellationToken cancellationToken)
     {
         var objToUpdate = _mapper.Map<Dipendente>(model);
-        var result = await this._dipendenteBO.SaveAsync(id, objToUpdate, cancellationToken: cancellationToken);
+        var (Data, Exception) = await this._dipendenteBO.SaveAsync(id, objToUpdate, cancellationToken: cancellationToken);
 
-        if (result.Exception is null)
+        if (Exception is null)
         {
-            return Ok(_mapper.Map<DipendenteDto>(result.Data));
+            return Ok(_mapper.Map<DipendenteDto>(Data));
         }
 
-        return FailResponse(result.Exception);
+        return FailResponse(Exception);
     }
 }

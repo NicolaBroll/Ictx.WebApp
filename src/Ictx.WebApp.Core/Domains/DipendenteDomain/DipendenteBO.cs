@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using FluentValidation;
 using Ictx.WebApp.Core.Data.App;
-using Ictx.WebApp.Core.Domain.Utente;
+using Ictx.WebApp.Core.Domain.UtenteDomain;
 using Ictx.WebApp.Fwk.BO.Base;
 using Ictx.WebApp.Fwk.Models;
 using Ictx.WebApp.Fwk.Exceptions;
 
-namespace Ictx.WebApp.Core.Domain.Dipendente;
+namespace Ictx.WebApp.Core.Domain.DipendenteDomain;
 
 public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
 {
@@ -31,7 +31,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         this._utenteBO      = utenteBO;
     }
 
-    protected IQueryable<Dipendente> GetQuery(DipendenteFilter filter, Utente.Utente utente)
+    protected IQueryable<Dipendente> GetQuery(DipendenteFilter filter, Utente utente)
     {
         var query = this._appDbContext.Dipendente.AsQueryable();
 
@@ -41,14 +41,14 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
         return query;
     }
 
-    private IQueryable<Dipendente> ApplicaFiltriUtente(IQueryable<Dipendente> query, Utente.Utente utente)
+    private static IQueryable<Dipendente> ApplicaFiltriUtente(IQueryable<Dipendente> query, Utente utente)
     {
         query = query.Where(x => utente.LstDitteAllowed.Contains(x.IdDitta));
 
         return query;
     }
 
-    private IQueryable<Dipendente> ApplicaFiltri(IQueryable<Dipendente> query, DipendenteFilter filter)
+    private static IQueryable<Dipendente> ApplicaFiltri(IQueryable<Dipendente> query, DipendenteFilter filter)
     {
         if (filter.Id != null)
         {
@@ -71,7 +71,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// <returns>Ritorna unoggetto contenente la lista di dipendenti paginata e il totalcount dei record su DB</returns>
     protected override async Task<PageResult<Dipendente>> ReadManyPaginatedViewsAsync(DipendenteFilter filter, CancellationToken cancellationToken)
     {
-        var utente = await this._utenteBO.ReadAsync(this._userData.UserId);
+        var utente = await this._utenteBO.ReadAsync(this._userData.UserId, cancellationToken);
 
         if (utente.Exception is not null)
         {
@@ -80,7 +80,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
 
         var query = GetQuery(filter, utente.Data);
 
-        return await GetPaginatedResult(query, filter);
+        return await GetPaginatedResult(query, filter, cancellationToken);
     }
 
     /// <summary>
@@ -91,7 +91,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// DipendenteNotFoundException nel caso il dipendente non sia presente. </returns>
     protected override async Task<(Dipendente, Exception)> ReadViewAsync(int key, CancellationToken cancellationToken)
     {
-        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
+        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync(cancellationToken);
 
         if (dipendente is null)
         {
@@ -155,7 +155,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// </returns>
     protected override async Task<(Dipendente Data, Exception Exception)> SaveViewAsync(int key, Dipendente value, CancellationToken cancellationToken)
     {
-        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
+        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync(cancellationToken);
 
         if (dipendente is null)
         {
@@ -185,7 +185,7 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
     /// <param name="key">Id dipendente</param>
     protected override async Task<(bool Data, Exception Exception)> DeleteViewAsync(int key, CancellationToken cancellationToken)
     {
-        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync();
+        var dipendente = await this._appDbContext.Dipendente.Where(x => x.Id == key).FirstOrDefaultAsync(cancellationToken);
 
         if (dipendente is null)
         {
@@ -208,17 +208,22 @@ public class DipendenteBO: PersistableBO<Dipendente, int, DipendenteFilter>
 
     private async Task<bool> IsAllowedToViewDipendente(int key, CancellationToken cancellationToken)
     {
-        var utente = await this._utenteBO.ReadAsync(this._userData.UserId);
+        var (Data, Exception) = await this._utenteBO.ReadAsync(this._userData.UserId, cancellationToken);
 
-        if (utente.Exception is not null)
+        if (Exception is not null)
         {
             return false;
         }
 
+        return await IsAllowedToViewDipendente(key, Data, cancellationToken);
+    }
+
+    private async Task<bool> IsAllowedToViewDipendente(int key, Utente utente, CancellationToken cancellationToken)
+    {
         var query = GetQuery(new DipendenteFilter
         {
             Id = key,
-        }, utente.Data);
+        }, utente);
 
         var dipendente = await query.FirstOrDefaultAsync(cancellationToken);
 

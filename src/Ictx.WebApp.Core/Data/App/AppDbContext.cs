@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Ictx.WebApp.Core.Data.App.Configuration;
-using Ictx.WebApp.Core.Domain.Dipendente;
+using Ictx.WebApp.Core.Domain.DipendenteDomain;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Ictx.WebApp.Core.Data.App;

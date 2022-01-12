@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Bogus;
-using Ictx.WebApp.Core.Domain.Dipendente;
+using Ictx.WebApp.Core.Domain.DipendenteDomain;
 
 namespace Ictx.WebApp.Core.Data.App;
 

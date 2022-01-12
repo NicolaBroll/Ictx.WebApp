@@ -3,7 +3,7 @@ using System.ComponentModel;
 using Ictx.WebApp.Fwk.Entities.Base;
 using Ictx.WebApp.Fwk.Models;
 
-namespace Ictx.WebApp.Core.Domain.Dipendente;
+namespace Ictx.WebApp.Core.Domain.DipendenteDomain;
 
 public class Dipendente : BaseEntity<int>
 {

@@ -1,4 +1,4 @@
-﻿using Ictx.WebApp.Core.Domain.Dipendente;
+﻿using Ictx.WebApp.Core.Domain.DipendenteDomain;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

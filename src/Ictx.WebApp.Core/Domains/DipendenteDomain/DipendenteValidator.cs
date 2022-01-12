@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace Ictx.WebApp.Core.Domain.Dipendente;
+namespace Ictx.WebApp.Core.Domain.DipendenteDomain;
 
 public class DipendenteValidator : AbstractValidator<Dipendente>
 {

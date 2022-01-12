@@ -4,8 +4,8 @@ using Microsoft.Extensions.DependencyInjection;
 using FluentValidation;
 using Ictx.WebApp.Core.Data.App;
 using Ictx.WebApp.Core.Services;
-using Ictx.WebApp.Core.Domain.Dipendente;
-using Ictx.WebApp.Core.Domain.Utente;
+using Ictx.WebApp.Core.Domain.DipendenteDomain;
+using Ictx.WebApp.Core.Domain.UtenteDomain;
 using Microsoft.Extensions.Logging;
 
 namespace Ictx.WebApp.Core.DependencyInjection
