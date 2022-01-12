@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Ictx.WebApp.Api.Models;
 using Ictx.WebApp.Fwk.BO.Base;
 using Ictx.WebApp.Fwk.Models;
 using AutoMapper;
@@ -24,13 +23,13 @@ public class ReadOnlyController<TDto, TEntity, TKey, TParameters, ReadOnlyBo> : 
     }
 
     [HttpGet("")]
-    public async Task<ActionResult<PageResultDto<TDto>>> Get([FromQuery] TParameters parameters, CancellationToken cancellationToken)
+    public async Task<ActionResult<PageResult<TDto>>> Get([FromQuery] TParameters parameters, CancellationToken cancellationToken)
     {
         var list = await this._bo.ReadManyPaginatedAsync(
             parameters,
             cancellationToken);
 
-        return Ok(_mapper.Map<PageResultDto<DipendenteDto>>(list));
+        return Ok(_mapper.Map<PageResult<TDto>>(list));
     }
 
     [HttpGet("{id}")]

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Ictx.WebApp.Fwk.Models
 {
@@ -16,8 +14,8 @@ namespace Ictx.WebApp.Fwk.Models
         public int TotalCount { get; set; }
 
         public PageResult()
-        {
-        }
+        { }
+
         public PageResult(IEnumerable<T> data, int totalCount)
         {
             this.Data = data;
@@ -76,10 +74,9 @@ namespace Ictx.WebApp.Fwk.Models
 
     public enum PAGE_SIZE
     {
-        PAGE_15 = 15,
+        PAGE_MIN = 15,
         PAGE_30 = 30,
         PAGE_50 = 50,
-        PAGE_MAX = 500,
-        PAGE_MIN = 15
+        PAGE_MAX = 500
     }
 }

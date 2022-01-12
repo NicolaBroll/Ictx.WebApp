@@ -3,8 +3,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using AutoMapper;
-using Ictx.WebApp.Api.Models;
+using Ictx.WebApp.Api.Dtos;
 using Ictx.WebApp.Core.Domain.DipendenteDomain;
+using Ictx.WebApp.Fwk.Models;
 
 namespace Ictx.WebApp.Api.Controllers.V1;
 
@@ -32,14 +33,14 @@ public class DipendenteController : AppBaseController
     /// <response code = "200">Ritorna la lista paginata di dipendenti.</response>
     /// <returns></returns>
     [HttpGet("")]
-    [ProducesResponseType(typeof(PageResultDto<DipendenteDto>), (int)HttpStatusCode.OK)]
-    public async Task<ActionResult<PageResultDto<DipendenteDto>>> Get([FromQuery] DipendenteFilter dipendenteFilter, CancellationToken cancellationToken)
+    [ProducesResponseType(typeof(PageResult<DipendenteDto>), (int)HttpStatusCode.OK)]
+    public async Task<ActionResult<PageResult<DipendenteDto>>> Get([FromQuery] DipendenteFilter dipendenteFilter, CancellationToken cancellationToken)
     {
         var list = await _dipendenteBO.ReadManyPaginatedAsync(
             dipendenteFilter, 
             cancellationToken);
 
-        return Ok(_mapper.Map<PageResultDto<DipendenteDto>>(list));
+        return Ok(_mapper.Map<PageResult<DipendenteDto>>(list));
     }
 
     /// <summary>
