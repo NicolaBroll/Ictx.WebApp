@@ -36,13 +36,13 @@ public class ReadOnlyController<TDto, TEntity, TKey, TParameters, ReadOnlyBo> : 
     [HttpGet("{id}")]
     public async Task<ActionResult<TDto>> GetById(TKey id, CancellationToken cancellationToken)
     {
-        var result = await this._bo.ReadAsync(id, cancellationToken);
+        var (Data, Exception) = await this._bo.ReadAsync(id, cancellationToken);
 
-        if (result.Exception is null)
+        if (Exception is null)
         {
-            return Ok(_mapper.Map<TDto>(result.Data));
+            return Ok(_mapper.Map<TDto>(Data));
         }
 
-        return FailResponse(result.Exception);
+        return FailResponse(Exception);
     }
 }
